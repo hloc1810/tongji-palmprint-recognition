@@ -1,0 +1,45 @@
+{
+  "n": 6000,
+  "classes": 600,
+  "rank1": 0.7441666666666666,
+  "rank5": 0.8798333333333334,
+  "macro_precision": 0.7376292488356108,
+  "macro_recall": 0.7441666666666666,
+  "macro_f1": 0.713351712653138,
+  "cmc": {
+    "1": 0.7441666666666666,
+    "2": 0.8115,
+    "5": 0.8798333333333334,
+    "10": 0.918,
+    "20": 0.948
+  },
+  "model": "resnet18_embedding",
+  "seed": 43,
+  "method": "ResNet18 512-D nearest cosine",
+  "score_kind": "negative_cosine_similarity",
+  "gallery_strategy": "nearest",
+  "model_definition": {
+    "method": "ResNet18 ROI 512-D nearest cosine",
+    "score_kind": "negative_cosine_similarity"
+  },
+  "embedding_dimension": 512,
+  "l2_normalized": true,
+  "n_gallery": 6000,
+  "n_probes": 6000,
+  "manifest_sha256": "99bbbe45a4807d48801a28a6aadfec2efee46a3f4c4fe3d3af8e2337241c8ae0",
+  "artifact_sha256": "035634f31d3e5e4faa8b98f9fe4c31d5da10d08ca620507dfe6c248c4e5b71a4",
+  "gallery_sha256": "8a0c136fc042b666778f19495f6fd7c6cf88f09fba05aacef0a6538f0134ec7a",
+  "evaluation": "cross-session",
+  "gallery_session": "session1",
+  "probe_session": "session2",
+  "device": "cpu",
+  "gallery_cache_created": false,
+  "gallery_wall_ms": 78.75810000041383,
+  "probe_feature_ms_per_image_batch_amortized": 19.469294099999995,
+  "cosine_matching_ms_per_image_batch_amortized": 0.05631309999989753,
+  "rank1_ci95_palm_bootstrap": [
+    0.7159833333333333,
+    0.7705124999999999
+  ],
+  "warning": "Exploratory post-hoc comparison: Session2 was used in historical pilots. Do not select a preferred strategy using Session2 results."
+}

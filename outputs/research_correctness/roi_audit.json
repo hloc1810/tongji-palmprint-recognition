@@ -1,0 +1,148 @@
+{
+  "audit": {
+    "n_images": 12000,
+    "n_palms": 600,
+    "session1": 6000,
+    "session2": 6000,
+    "same_content_groups": 0,
+    "strict": true,
+    "folds": 5,
+    "seed": 42,
+    "quality_by_session": {
+      "session1": {
+        "brightness": {
+          "mean": 131.49931286621094,
+          "std": 26.35039209021957
+        },
+        "contrast": {
+          "mean": 17.653603615720083,
+          "std": 5.079370559861673
+        },
+        "blur_proxy": {
+          "mean": 27.583254901637012,
+          "std": 14.05434743581556
+        }
+      },
+      "session2": {
+        "brightness": {
+          "mean": 132.59260518391926,
+          "std": 22.39991761952426
+        },
+        "contrast": {
+          "mean": 17.804581322683287,
+          "std": 4.408734981516731
+        },
+        "blur_proxy": {
+          "mean": 27.79001921212735,
+          "std": 12.940464953279672
+        }
+      }
+    }
+  },
+  "manifest_sha256": "99bbbe45a4807d48801a28a6aadfec2efee46a3f4c4fe3d3af8e2337241c8ae0",
+  "environment": {
+    "python": "3.11.15",
+    "platform": "Windows-10-10.0.26300-SP0",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "sklearn": "1.9.1",
+    "opencv": "5.0.0",
+    "pandas": "3.1.0",
+    "skimage": "0.26.0"
+  },
+  "session1_feature_sanity": [
+    {
+      "sample_uid": "session1/00001",
+      "shape": [
+        128,
+        128
+      ],
+      "dtype": "uint8",
+      "orientation_codes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "feature_dimension": 600,
+      "feature_l2_norm": 1.0
+    },
+    {
+      "sample_uid": "session1/01491",
+      "shape": [
+        128,
+        128
+      ],
+      "dtype": "uint8",
+      "orientation_codes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "feature_dimension": 600,
+      "feature_l2_norm": 0.9999999403953552
+    },
+    {
+      "sample_uid": "session1/02991",
+      "shape": [
+        128,
+        128
+      ],
+      "dtype": "uint8",
+      "orientation_codes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "feature_dimension": 600,
+      "feature_l2_norm": 1.0
+    },
+    {
+      "sample_uid": "session1/04491",
+      "shape": [
+        128,
+        128
+      ],
+      "dtype": "uint8",
+      "orientation_codes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "feature_dimension": 600,
+      "feature_l2_norm": 1.0
+    },
+    {
+      "sample_uid": "session1/05991",
+      "shape": [
+        128,
+        128
+      ],
+      "dtype": "uint8",
+      "orientation_codes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "feature_dimension": 600,
+      "feature_l2_norm": 1.0
+    }
+  ],
+  "scope": "Input integrity and feature sanity only; no recognition accuracy measured",
+  "source_authenticity": "Layout/content checks do not authenticate download provenance",
+  "matlab_parity": "not_verified"
+}

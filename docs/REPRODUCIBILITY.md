@@ -42,7 +42,7 @@ Mã nguồn chính thức của tác giả: <https://cslinzhang.github.io/Contac
 
 ## Bảo mật và dữ liệu
 
-- **Không git add ảnh sinh trắc học hoặc checkpoints từ dataset**; `.gitignore` chặn các đường dẫn mặc định.
+- **Không công khai ảnh sinh trắc học hoặc checkpoints từ dataset** khi chưa được phép. Bản lưu workspace hiện là repo private theo yêu cầu của chủ dự án.
 - Các ví dụ demo lấy từ nguồn hợp pháp và trình bày đúng phạm vi.
 - Không dùng đường dẫn thật của máy thành hướng dẫn bắt buộc; có thể cấu hình `--data`.
 
@@ -63,5 +63,5 @@ Mã nguồn chính thức của tác giả: <https://cslinzhang.github.io/Contac
 
 - Muốn kiểm tra lịch sử chính xác: dùng source_snapshot cùng môi trường của đợt chạy, được giữ cục bộ trong outputs/tongji_benchmark/ và outputs/cnn_experiments/.
 - Muốn chạy một nghiên cứu mới bằng source hiện tại: tạo workspace mới, chuẩn bị manifest, CV/train/lock và đánh giá theo giao thức mới. Không ghi đè hoặc gọi lại test của workspace đã có kết quả.
-- Repo GitHub chỉ chứa mã, config, tài liệu, bảng tổng hợp và hai hình nghiên cứu đã chọn. Checkpoint, gallery, manifest, predictions và log đầy đủ nằm tại máy.
+- Repo private chứa checkpoint, gallery, manifest, predictions và log. `.gitignore` ở gốc đã được bỏ; cache, venv, runtime và thư mục kiểm thử tạm không được đưa lên repo. Cài môi trường mới từ pyproject.toml.
 - Dependency snapshot của các lần chạy nằm trong [experiments/environments](../experiments/environments/README.md). Đây là hồ sơ phiên bản Windows/Python 3.11, không phải lockfile dùng chung mọi hệ điều hành.

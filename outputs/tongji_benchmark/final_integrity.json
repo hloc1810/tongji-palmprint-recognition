@@ -1,0 +1,18 @@
+{
+  "source_unchanged": true,
+  "n_models": 3,
+  "samples_per_model": 6000,
+  "latency_queries_per_model": 6000,
+  "all_evidence_verified": true,
+  "sha256": {
+    "reports\\TONGJI_BENCHMARK.md": "5fa11149ee8d863fb79de0872e3ffb3272e5a626e4aba8b2260b2cfee6d7a7e2",
+    "reports\\tables\\tongji_benchmark.csv": "675ffc66c0541aaebedce65b7afd576ad551b10094299dd7103a9bcced6579a8",
+    "reports\\tables\\tongji_cv_grid_summary.csv": "f9bf25b4b6920919e5aa575a5c7c61281d5f7842c185fb0c9bf996b4af693c6f",
+    "outputs\\tongji_benchmark\\benchmark_results.json": "3424a1e58a52e298c60e6bc61bdd1f5249e009e2d0e3d3ae252972078cc66c55",
+    "outputs\\tongji_benchmark\\protocol_before_test.json": "2f41edae66a170ea9beecb35a367b32c3e59a7ac6a2b2a6b7a0564d6e6f09fe3",
+    "outputs\\tongji_benchmark\\progress.json": "13fa8a4ab09845055baf61420a44e766c5c606da0d8bda9076a1816a8ce4d0fa",
+    "outputs\\tongji_benchmark\\dependencies.txt": "c5a27f385acb00ba5f46976be109c7ffda16f2c6ea9f89f48411c8d2216cab02",
+    "outputs\\tongji_benchmark\\hardware.json": "d6d1dd01b64cd88f17c869b821c662e6915fdaa5ed5021a12ea4890863b2ccbd",
+    "outputs\\tongji_benchmark\\run.log": "a08056f66be05adcf6aa26b0ddc2176d67739b3aabc215534986d4ef957cef6b"
+  }
+}

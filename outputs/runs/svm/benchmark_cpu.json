@@ -1,0 +1,12 @@
+{
+  "model": "svm",
+  "n_queries": 6000,
+  "device": "CPU",
+  "host": "AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",
+  "timing": "single-image wall time, model loaded, 3 warmup matching calls",
+  "preprocess_median_ms": 0.5270999999993364,
+  "feature_median_ms": 2.9418500007523107,
+  "classifier_median_ms": 0.22480000006908085,
+  "total_median_ms": 3.7101999996593804,
+  "total_p95_ms": 5.5744049993336375
+}

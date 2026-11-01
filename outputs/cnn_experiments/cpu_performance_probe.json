@@ -1,0 +1,20 @@
+{
+  "head": {
+    "batch_size": 32,
+    "seconds_per_batch_after_warmup": 0.5153033500000674,
+    "timing_seconds": [
+      0.6913161000011314,
+      0.5019506000007823,
+      0.5286560999993526
+    ]
+  },
+  "layer4": {
+    "batch_size": 32,
+    "seconds_per_batch_after_warmup": 0.7410584500003097,
+    "timing_seconds": [
+      0.7572918999994727,
+      0.7745933000005607,
+      0.7075236000000587
+    ]
+  }
+}

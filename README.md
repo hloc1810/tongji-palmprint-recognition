@@ -41,7 +41,11 @@ Linux/macOS: dùng `python3 -m venv .venv` và `source .venv/bin/activate`, các
 
 ## Chuẩn bị dữ liệu
 
-Tải **Official ROI Images** từ [trang tác giả Tongji](https://cslinzhang.github.io/ContactlessPalm/) theo điều kiện sử dụng. Ảnh ROI, gallery embedding và trọng số huấn luyện không được phân phối trong repo.
+Repo private này lưu mã nguồn, dữ liệu ROI, gallery, trọng số và kết quả thực nghiệm. Không đưa cache, môi trường venv hoặc runtime cục bộ lên repo. Quyền sử dụng Tongji vẫn theo điều kiện của [tác giả dataset](https://cslinzhang.github.io/ContactlessPalm/). Không đổi repo thành public khi chưa rà soát quyền phân phối.
+
+```bash
+git clone https://github.com/hloc1810/tongji-palmprint-recognition.git
+```
 
 ```text
 data/raw/
@@ -136,7 +140,7 @@ experiments/                # Thiết kế và môi trường thực nghiệm
 notebooks/                  # Đọc manifest và phân tích kết quả
 ```
 
-`data/raw/`, metadata cục bộ, `artifacts/`, `outputs/`, môi trường Python và cache được Git bỏ qua. Chỉ các bảng tổng hợp và hai hình nghiên cứu được chọn mới đưa vào repo. Các đầu ra thực nghiệm đầy đủ được giữ tại máy để truy vết, không bị xóa khi dọn mã nguồn.
+Không dùng `.gitignore` ở gốc. Repo private giữ dữ liệu, metadata, artifact và kết quả thực nghiệm; cache, `.venv311/`, `.venv312/`, `.runtime/` và các thư mục kiểm thử tạm được loại khỏi bản push. Hãy tạo venv mới theo hướng dẫn cài đặt khi dùng repo. Các thư mục này vẫn được giữ nguyên tại máy thực nghiệm. Nội dung liên kết ra ngoài workspace không được sao chép vào repo.
 
 ## Tài liệu và giới hạn
 
@@ -147,7 +151,7 @@ notebooks/                  # Đọc manifest và phân tích kết quả
 
 CompCode là bản Python **paper-inspired**, chưa xác minh tương đương số học với MATLAB tác giả. Các kết quả chỉ áp dụng cho dataset/protocol/cấu hình đã ghi nhận, chưa chứng minh nhận dạng người lạ, ảnh điện thoại hoặc webcam. Bootstrap gom theo Palm ID; thiếu ánh xạ Person ID để gom hai tay cùng người.
 
-Mã nguồn hiện tại được dọn sau benchmark. Hash của source và dependency dùng khi chạy được ghi trong hồ sơ thực nghiệm, không được thay bằng hash mới để hợp thức hóa kết quả cũ. Các source snapshot, checkpoint và raw predictions cục bộ được giữ nguyên. Xem [tái lập và thay đổi mã nguồn](docs/REPRODUCIBILITY.md).
+Mã nguồn hiện tại được dọn sau benchmark. Hash của source và dependency dùng khi chạy được ghi trong hồ sơ thực nghiệm, không được thay bằng hash mới để hợp thức hóa kết quả cũ. Các source snapshot, checkpoint và raw predictions được giữ nguyên trong bản lưu workspace. Xem [tái lập và thay đổi mã nguồn](docs/REPRODUCIBILITY.md).
 
 ## Tham khảo
 

@@ -1,0 +1,23 @@
+{
+  "device": "privateuseone:0",
+  "name": "Radeon RX 5500M\u0000",
+  "max_forward_error": 1.3709068298339844e-06,
+  "head": {
+    "batch_size": 8,
+    "seconds_per_batch_after_warmup": 0.015734749999865016,
+    "timing_seconds": [
+      0.35746259999905305,
+      0.01657089999935124,
+      0.014898600000378792
+    ]
+  },
+  "layer4": {
+    "batch_size": 8,
+    "seconds_per_batch_after_warmup": 0.10064449999936187,
+    "timing_seconds": [
+      0.3399604000005638,
+      0.13116439999976137,
+      0.07012459999896237
+    ]
+  }
+}

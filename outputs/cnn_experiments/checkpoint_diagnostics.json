@@ -1,0 +1,41 @@
+[
+  {
+    "seed": 17,
+    "artifact_sha256": "2c8a5196afcefb598536fd0718c6eb1212a92573b6a97bd09e94f4efdd426d92",
+    "session1_postfit_n": 6000,
+    "session1_postfit_rank1_no_augmentation": 0.9996666666666667,
+    "cpu_gpu_parity_n": 1200,
+    "parity_sample_policy": "first ROI of each Palm ID in each session",
+    "max_absolute_logit_difference": 0.00019073486328125,
+    "mean_absolute_logit_difference": 2.5681934857857414e-05,
+    "top1_agreement_cpu_gpu": 1.0,
+    "cpu_gpu_allclose_atol1e3_rtol1e3": true,
+    "scope": "posthoc implementation diagnostic only, no fitting or configuration selection"
+  },
+  {
+    "seed": 29,
+    "artifact_sha256": "943ee8452b2cbb24a5f9f85f52f4285bb1480b79980a303ebe85fdb878b23003",
+    "session1_postfit_n": 6000,
+    "session1_postfit_rank1_no_augmentation": 1.0,
+    "cpu_gpu_parity_n": 1200,
+    "parity_sample_policy": "first ROI of each Palm ID in each session",
+    "max_absolute_logit_difference": 0.00019073486328125,
+    "mean_absolute_logit_difference": 2.5918581741279922e-05,
+    "top1_agreement_cpu_gpu": 1.0,
+    "cpu_gpu_allclose_atol1e3_rtol1e3": true,
+    "scope": "posthoc implementation diagnostic only, no fitting or configuration selection"
+  },
+  {
+    "seed": 43,
+    "artifact_sha256": "035634f31d3e5e4faa8b98f9fe4c31d5da10d08ca620507dfe6c248c4e5b71a4",
+    "session1_postfit_n": 6000,
+    "session1_postfit_rank1_no_augmentation": 0.9998333333333334,
+    "cpu_gpu_parity_n": 1200,
+    "parity_sample_policy": "first ROI of each Palm ID in each session",
+    "max_absolute_logit_difference": 0.00018310546875,
+    "mean_absolute_logit_difference": 2.4324430341948755e-05,
+    "top1_agreement_cpu_gpu": 1.0,
+    "cpu_gpu_allclose_atol1e3_rtol1e3": true,
+    "scope": "posthoc implementation diagnostic only, no fitting or configuration selection"
+  }
+]

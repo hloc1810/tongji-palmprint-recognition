@@ -1,0 +1,12 @@
+{
+  "n_queries": 6000,
+  "device": "cpu",
+  "threads": 1,
+  "warmup_calls": 3,
+  "repetitions": 1,
+  "model_loading_included": false,
+  "timing": "read+decode ROI, tensor transforms, network logits; excludes ranking/UI",
+  "total_median_ms": 48.54174999945826,
+  "total_p95_ms": 59.49507000077574,
+  "network_median_ms": 46.809949999442324
+}

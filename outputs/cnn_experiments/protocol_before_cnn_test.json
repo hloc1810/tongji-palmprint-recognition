@@ -1,0 +1,107 @@
+{
+  "registered_at": "2026-11-01T13:14:11.958878+07:00",
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "training": {
+    "weights": "imagenet1k_v1",
+    "batch_size": 32,
+    "accumulate": 1,
+    "num_workers": 0,
+    "head_epochs": 8,
+    "finetune_epochs": 5,
+    "patience": 3,
+    "head_lr": 0.001,
+    "finetune_lr": 0.0001,
+    "finetune_head_lr": 0.0003,
+    "weight_decay": 0.0001,
+    "lr_schedule": "cosine",
+    "label_smoothing": 0.0,
+    "grad_clip": 1.0,
+    "amp": true,
+    "size": 224,
+    "device": "directml:0"
+  },
+  "dataset": {
+    "data_root": "D:\\palmprint-recognition\\data\\raw",
+    "strict": true,
+    "folds": 5,
+    "seed": 42,
+    "manifest_sha256": "99bbbe45a4807d48801a28a6aadfec2efee46a3f4c4fe3d3af8e2337241c8ae0"
+  },
+  "source_sha256": "4e5398c5a24a0a56966fd40b1e7ff2a88d979190722e02711bcbe686bd4c6be0",
+  "classical_source_sha256": "4e324e0b8840cb473dcda4cfcf75c3344b21f64d03360a2efe0bb502ad3b05bc",
+  "config_sha256": "926cb37fa6a0c10557b1f1b6dad34fed844eb526fc2fd8779d5570bdf52bbbdd",
+  "runner_sha256": "1304bc7c557af53d618d57ffc03e6dceed7c53eba4755de836b9195aa00a06fd",
+  "pretrained_weights": {
+    "url": "https://download.pytorch.org/models/resnet18-f37072fd.pth",
+    "sha256": "f37072fd47e89c5e827621c5baffa7500819f7896bbacec160b1a16c560e07ec"
+  },
+  "environment": {
+    "python": "3.11.15",
+    "platform": "Windows-10-10.0.26300-SP0",
+    "numpy": "1.26.4",
+    "scipy": "1.17.1",
+    "sklearn": "1.9.1",
+    "opencv": "4.11.0",
+    "pandas": "3.0.6",
+    "skimage": "0.26.0",
+    "torch": "2.4.1+cpu",
+    "torchvision": "0.19.1+cpu",
+    "torch_directml": "0.2.5.dev240914"
+  },
+  "device": {
+    "request": "directml:0",
+    "name": "Radeon RX 5500M",
+    "float_precision": "float32; no CUDA AMP",
+    "optimizer_note": "aten::lerp.Scalar_out falls back to CPU",
+    "torch_cpu_threads": 8,
+    "opencv_threads": 1
+  },
+  "selection": "session1 fold0 only; 4800 development train / 1200 validation; select stage/epoch by rank1 then lower CE, refit on all 6000 session1",
+  "cnn_test_lock": "freeze all 3 final CNN seeds before evaluating any CNN on session2",
+  "statistics": {
+    "metrics": [
+      "rank1",
+      "rank5",
+      "macro_f1"
+    ],
+    "seed_std_ddof": 1,
+    "never_select_best_test_seed": true,
+    "ensemble": false,
+    "primary_comparisons": "mean seed Rank-1 versus each of knn, svm, crc",
+    "paired_bootstrap_unit": "Palm ID, same probe resampling for all models/seeds",
+    "iterations": 5000,
+    "seed": 42,
+    "fixed_seed_ci95_and_bonferroni3_familywise95": true,
+    "seed_std_is_not_a_sampling_CI": true
+  },
+  "cpu_latency": {
+    "query_set": "all 6000 session2 probes per seed",
+    "repetitions": 1,
+    "threads": 1,
+    "warmup_matching_calls": 3,
+    "boundary": "read+decode+tensor transforms+network logits; no model loading/ranking"
+  },
+  "test_history": "Classical session2 metrics were already observed in phase 1. CNN settings use existing configs/resnet18.yaml without test-driven changes. This is a sequential/exploratory comparison, not an entirely untouched multi-model test.",
+  "legacy_pilot_warning": "Old HOG pilot string in source has no supporting evidence; user stated no model run before phase-1 benchmark.",
+  "classical_evidence_sha256": {
+    "artifacts\\knn.joblib": "bcd4d7efe4c2de2b2aafedade1d3af8fbdf2846f2a40e2d13240ba56657750d0",
+    "artifacts\\knn_freeze.json": "c227040afb367aed0dddea4c9534c522b8cc958950e1c46ac855978fd3f87f17",
+    "outputs\\runs\\knn\\metrics.json": "a07aba4abab5e7584fbcb1df376128a6de357533f7664d501daeed65ddcf0a64",
+    "outputs\\runs\\knn\\predictions.csv": "83ec21c96988c142d161200594e10ebc9824b0ab05e41c0a9ffbbfab50b24499",
+    "outputs\\runs\\knn\\all_class_scores.npz": "7fdbc6d7895253230c0ff943ec7a886d01067183a4961046c1bed31e05289dd3",
+    "artifacts\\svm.joblib": "955b9fdb0dc2879a55f984833744d2fa05b8b6c4e04d9a859ba6227797feb19c",
+    "artifacts\\svm_freeze.json": "0a54345e74556c2e085d6ef3edbf71eb8a7588d063687c749abc72371ae01b99",
+    "outputs\\runs\\svm\\metrics.json": "039b965a82011da9189308dcdafaacf5984138b473cec38bcc4b0f1b9fe92dff",
+    "outputs\\runs\\svm\\predictions.csv": "ab23fc7c0f19fb88a5f86dd6a51642ac50bbd3b6a8ce37c44249a102471d51b3",
+    "outputs\\runs\\svm\\all_class_scores.npz": "76ced304e99269350be551235c89f0834b6362affdbf9c963c0bc1c5848f67b5",
+    "artifacts\\crc.joblib": "20efd55706aec484bee1eb48480d11f6c857e5fd1a754e8e1139fd159ad69e31",
+    "artifacts\\crc_freeze.json": "107d1a2c2c31e6e6ab1bd0bab2eb0c63f4ed97ca4e97570be57918bad1e7b5bb",
+    "outputs\\runs\\crc\\metrics.json": "4ee328cf4a12571a495efe4d10b4996920d13f32d1c162eca0ac09c429cd3dc7",
+    "outputs\\runs\\crc\\predictions.csv": "41eb07746333646d26858ca071bf6b3c7fb4ae3576286c84ee434dd3021918fc",
+    "outputs\\runs\\crc\\all_class_scores.npz": "993a2219816961104d7e987f14ec9e81a47e9d3964f5bccefc9adf7524dfa983"
+  }
+}

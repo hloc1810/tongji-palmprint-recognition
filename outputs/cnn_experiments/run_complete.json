@@ -1,0 +1,14 @@
+{
+  "completed_at": "2026-11-01T14:33:21.525045+07:00",
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "source_sha256": "4e5398c5a24a0a56966fd40b1e7ff2a88d979190722e02711bcbe686bd4c6be0",
+  "classical_evidence_preserved": true,
+  "protocol_sha256": "15d125c10158160d93d85455c43ee11f544959f267c4c2fabc74b9f0bc228ff6",
+  "group_lock_sha256": "97d8f81205c37c9e522f2b32bfa5374310af23be73e6cbe1bbbd7ff76b13034f",
+  "postprocessing": "float32 gap compatibility in a separate verification view",
+  "postprocessing_script_sha256": "b3dfc52c6fa2511c36d96dd4e5bb80dfea6cb7eb4e9ad03e3942c9f5a1ff53e0"
+}

@@ -1,0 +1,33 @@
+{
+  "n": 6000,
+  "classes": 600,
+  "rank1": 0.6421666666666667,
+  "rank5": 0.8155,
+  "macro_precision": 0.6488033334165584,
+  "macro_recall": 0.6421666666666667,
+  "macro_f1": 0.6040310838559494,
+  "cmc": {
+    "1": 0.6421666666666667,
+    "2": 0.7228333333333333,
+    "5": 0.8155,
+    "10": 0.8723333333333333,
+    "20": 0.9178333333333333
+  },
+  "model": "resnet18",
+  "seed": 17,
+  "manifest_sha256": "99bbbe45a4807d48801a28a6aadfec2efee46a3f4c4fe3d3af8e2337241c8ae0",
+  "artifact_sha256": "2c8a5196afcefb598536fd0718c6eb1212a92573b6a97bd09e94f4efdd426d92",
+  "score_kind": "negative_logit",
+  "model_definition": {
+    "method": "ResNet18 ROI classification",
+    "score_kind": "negative_logit"
+  },
+  "rank1_ci95_palm_bootstrap": [
+    0.611,
+    0.67
+  ],
+  "matching_ms_per_probe_batch_amortized": 3.3000408000001094,
+  "evaluation": "cross-session",
+  "device": "privateuseone:0",
+  "warning": "Historic pilot used part of session2; test not fully untouched."
+}

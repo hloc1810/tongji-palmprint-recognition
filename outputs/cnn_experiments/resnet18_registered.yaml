@@ -1,0 +1,19 @@
+# Reproducible CNN training; the CLI reads this file by default.
+# Prefer ImageNet weights for the actual research run. Offline smoke tests: --weights none.
+weights: imagenet1k_v1
+image_size: 224
+seeds: [17, 29, 43] # run three separate commands with --seed
+batch_size: 32
+accumulate: 1  # effective batch = batch_size * accumulate
+num_workers: 0
+head_epochs: 8
+finetune_epochs: 5
+patience: 3
+head_lr: 0.001
+finetune_lr: 0.0001
+finetune_head_lr: 0.0003
+weight_decay: 0.0001
+lr_schedule: cosine
+label_smoothing: 0.0
+grad_clip: 1.0
+amp: true  # CUDA only; CPU uses float32

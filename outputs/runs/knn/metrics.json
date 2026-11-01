@@ -1,0 +1,49 @@
+{
+  "n": 6000,
+  "classes": 600,
+  "rank1": 0.9443333333333334,
+  "rank5": 0.9696666666666667,
+  "macro_precision": 0.9406957630289674,
+  "macro_recall": 0.9443333333333331,
+  "macro_f1": 0.9355833843054764,
+  "cmc": {
+    "1": 0.9443333333333334,
+    "2": 0.9555,
+    "5": 0.9696666666666667,
+    "10": 0.9776666666666667,
+    "20": 0.9831666666666666
+  },
+  "rank1_ci95_palm_bootstrap": [
+    0.9301666666666667,
+    0.9568416666666666
+  ],
+  "model": "knn",
+  "evaluation": "session1-trained vs session2-test, closed-set",
+  "matching_elapsed_total_s": 2.554379000001063,
+  "feature_loading_elapsed_s": 55.692648799999006,
+  "training_fit_seconds": 0.007858000000851462,
+  "matching_ms_per_probe_batch_amortized": 0.4257298333335105,
+  "model_definition": {
+    "method": "1-NN nearest-template",
+    "score_kind": "squared_euclidean",
+    "score_formula": "min_j_in_class ||query-template_j||_2^2"
+  },
+  "score_kind": "squared_euclidean",
+  "manifest_sha256": "99bbbe45a4807d48801a28a6aadfec2efee46a3f4c4fe3d3af8e2337241c8ae0",
+  "artifact_sha256": "bcd4d7efe4c2de2b2aafedade1d3af8fbdf2846f2a40e2d13240ba56657750d0",
+  "feature_definition": {
+    "image_size": 128,
+    "num_directions": 6,
+    "sigma_x": 4.85,
+    "sigma_y": 9.31,
+    "frequency": 0.071,
+    "kernel_size": 41,
+    "block_pixels": 14,
+    "zero_dc": true,
+    "response": "min_real",
+    "border_mode": "reflect101",
+    "histogram_norm": "per_block_l1_then_global_l2"
+  },
+  "code_sha256": "4e324e0b8840cb473dcda4cfcf75c3344b21f64d03360a2efe0bb502ad3b05bc",
+  "warning": "Historical HOG pilot examined some session2 IDs; test not fully untouched."
+}

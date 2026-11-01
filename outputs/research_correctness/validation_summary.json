@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-01",
+  "timezone": "Asia/Saigon",
+  "tests": [
+    {
+      "python_environment": "311",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "51",
+      "time": "23.733",
+      "timestamp": "2026-11-01T11:58:03.467038+07:00",
+      "hostname": "DESKTOP-RQ33VCR"
+    },
+    {
+      "python_environment": "312",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "51",
+      "time": "26.234",
+      "timestamp": "2026-11-01T11:57:29.242841+07:00",
+      "hostname": "DESKTOP-RQ33VCR"
+    }
+  ],
+  "strict_roi_audit_passed": true,
+  "smoke_python311": "passed",
+  "smoke_python312": "passed",
+  "compile_python311": "passed",
+  "compile_python312": "passed",
+  "lint_scope": "Ruff I,F on changed Python files: passed",
+  "recognition_accuracy_measured_on_tongji": false,
+  "github_actions_executed": false,
+  "evidence_sha256": {
+    "python311-dependencies.txt": "c5a27f385acb00ba5f46976be109c7ffda16f2c6ea9f89f48411c8d2216cab02",
+    "python311-pytest.txt": "0b679751c756b96e72daee997baa8ccf80f6cd439260d2007194266d677b0061",
+    "python311-pytest.xml": "a2fcc84dc2d7a8bc3b4239e13b66cb57d02f3e4977338e4d63fffd10c1a5240e",
+    "python311-smoke.txt": "a49bf862ba74a983917f580785e70eb08b7f09517b17d26959df3f25df5fe549",
+    "python312-dependencies.txt": "2a8f9786330e1d604163fa0e250dd91c8b9dd3c85f7c3ddde2aa913ca5627a52",
+    "python312-pytest.txt": "49892373a4eaecd72dccd351a10094578c056013495cdf805765968b1957e6d6",
+    "python312-pytest.xml": "92d057f351d44ca8d804b81e80cd7da4b26b7aa40eb8fbf57c621fbe369ada97",
+    "python312-smoke.txt": "a49bf862ba74a983917f580785e70eb08b7f09517b17d26959df3f25df5fe549",
+    "roi_audit.json": "4382085ec29ac3472ea4b285c33686a2abc60be4da890110fba00d90f7f04de0"
+  }
+}

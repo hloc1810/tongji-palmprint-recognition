@@ -1,0 +1,13 @@
+knn:
+  distance: euclidean
+  parameters: [1]
+svm:
+  loss: squared_hinge
+  dual: false
+  max_iter: 30000
+  parameters: [0.1, 1.0, 10.0]
+crc:
+  regularization: ridge
+  parameters: [0.1, 1.35, 10.0]
+selection_metric: rank1
+selection_tie_break: smallest_parameter

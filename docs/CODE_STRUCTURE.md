@@ -59,4 +59,4 @@ palmprint-cnn train --config configs/resnet18.yaml
 Benchmark Tongji đã được chạy và được ghi trong reports/. Parity CompCode MATLAB vẫn chưa xác minh; trạng thái chi tiết ở [`PROJECT_STATUS.md`](PROJECT_STATUS.md).
 
 
-CNN training, logits evaluation và embedding cùng dùng models/cnn_runtime.py cho thiết bị, DataLoader và inference context. evaluation/ không import các helper riêng của training/. Các output snapshot và builder dùng một lần chỉ giữ cục bộ dưới outputs/, được loại khỏi Git.
+CNN training, logits evaluation và embedding cùng dùng models/cnn_runtime.py cho thiết bị, DataLoader và inference context. evaluation/ không import các helper riêng của training/. Các output snapshot và builder dùng một lần nằm dưới outputs/; theo yêu cầu hiện tại, chúng được lưu cùng toàn workspace trong repo private.

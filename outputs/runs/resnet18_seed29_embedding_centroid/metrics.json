@@ -1,0 +1,45 @@
+{
+  "n": 6000,
+  "classes": 600,
+  "rank1": 0.682,
+  "rank5": 0.8326666666666667,
+  "macro_precision": 0.672751669509435,
+  "macro_recall": 0.682,
+  "macro_f1": 0.6467613653726979,
+  "cmc": {
+    "1": 0.682,
+    "2": 0.7526666666666667,
+    "5": 0.8326666666666667,
+    "10": 0.8858333333333334,
+    "20": 0.9301666666666667
+  },
+  "model": "resnet18_embedding",
+  "seed": 29,
+  "method": "ResNet18 512-D centroid cosine",
+  "score_kind": "negative_cosine_similarity",
+  "gallery_strategy": "centroid",
+  "model_definition": {
+    "method": "ResNet18 ROI 512-D centroid cosine",
+    "score_kind": "negative_cosine_similarity"
+  },
+  "embedding_dimension": 512,
+  "l2_normalized": true,
+  "n_gallery": 6000,
+  "n_probes": 6000,
+  "manifest_sha256": "99bbbe45a4807d48801a28a6aadfec2efee46a3f4c4fe3d3af8e2337241c8ae0",
+  "artifact_sha256": "943ee8452b2cbb24a5f9f85f52f4285bb1480b79980a303ebe85fdb878b23003",
+  "gallery_sha256": "37da3a4e4b6876326a1f59624e03c05e0e4df7ebd56caa02c5eb77dadac7d39d",
+  "evaluation": "cross-session",
+  "gallery_session": "session1",
+  "probe_session": "session2",
+  "device": "cpu",
+  "gallery_cache_created": false,
+  "gallery_wall_ms": 87.36999999746331,
+  "probe_feature_ms_per_image_batch_amortized": 19.18784444999983,
+  "cosine_matching_ms_per_image_batch_amortized": 0.01346554999994017,
+  "rank1_ci95_palm_bootstrap": [
+    0.6521625,
+    0.7093375000000001
+  ],
+  "warning": "Exploratory post-hoc comparison: Session2 was used in historical pilots. Do not select a preferred strategy using Session2 results."
+}

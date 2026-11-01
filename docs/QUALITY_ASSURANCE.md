@@ -30,7 +30,7 @@ Smoke test chỉ dùng ảnh tổng hợp; accuracy fixture không phải accura
 
 Strict audit 12.000 ROI, benchmark classical, CNN pretrained ba seed và cosine matching đã được chạy. Số liệu và giới hạn nằm trong [benchmark](../reports/TONGJI_BENCHMARK.md) và [báo cáo CNN](../reports/CNN_EXPERIMENTS.md).
 
-Hồ sơ cục bộ: outputs/research_correctness/, outputs/tongji_benchmark/, outputs/cnn_experiments/, outputs/embedding_benchmark/ và outputs/repository_cleanup/. Các thư mục này không được commit vì có metadata máy, source snapshot và dữ liệu dẫn xuất cần giữ riêng.
+Hồ sơ cục bộ: outputs/research_correctness/, outputs/tongji_benchmark/, outputs/cnn_experiments/, outputs/embedding_benchmark/ và outputs/repository_cleanup/. Các thư mục này hiện được lưu cùng toàn workspace trong repo private theo yêu cầu của chủ dự án; không công khai khi chưa rà soát metadata và dữ liệu dẫn xuất.
 
 CNN gốc có khác biệt làm tròn ở trường score gap float32 so với verifier float64. Báo cáo CNN mô tả verification_view đã dùng để kiểm chứng; không sửa raw evidence trong đợt dọn code. CLI report với raw logits cũ vẫn có thể dừng ở trường này.
 

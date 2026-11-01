@@ -1,0 +1,4 @@
+model,representation,parameter,cv_mean_rank1,cv_fold_std_rank1,folds,cv_csv_sha256
+crc,compcode,0.1,1.0,0.0,5,943e2782c61c6dbbd338ab5a662cbd1ac69f84cf83ae39117683977cc6345a64
+knn,compcode,1.0,0.9998333333333334,0.0003726779962500046,5,18165ecd3b71594ce5a752c7f4b02364e1b667a49b28de9cb72c0506fa3f68d2
+svm,compcode,1.0,1.0,0.0,5,f0df9c23d08805249dbe9c1c7ba2f7ef21c7bbecdd386fbcdefa9257d65497ac

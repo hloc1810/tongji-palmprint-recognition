@@ -1,0 +1,128 @@
+[
+  {
+    "stage": "session1_features",
+    "started_at": "2026-11-01T12:30:16.669500+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:31:16.715059+07:00",
+    "wall_seconds": 60.045516599999246
+  },
+  {
+    "stage": "cv_knn",
+    "started_at": "2026-11-01T12:31:16.716067+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:31:23.138836+07:00",
+    "wall_seconds": 6.422978700000385
+  },
+  {
+    "stage": "train_knn",
+    "started_at": "2026-11-01T12:31:23.140838+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:31:28.222199+07:00",
+    "wall_seconds": 5.081701700000849
+  },
+  {
+    "stage": "cv_svm",
+    "started_at": "2026-11-01T12:31:28.223199+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:41:31.916383+07:00",
+    "wall_seconds": 603.6932514
+  },
+  {
+    "stage": "train_svm",
+    "started_at": "2026-11-01T12:41:31.917383+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:42:22.297076+07:00",
+    "wall_seconds": 50.3793141999995
+  },
+  {
+    "stage": "cv_crc",
+    "started_at": "2026-11-01T12:42:22.298076+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:42:42.464436+07:00",
+    "wall_seconds": 20.166161600000123
+  },
+  {
+    "stage": "train_crc",
+    "started_at": "2026-11-01T12:42:42.465438+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:42:48.195741+07:00",
+    "wall_seconds": 5.73020600000018
+  },
+  {
+    "stage": "lock_all_classical_models",
+    "started_at": "2026-11-01T12:42:48.196741+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:42:48.293226+07:00",
+    "wall_seconds": 0.09612439999909839
+  },
+  {
+    "stage": "evaluate_knn",
+    "started_at": "2026-11-01T12:42:48.294221+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:43:49.392203+07:00",
+    "wall_seconds": 61.09797789999902
+  },
+  {
+    "stage": "evaluate_svm",
+    "started_at": "2026-11-01T12:43:49.393203+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:43:56.127141+07:00",
+    "wall_seconds": 6.733291799999279
+  },
+  {
+    "stage": "evaluate_crc",
+    "started_at": "2026-11-01T12:43:56.128150+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:44:08.543621+07:00",
+    "wall_seconds": 12.41530419999981
+  },
+  {
+    "stage": "verify_evidence_and_generate_report",
+    "started_at": "2026-11-01T12:44:08.544622+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:44:12.199684+07:00",
+    "wall_seconds": 3.6548196999992797
+  },
+  {
+    "stage": "latency_knn_all6000",
+    "started_at": "2026-11-01T12:44:12.200686+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:45:24.078706+07:00",
+    "wall_seconds": 71.87778550000075
+  },
+  {
+    "stage": "error_analysis_knn",
+    "started_at": "2026-11-01T12:45:24.080706+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:45:24.131825+07:00",
+    "wall_seconds": 0.05154049999873678
+  },
+  {
+    "stage": "latency_svm_all6000",
+    "started_at": "2026-11-01T12:45:24.133315+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:45:47.806463+07:00",
+    "wall_seconds": 23.67380729999968
+  },
+  {
+    "stage": "error_analysis_svm",
+    "started_at": "2026-11-01T12:45:47.807514+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:45:47.850656+07:00",
+    "wall_seconds": 0.042402900000524824
+  },
+  {
+    "stage": "latency_crc_all6000",
+    "started_at": "2026-11-01T12:45:47.851657+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:47:20.343233+07:00",
+    "wall_seconds": 92.4914063999986
+  },
+  {
+    "stage": "error_analysis_crc",
+    "started_at": "2026-11-01T12:47:20.344233+07:00",
+    "status": "completed",
+    "finished_at": "2026-11-01T12:47:20.388718+07:00",
+    "wall_seconds": 0.04427899999973306
+  }
+]

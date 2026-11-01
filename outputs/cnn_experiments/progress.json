@@ -1,0 +1,79 @@
+[
+  {
+    "stage": "verify_existing_knn",
+    "status": "completed",
+    "started_at": "2026-11-01T13:14:10.527142+07:00",
+    "finished_at": "2026-11-01T13:14:10.969186+07:00",
+    "wall_seconds": 0.4402394999997341
+  },
+  {
+    "stage": "verify_existing_svm",
+    "status": "completed",
+    "started_at": "2026-11-01T13:14:11.000698+07:00",
+    "finished_at": "2026-11-01T13:14:11.435582+07:00",
+    "wall_seconds": 0.4335167999997793
+  },
+  {
+    "stage": "verify_existing_crc",
+    "status": "completed",
+    "started_at": "2026-11-01T13:14:11.474797+07:00",
+    "finished_at": "2026-11-01T13:14:11.908909+07:00",
+    "wall_seconds": 0.43262789999971574
+  },
+  {
+    "stage": "train_seed17",
+    "status": "completed",
+    "started_at": "2026-11-01T13:14:12.150926+07:00",
+    "finished_at": "2026-11-01T13:32:19.412855+07:00",
+    "wall_seconds": 1087.2604341000006
+  },
+  {
+    "stage": "train_seed29",
+    "status": "completed",
+    "started_at": "2026-11-01T13:32:19.413853+07:00",
+    "finished_at": "2026-11-01T13:50:36.464995+07:00",
+    "wall_seconds": 1097.0491997999998
+  },
+  {
+    "stage": "train_seed43",
+    "status": "completed",
+    "started_at": "2026-11-01T13:50:36.465996+07:00",
+    "finished_at": "2026-11-01T14:08:37.369824+07:00",
+    "wall_seconds": 1080.9020519999995
+  },
+  {
+    "stage": "evaluate_seed17",
+    "status": "completed",
+    "started_at": "2026-11-01T14:08:37.558240+07:00",
+    "finished_at": "2026-11-01T14:09:34.224480+07:00",
+    "wall_seconds": 56.6647449000011
+  },
+  {
+    "stage": "evaluate_seed29",
+    "status": "completed",
+    "started_at": "2026-11-01T14:09:34.225482+07:00",
+    "finished_at": "2026-11-01T14:10:00.870607+07:00",
+    "wall_seconds": 26.64404359999935
+  },
+  {
+    "stage": "evaluate_seed43",
+    "status": "completed",
+    "started_at": "2026-11-01T14:10:00.872608+07:00",
+    "finished_at": "2026-11-01T14:10:27.475156+07:00",
+    "wall_seconds": 26.601601700000174
+  },
+  {
+    "stage": "verify_six_models_and_generate_report",
+    "status": "failed",
+    "started_at": "2026-11-01T14:10:27.476155+07:00",
+    "error": "RuntimeError('Reported score_gap_top2_minus_top1 differs from class scores: resnet18_seed17')",
+    "finished_at": "2026-11-01T14:10:29.112896+07:00",
+    "wall_seconds": 1.6352650999997422
+  },
+  {
+    "stage": "postprocessing_and_cpu_latency_completed",
+    "status": "completed",
+    "finished_at": "2026-11-01T14:33:21.525045+07:00",
+    "note": "Original strict gap-verifier failure retained in history; resolved with audited derivative view"
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "model": "svm",
+  "representation": "compcode",
+  "best_parameter": 1.0,
+  "parameter_grid": [
+    0.1,
+    1.0,
+    10.0
+  ],
+  "mean_cv_rank1": 1.0,
+  "std_cv_rank1": 0.0,
+  "n_folds": 5,
+  "feature_signature": "539382fee006cba752bcfac27dd2eee20106cc98891a28d4acd7850d43f55f79",
+  "cv_csv_sha256": "f0df9c23d08805249dbe9c1c7ba2f7ef21c7bbecdd386fbcdefa9257d65497ac",
+  "oof_csv_sha256": "05b6f95579fe53041d70e4ddae18bfb08de083c5e5afb23bd9c5291555114d0a",
+  "fold_assignments_sha256": "d0a16c2dd9cb78e860d1a625ad27ff68125525f7eddf71d25368119930284dba",
+  "model_config_sha256": "bb1909cca914b5817a44e6ae654115afcf2b38547d048284fb73a9759c0648cd",
+  "source_sha256": "4e324e0b8840cb473dcda4cfcf75c3344b21f64d03360a2efe0bb502ad3b05bc",
+  "selection": "maximize mean session1 CV Rank-1; tie: smallest parameter"
+}
