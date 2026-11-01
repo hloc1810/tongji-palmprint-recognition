@@ -1,0 +1,12 @@
+# Paper-inspired implementation; parity with official MATLAB code is NOT asserted.
+image_size: 128
+num_directions: 6
+sigma_x: 4.85
+sigma_y: 9.31
+frequency: 0.071
+kernel_size: 41
+block_pixels: 14
+zero_dc: true
+response: min_real
+border_mode: reflect101
+histogram_norm: per_block_l1_then_global_l2

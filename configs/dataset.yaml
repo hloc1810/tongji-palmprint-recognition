@@ -1,0 +1,9 @@
+dataset: Tongji Contactless Palmprint
+source: https://cslinzhang.github.io/ContactlessPalm/
+input: official_roi
+expected_palms: 600
+expected_per_session_per_palm: 10
+sessions: [session1, session2]
+seed: 42
+folds: 5
+strict: true

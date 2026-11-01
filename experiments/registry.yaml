@@ -1,0 +1,32 @@
+# Predeclared experiments. This is a study design, not measured results.
+E0:
+  method: audit_eda
+  evidence: [data/metadata/audit.json, reports/tables/eda_quality_summary.csv]
+E1:
+  method: compcode_orientation_block_histogram
+  parameters: [sigma_x, sigma_y, frequency, kernel_size, block_pixels]
+  parity_to_official_matlab: not_verified
+E2:
+  methods: [knn, svm, crc]
+  representation: compcode
+  metric: mean_session1_5fold_rank1
+  final_test: session2
+E3a:
+  methods: [crc]
+  representations: [compcode, global]
+  stage: session1_cv_only
+E3b:
+  methods: [svm]
+  representations: [compcode, hog]
+  stage: session1_cv_only
+E4:
+  methods: [resnet18]
+  pretrained: imagenet1k_v1
+  seeds: [17, 29, 43]
+  validation: session1_fold0
+E5:
+  methods: [errors, benchmark]
+E6:
+  method: synthetic_robustness
+  variations: [clean, brightness_minus15, brightness_plus15, blur3, rotate_plus5]
+  timing: after_frozen_main_test
