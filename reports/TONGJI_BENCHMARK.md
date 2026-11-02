@@ -51,7 +51,9 @@ Feature probe được trích một lần mỗi seed và dùng chung cho hai chi
 - [Mean và sample std theo pipeline](tables/tongji_benchmark_summary.csv).
 - [Bảng so sánh từng run](tables/model_comparison.csv).
 - [Thiết kế và kết quả CNN ban đầu](CNN_EXPERIMENTS.md).
-- [Thực nghiệm bóc tách đặc trưng E3: Raw vs PCA vs CompCode](../outputs/feature_ablation/findings.md).
+- [Thực nghiệm bóc tách đặc trưng & so sánh bootstrap cặp đôi E3](../outputs/feature_ablation/findings.md).
+- [Thực nghiệm phân tích độ bền vững trước biến đổi ảnh E6](../outputs/robustness_e6/findings.md).
+- [Thực nghiệm cắt giảm thông tin không gian E3a](../outputs/spatial_ablation_e3a/findings.md).
 
 Nguồn của mỗi hàng mới nằm ở cột metrics_source, kèm seed, strategy, hash artifact/gallery và phạm vi timing. Kiểm chứng sáu run: outputs/embedding_benchmark/verification.json. Các file raw kết quả và model được giữ nguyên.
 

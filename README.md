@@ -8,7 +8,7 @@
 
 ## 1. Kết quả thực nghiệm chính (Benchmark)
 
-Đánh giá closed-set 1:N trên **6.000 ảnh probe Session 2** đối chiếu với **6.000 ảnh gallery Session 1**:
+### 1.1. Chuẩn đối sánh mô hình chính (Closed-set 1:N trên 6.000 probe Session 2)
 
 | Nhóm | Pipeline | Mô hình | Rank-1 (%) | Rank-5 (%) | Macro-F1 (%) | Độ trễ CPU (ms) |
 | :--- | :--- | :--- | ---:| ---:| ---:| ---:|
@@ -22,6 +22,27 @@
 | | **F2** | **PCA** (256-D, fit trên Session 1) + 1-NN | 76.72% | 84.75% | 74.67% | **0.09 ms** |
 
 *\* Ghi chú: ResNet18 Nearest Cosine là thử nghiệm hậu nghiệm (exploratory), trích xuất embedding 512-D từ mô hình phân loại để so khoảng cách Cosine; chưa phải huấn luyện metric learning chuyên biệt.*
+
+### 1.2. Phân tích độ bền vững trước biến đổi ảnh (E6 Robustness Analysis)
+
+Đánh giá 3 mô hình đã đóng băng trên toàn bộ 6.000 probe Session 2 dưới 5 điều kiện:
+- **Độ sáng ±15**: Cả 3 mô hình đều đạt chênh lệch $\Delta = 0.00$ pp ($p = 1.0000$) nhờ tính chất triệt tiêu thành phần một chiều (Zero-DC) của bộ lọc Gabor CompCode.
+- **Làm mờ Gauss 3×3**: Chênh lệch nằm trong khoảng tin cậy bao hàm 0 (KNN: +0.07 pp, SVM: +0.05 pp, CRC: -0.07 pp, $p > 0.20$), chứng minh tính ổn định của hướng nếp vân chính.
+- **Góc xoay +5°**: Sụt giảm có ý nghĩa thống kê ($p = 0.0001$). CRC_RLS thể hiện độ bền cao nhất (giảm -2.52 pp xuống 95.75%), Linear SVM giảm -5.23 pp (xuống 92.13%), trong khi 1-NN sụt giảm mạnh nhất -14.12 pp (xuống 80.32%).
+
+### 1.3. Cắt giảm thông tin không gian (E3a Global vs Spatial CompCode)
+
+Kiểm chứng chéo 5 nếp (5-fold CV) trên Session 1 với bộ phân loại CRC_RLS ($\lambda=0.1$):
+- **Global CompCode (6-D, 1×1)**: Rank-1 = **8.77% ± 0.59%** (sụp đổ khả năng phân biệt do mất hoàn toàn tọa độ không gian).
+- **Spatial CompCode (150-D, 5×5)** [Exploratory extension]: Rank-1 = **99.98% ± 0.04%**.
+- **Spatial CompCode (600-D, 10×10)** [Pre-registered]: Rank-1 = **100.00% ± 0.00%**.
+
+### 1.4. So sánh thống kê cặp đôi (E3 Paired Cluster Bootstrap)
+
+Paired Cluster Bootstrap theo Palm ID ($B=10.000$ lần, seed=42) trên 6.000 probe Session 2:
+- **CompCode − Raw**: $\Delta = +17.25$ pp, 95% CI $[+15.18, +19.32]$ pp, $p < 0.0001$ (vượt trội có ý nghĩa thống kê).
+- **CompCode − PCA**: $\Delta = +17.72$ pp, 95% CI $[+15.67, +19.83]$ pp, $p < 0.0001$ (vượt trội có ý nghĩa thống kê).
+- **Raw − PCA**: $\Delta = +0.47$ pp, 95% CI $[-0.87, +1.83]$ pp, $p = 0.5042$ (CI bao hàm 0; không có sự khác biệt thống kê).
 
 ---
 
@@ -48,9 +69,19 @@ streamlit run app/main.py
 ```
 > Demo gồm 4 tab: Nhận diện ảnh tương tác, X-Ray đặc trưng CompCode, Trực quan hóa không gian PCA (Eigenpalms & Reconstruction), và Dashboard tổng hợp.
 
-### 3.3. Chạy thực nghiệm bóc tách đặc trưng (E3)
+### 3.3. Chạy các thực nghiệm khoa học
 ```powershell
+# Thực nghiệm bóc tách đặc trưng (E3)
 python scripts/run_feature_ablation.py
+
+# Thực nghiệm phân tích độ bền vững trước biến đổi ảnh (E6)
+python scripts/run_robustness_e6.py
+
+# Thực nghiệm cắt giảm thông tin không gian (E3a)
+python scripts/run_spatial_ablation_e3a.py
+
+# Thực nghiệm so sánh thống kê cặp đôi bootstrap (E3)
+python scripts/run_paired_bootstrap_e3.py
 ```
 
 ### 3.4. Chạy kiểm thử tự động
@@ -58,7 +89,7 @@ python scripts/run_feature_ablation.py
 python -m pytest -q
 python scripts/run_smoke.py
 ```
-> Toàn bộ kiểm thử tự động vượt qua (`61 passed, 1 skipped`).
+> Toàn bộ kiểm thử tự động vượt qua (`74 passed, 1 skipped`).
 
 ---
 
@@ -69,5 +100,7 @@ python scripts/run_smoke.py
 - [Phân tích Khám phá Dữ liệu EDA (Phân bố & Chất lượng ảnh)](reports/EDA.md)
 - [Báo cáo Benchmark đầy đủ (M1–M4)](reports/TONGJI_BENCHMARK.md)
 - [Báo cáo Thực nghiệm Deep CNN (ResNet18 3 Seeds)](reports/CNN_EXPERIMENTS.md)
-- [Báo cáo Bóc tách Đặc trưng E3 (Raw vs PCA vs CompCode)](outputs/feature_ablation/findings.md)
+- [Báo cáo Bóc tách Đặc trưng & Bootstrap Cặp đôi E3](outputs/feature_ablation/findings.md)
+- [Báo cáo Phân tích Độ bền vững E6](outputs/robustness_e6/findings.md)
+- [Báo cáo Cắt giảm Thông tin Không gian E3a](outputs/spatial_ablation_e3a/findings.md)
 - [Thư viện Hình ảnh Báo cáo chất lượng cao (300 DPI)](reports/figures/)
