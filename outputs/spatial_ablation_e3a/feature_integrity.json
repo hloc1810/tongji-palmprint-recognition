@@ -1,0 +1,32 @@
+{
+  "manifest_sha256": "99bbbe45a4807d48801a28a6aadfec2efee46a3f4c4fe3d3af8e2337241c8ae0",
+  "fold_assignments_sha256": "aed39b7e7e61e643de545cbda633796406ebed6d230b55d1a4f5838870ed97b7",
+  "compcode_config_sha256": "f31529275e4e6f6259b82b44d3bfba62ddc74047743667c6956818e9dd6a903e",
+  "features": {
+    "global_compcode": {
+      "shape": [
+        6000,
+        6
+      ],
+      "dtype": "float32",
+      "signature": "b6041038d8628ec9ba12464bd6c3c31b28ccaa748138637ef561ff8b84c5c593"
+    },
+    "spatial_compcode_5x5": {
+      "shape": [
+        6000,
+        150
+      ],
+      "dtype": "float32",
+      "signature": "92bb2f4464f8ec5b6de52b677369eec740e3d1c9949b457e7ce0b3f09ef34bb4"
+    },
+    "spatial_compcode_10x10": {
+      "shape": [
+        6000,
+        600
+      ],
+      "dtype": "float32",
+      "signature": "d7fa9058035a0e260b59fb370c1ffdb1154e24470a7911d25f5279c02bf7b812"
+    }
+  },
+  "cv_results_sha256": "0633b46c873c211539cefe0afb679f3057c34e80bf14a913735c15e8d9f390a9"
+}

@@ -1,0 +1,40 @@
+{
+  "experiment_id": "E3a",
+  "title": "Global vs Spatial CompCode Ablation Study",
+  "curriculum_reference": "Pattern Classification, 2nd Edition (Duda, Hart & Stork), Feature Extraction & Invariance",
+  "pre_registered_in": "experiments/registry.yaml",
+  "classifier": "CRC_RLS (Collaborative Representation Classifier with Ridge Regression)",
+  "classifier_parameters": {
+    "regularization": "ridge",
+    "lambda": 0.1
+  },
+  "dataset_session": "session1_cv_only",
+  "n_folds": 5,
+  "n_images_per_fold": 1200,
+  "n_classes": 600,
+  "representations": {
+    "global_compcode": {
+      "name": "Global CompCode",
+      "status": "pre_registered",
+      "dimension": 6,
+      "spatial_grid": "1x1",
+      "description": "Entire 128x128 ROI pooled into a single 6-bin orientation histogram"
+    },
+    "spatial_compcode_5x5": {
+      "name": "Spatial CompCode (5x5)",
+      "status": "exploratory_extension",
+      "dimension": 150,
+      "spatial_grid": "5x5",
+      "block_pixels": 26,
+      "description": "Coarser 5x5 spatial grid yielding 25 blocks x 6 bins"
+    },
+    "spatial_compcode_10x10": {
+      "name": "Spatial CompCode (10x10)",
+      "status": "pre_registered",
+      "dimension": 600,
+      "spatial_grid": "10x10",
+      "block_pixels": 14,
+      "description": "Pre-registered baseline with 10x10 spatial grid yielding 100 blocks x 6 bins"
+    }
+  }
+}

@@ -1,0 +1,16 @@
+representation_key,representation_name,status,spatial_grid,dimension,fold,train_n,val_n,fit_seconds,val_predict_seconds,rank1_pct,rank5_pct,macro_f1_pct,extraction_ms_per_image,feature_signature
+global_compcode,Global CompCode,pre_registered,1x1,6,0,4800,1200,0.00753,0.59604,9.6667,25.9167,3.6127,2.405,b6041038d8628ec9ba12464bd6c3c31b28ccaa748138637ef561ff8b84c5c593
+global_compcode,Global CompCode,pre_registered,1x1,6,1,4800,1200,0.01013,0.59462,8.3333,26.6667,3.132,2.405,b6041038d8628ec9ba12464bd6c3c31b28ccaa748138637ef561ff8b84c5c593
+global_compcode,Global CompCode,pre_registered,1x1,6,2,4800,1200,0.00581,0.53219,8.9167,26.4167,2.9249,2.405,b6041038d8628ec9ba12464bd6c3c31b28ccaa748138637ef561ff8b84c5c593
+global_compcode,Global CompCode,pre_registered,1x1,6,3,4800,1200,0.00549,0.73781,8.1667,26.0,2.795,2.405,b6041038d8628ec9ba12464bd6c3c31b28ccaa748138637ef561ff8b84c5c593
+global_compcode,Global CompCode,pre_registered,1x1,6,4,4800,1200,0.00955,0.54909,8.75,26.4167,2.7919,2.405,b6041038d8628ec9ba12464bd6c3c31b28ccaa748138637ef561ff8b84c5c593
+spatial_compcode_5x5,Spatial CompCode (5x5),exploratory_extension,5x5,150,0,4800,1200,0.01919,0.65555,99.9167,100.0,99.9111,2.96,92bb2f4464f8ec5b6de52b677369eec740e3d1c9949b457e7ce0b3f09ef34bb4
+spatial_compcode_5x5,Spatial CompCode (5x5),exploratory_extension,5x5,150,1,4800,1200,0.01755,0.52703,100.0,100.0,100.0,2.96,92bb2f4464f8ec5b6de52b677369eec740e3d1c9949b457e7ce0b3f09ef34bb4
+spatial_compcode_5x5,Spatial CompCode (5x5),exploratory_extension,5x5,150,2,4800,1200,0.01396,0.61241,100.0,100.0,100.0,2.96,92bb2f4464f8ec5b6de52b677369eec740e3d1c9949b457e7ce0b3f09ef34bb4
+spatial_compcode_5x5,Spatial CompCode (5x5),exploratory_extension,5x5,150,3,4800,1200,0.01397,0.51094,100.0,100.0,100.0,2.96,92bb2f4464f8ec5b6de52b677369eec740e3d1c9949b457e7ce0b3f09ef34bb4
+spatial_compcode_5x5,Spatial CompCode (5x5),exploratory_extension,5x5,150,4,4800,1200,0.01416,0.64244,100.0,100.0,100.0,2.96,92bb2f4464f8ec5b6de52b677369eec740e3d1c9949b457e7ce0b3f09ef34bb4
+spatial_compcode_10x10,Spatial CompCode (10x10),pre_registered,10x10,600,0,4800,1200,0.04265,0.67828,100.0,100.0,100.0,3.078,d7fa9058035a0e260b59fb370c1ffdb1154e24470a7911d25f5279c02bf7b812
+spatial_compcode_10x10,Spatial CompCode (10x10),pre_registered,10x10,600,1,4800,1200,0.04948,0.77383,100.0,100.0,100.0,3.078,d7fa9058035a0e260b59fb370c1ffdb1154e24470a7911d25f5279c02bf7b812
+spatial_compcode_10x10,Spatial CompCode (10x10),pre_registered,10x10,600,2,4800,1200,0.04182,0.77791,100.0,100.0,100.0,3.078,d7fa9058035a0e260b59fb370c1ffdb1154e24470a7911d25f5279c02bf7b812
+spatial_compcode_10x10,Spatial CompCode (10x10),pre_registered,10x10,600,3,4800,1200,0.04311,0.68228,100.0,100.0,100.0,3.078,d7fa9058035a0e260b59fb370c1ffdb1154e24470a7911d25f5279c02bf7b812
+spatial_compcode_10x10,Spatial CompCode (10x10),pre_registered,10x10,600,4,4800,1200,0.04335,0.87974,100.0,100.0,100.0,3.078,d7fa9058035a0e260b59fb370c1ffdb1154e24470a7911d25f5279c02bf7b812
