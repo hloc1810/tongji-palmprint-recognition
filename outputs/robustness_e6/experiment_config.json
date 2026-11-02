@@ -1,0 +1,40 @@
+{
+  "experiment_id": "E6",
+  "description": "Synthetic Robustness Analysis across 5 perturbations on 6,000 Session 2 Probes",
+  "models": [
+    "knn",
+    "svm",
+    "crc"
+  ],
+  "perturbations": [
+    "clean",
+    "brightness_minus15",
+    "brightness_plus15",
+    "blur3",
+    "rotate_plus5"
+  ],
+  "probe_samples": 6000,
+  "gallery_session": "session1",
+  "probe_session": "session2",
+  "bootstrap": {
+    "method": "paired_cluster_bootstrap_by_palm_id",
+    "cluster_key": "palm_id",
+    "n_clusters": 600,
+    "n_resamples": 10000,
+    "seed": 42,
+    "confidence_level": 0.95
+  },
+  "feature_config": {
+    "image_size": 128,
+    "num_directions": 6,
+    "sigma_x": 4.85,
+    "sigma_y": 9.31,
+    "frequency": 0.071,
+    "kernel_size": 41,
+    "block_pixels": 14,
+    "zero_dc": true,
+    "response": "min_real",
+    "border_mode": "reflect101",
+    "histogram_norm": "per_block_l1_then_global_l2"
+  }
+}

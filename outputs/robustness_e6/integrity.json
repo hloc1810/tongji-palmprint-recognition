@@ -1,0 +1,38 @@
+{
+  "checkpoints": {
+    "knn": {
+      "artifact_sha256": "bcd4d7efe4c2de2b2aafedade1d3af8fbdf2846f2a40e2d13240ba56657750d0",
+      "freeze_sha256": "276f97bc055ddcf38aecc7aada8858bcdc8ef238a154b9fc4a830d617cb59200",
+      "status": "VERIFIED_LOCKED"
+    },
+    "svm": {
+      "artifact_sha256": "955b9fdb0dc2879a55f984833744d2fa05b8b6c4e04d9a859ba6227797feb19c",
+      "freeze_sha256": "c8380825b1d8a9ce9c2cc919ed4d9659038ca95f47a137d81267818d22821a9e",
+      "status": "VERIFIED_LOCKED"
+    },
+    "crc": {
+      "artifact_sha256": "20efd55706aec484bee1eb48480d11f6c857e5fd1a754e8e1139fd159ad69e31",
+      "freeze_sha256": "a7864cc44f0efce65a4a9124a7c7807da2f6a84a40f81ea26af12f8242de0567",
+      "status": "VERIFIED_LOCKED"
+    }
+  },
+  "manifest_sha256": "99bbbe45a4807d48801a28a6aadfec2efee46a3f4c4fe3d3af8e2337241c8ae0",
+  "benchmark_clean_match": {
+    "knn": {
+      "observed": 94.4333,
+      "expected": 94.4333,
+      "verified": true
+    },
+    "svm": {
+      "observed": 97.3667,
+      "expected": 97.3667,
+      "verified": true
+    },
+    "crc": {
+      "observed": 98.2667,
+      "expected": 98.2667,
+      "verified": true
+    }
+  },
+  "execution_wall_time_seconds": 149.96
+}
