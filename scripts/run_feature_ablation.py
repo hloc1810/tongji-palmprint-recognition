@@ -17,6 +17,7 @@ import json
 import time
 from pathlib import Path
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -30,6 +31,13 @@ from palmprint.features.ablation import (
 )
 from palmprint.features.extraction import load_features
 from palmprint.models.classical import NearestTemplate
+
+matplotlib.use("Agg")
+
+# Configure clean typography with native Vietnamese support and no clipping
+plt.rcParams["font.sans-serif"] = ["Segoe UI", "Arial", "DejaVu Sans"]
+plt.rcParams["font.family"] = "sans-serif"
+plt.rcParams["axes.unicode_minus"] = False
 
 
 def run_cv(
@@ -343,42 +351,49 @@ def generate_figures(
         "Feature Representation Ablation: Within-Session CV vs Cross-Session Test (1-NN)",
         fontsize=12,
         fontweight="bold",
-        pad=12,
+        pad=14,
     )
     ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=10)
-    ax.set_ylim(0, 108)
+    ax.set_xticklabels(labels, fontsize=10, fontweight="bold")
+    ax.set_ylim(0, 114)
     ax.legend(loc="lower right", frameon=True, fontsize=10)
 
-    # Annotate values on top of bars
-    for rect in rects1:
+    # Annotate values cleanly above bars and error bars to avoid cap overlap
+    for idx, rect in enumerate(rects1):
         height = rect.get_height()
+        err = cv_errs[idx]
         ax.annotate(
             f"{height:.2f}%",
-            xy=(rect.get_x() + rect.get_width() / 2, height),
-            xytext=(0, 4),
+            xy=(rect.get_x() + rect.get_width() / 2, height + err),
+            xytext=(0, 5),
             textcoords="offset points",
             ha="center",
             va="bottom",
-            fontsize=9,
+            fontsize=9.5,
             fontweight="bold",
+            color="#1a365d",
         )
     for rect in rects2:
         height = rect.get_height()
         ax.annotate(
             f"{height:.2f}%",
             xy=(rect.get_x() + rect.get_width() / 2, height),
-            xytext=(0, 4),
+            xytext=(0, 5),
             textcoords="offset points",
             ha="center",
             va="bottom",
-            fontsize=9,
+            fontsize=9.5,
             fontweight="bold",
+            color="#7c2d12",
         )
 
     plt.tight_layout()
+    report_fig_dir = fig_dir.parents[2] / "reports/figures"
+    report_fig_dir.mkdir(parents=True, exist_ok=True)
+
     fig_path1 = fig_dir / "cv_vs_cross_session_comparison.png"
     plt.savefig(fig_path1, dpi=300)
+    plt.savefig(report_fig_dir / "cv_vs_cross_session_comparison.png", dpi=300)
     plt.close()
     print(f"Generated chart: {fig_path1}")
 
@@ -414,6 +429,7 @@ def generate_figures(
     plt.tight_layout()
     fig_path2 = fig_dir / "cmc_curves_feature_ablation.png"
     plt.savefig(fig_path2, dpi=300)
+    plt.savefig(report_fig_dir / "cmc_curves_feature_ablation.png", dpi=300)
     plt.close()
     print(f"Generated chart: {fig_path2}")
 
@@ -451,6 +467,7 @@ def generate_figures(
     plt.tight_layout()
     fig_path3 = fig_dir / "pca_variance_explained.png"
     plt.savefig(fig_path3, dpi=300)
+    plt.savefig(report_fig_dir / "pca_variance_explained.png", dpi=300)
     plt.close()
     print(f"Generated chart: {fig_path3}")
 

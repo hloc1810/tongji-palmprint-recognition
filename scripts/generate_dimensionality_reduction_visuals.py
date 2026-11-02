@@ -8,14 +8,23 @@ Generates:
 
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
 
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.decomposition import PCA
 
 from palmprint.data.preparation import load_manifest
+
+matplotlib.use("Agg")
+
+# Configure clean typography with native Vietnamese support and no clipping
+plt.rcParams["font.sans-serif"] = ["Segoe UI", "Arial", "DejaVu Sans"]
+plt.rcParams["font.family"] = "sans-serif"
+plt.rcParams["axes.unicode_minus"] = False
 
 
 def normalize_display(img: np.ndarray) -> np.ndarray:
@@ -29,13 +38,13 @@ def normalize_display(img: np.ndarray) -> np.ndarray:
 
 def generate_eigenpalms_plot(pca: PCA, save_paths: list[Path]) -> None:
     """Plot Mean Palm and Top 11 Eigenpalms in a 2x6 grid."""
-    fig, axes = plt.subplots(2, 6, figsize=(15, 5.5), dpi=300)
+    fig, axes = plt.subplots(2, 6, figsize=(15, 6.0), dpi=300)
     axes = axes.ravel()
 
     # 1. Mean Palm
     mean_img = pca.mean_.reshape(128, 128)
     axes[0].imshow(normalize_display(mean_img), cmap="gray")
-    axes[0].set_title("Mean Palm (μ)\n[Lòng bàn tay TB]", fontsize=9, fontweight="bold", pad=6)
+    axes[0].set_title("Mean Palm (μ)\n[Lòng bàn tay TB]", fontsize=9, fontweight="bold", pad=8)
     axes[0].axis("off")
 
     # 2. Top 11 Eigenpalms
@@ -43,28 +52,31 @@ def generate_eigenpalms_plot(pca: PCA, save_paths: list[Path]) -> None:
     for idx in range(11):
         ax = axes[idx + 1]
         comp_img = pca.components_[idx].reshape(128, 128)
-        # Use colormap to show positive and negative variance modes
-        ax.imshow(comp_img, cmap="coolwarm")
+        # Academic grayscale visualization of eigen-vectors (standard publication style)
+        ax.imshow(normalize_display(comp_img), cmap="gray")
         ax.set_title(
             f"Eigenpalm #{idx + 1}\n({var_ratios[idx]:.1f}% Var)",
             fontsize=9,
             fontweight="bold",
-            pad=6,
+            pad=8,
         )
         ax.axis("off")
 
+    # Leave ample headroom for 2-line suptitle to avoid overlapping subplot titles
+    fig.tight_layout(rect=[0, 0.02, 1, 0.88])
     fig.suptitle(
         "Không gian các thành phần chính (Eigenpalms) từ Session 1 (PCA trên 6.000 mẫu)\n"
         "Các vector riêng đầu tiên chủ yếu mô tả biến thiên cường độ sáng và hình thái diện rộng của lòng bàn tay.",
-        fontsize=11,
+        fontsize=12,
         fontweight="bold",
-        y=0.98,
+        y=0.965,
     )
-    plt.tight_layout()
-    for p in save_paths:
-        p.parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(p, dpi=300, bbox_inches="tight")
+    save_paths[0].parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(save_paths[0], dpi=300, bbox_inches="tight")
     plt.close()
+    for p in save_paths[1:]:
+        p.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(save_paths[0], p)
     print(f"Saved Eigenpalms figure to: {save_paths[0]}")
 
 
@@ -83,7 +95,7 @@ def generate_reconstruction_progression(
     sample_s1 = x_s1[0]
     sample_s2 = x_s2[0]
 
-    fig, axes = plt.subplots(2, len(k_values) + 1, figsize=(16, 5.2), dpi=300)
+    fig, axes = plt.subplots(2, len(k_values) + 1, figsize=(16, 5.8), dpi=300)
 
     for row_idx, (sample, title_prefix) in enumerate(
         [(sample_s1, "Session 1 (Palm ID 1)"), (sample_s2, "Session 2 (Palm ID 1)")]
@@ -95,7 +107,7 @@ def generate_reconstruction_progression(
             f"Gốc ({title_prefix})\n16.384 chiều",
             fontsize=8.5,
             fontweight="bold",
-            pad=6,
+            pad=8,
         )
         axes[row_idx, 0].axis("off")
 
@@ -117,23 +129,26 @@ def generate_reconstruction_progression(
                 f"k = {k}{is_e3_dim}\nPSNR: {psnr:.1f} dB | -{compression:.1f}%",
                 fontsize=8,
                 fontweight="bold" if k == 256 else "normal",
-                color="#b30000" if k == 256 else "black",
-                pad=6,
+                color="#2b5c8f" if k == 256 else "#2d3748",
+                pad=8,
             )
             ax.axis("off")
 
+    # Leave ample headroom for 2-line suptitle to avoid overlapping subplot titles
+    fig.tight_layout(rect=[0, 0.02, 1, 0.88])
     fig.suptitle(
         "Tái tạo ảnh lòng bàn tay qua các mức số chiều PCA (k từ 5 đến 500)\n"
         "Ở k=256 (cấu hình E3), ảnh tái tạo thể hiện hình thái và phân bố sáng tổng thể; các nếp vân tần số cao bị giảm độ nét.",
-        fontsize=11,
+        fontsize=12,
         fontweight="bold",
-        y=0.98,
+        y=0.965,
     )
-    plt.tight_layout()
-    for p in save_paths:
-        p.parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(p, dpi=300, bbox_inches="tight")
+    save_paths[0].parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(save_paths[0], dpi=300, bbox_inches="tight")
     plt.close()
+    for p in save_paths[1:]:
+        p.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(save_paths[0], p)
     print(f"Saved Reconstruction figure to: {save_paths[0]}")
 
 
@@ -146,11 +161,11 @@ def generate_session_shift_scatter(
     save_paths: list[Path],
 ) -> None:
     """Plot 2D projection (PC1 vs PC2) showing the session shift / domain drift."""
-    fig, ax = plt.subplots(figsize=(8.5, 6.5), dpi=300)
+    fig, ax = plt.subplots(figsize=(9.2, 6.5), dpi=300)
 
-    # Choose 5 representative Palm IDs
+    # Choose 5 representative Palm IDs with elegant academic palette (ColorBrewer/Dark2)
     target_ids = [1, 2, 3, 4, 5]
-    colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00"]
+    colors = ["#2b5c8f", "#d95f02", "#1b9e77", "#7570b3", "#4a5568"]
 
     # Transform all samples of target IDs
     z_s1 = pca.transform(x_s1)
@@ -210,23 +225,26 @@ def generate_session_shift_scatter(
 
     var1 = pca.explained_variance_ratio_[0] * 100.0
     var2 = pca.explained_variance_ratio_[1] * 100.0
-    ax.set_xlabel(f"Principal Component 1 ({var1:.1f}% Variance)", fontsize=10, fontweight="bold")
-    ax.set_ylabel(f"Principal Component 2 ({var2:.1f}% Variance)", fontsize=10, fontweight="bold")
-    ax.set_title(
-        "Trực quan hóa dịch chuyển phiên (Session Shift) trên không gian 2D PCA (PC1 vs PC2)\n"
-        "Mũi tên nét đứt thể hiện xu hướng dịch chuyển tọa độ trung bình của từng Palm ID giữa Session 1 và Session 2.",
-        fontsize=11,
-        fontweight="bold",
-        pad=10,
-    )
+    ax.set_xlabel(f"Principal Component 1 ({var1:.1f}% Variance)", fontsize=10.5, fontweight="bold")
+    ax.set_ylabel(f"Principal Component 2 ({var2:.1f}% Variance)", fontsize=10.5, fontweight="bold")
     ax.grid(True, linestyle=":", alpha=0.6)
-    ax.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=8.5, frameon=True)
+    ax.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=9, frameon=True)
 
-    plt.tight_layout()
-    for p in save_paths:
-        p.parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(p, dpi=300, bbox_inches="tight")
+    # Use fig.suptitle centered over the whole figure width to avoid left-skewed title
+    fig.suptitle(
+        "Trực quan hóa dịch chuyển phiên (Session Shift) trên không gian 2D PCA (PC1 vs PC2)\n"
+        "Mũi tên nét đứt thể hiện xu hướng dịch chuyển tọa độ trung bình của từng Palm ID giữa Session 1 và Session 2",
+        fontsize=11.5,
+        fontweight="bold",
+        y=0.97,
+    )
+    fig.tight_layout(rect=[0, 0, 1, 0.90])
+    save_paths[0].parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(save_paths[0], dpi=300, bbox_inches="tight")
     plt.close()
+    for p in save_paths[1:]:
+        p.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(save_paths[0], p)
     print(f"Saved Session Shift figure to: {save_paths[0]}")
 
 
