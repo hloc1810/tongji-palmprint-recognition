@@ -7,6 +7,7 @@ Outputs:
 4. qualitative_predictions_success_failure.png
 """
 
+import time
 from pathlib import Path
 
 import cv2
@@ -19,6 +20,11 @@ import pandas as pd
 
 from palmprint.features.compcode import CompCodeConfig, CompCodeExtractor
 
+# Configure clean typography with native Vietnamese support and no clipping
+plt.rcParams["font.sans-serif"] = ["Segoe UI", "Arial", "DejaVu Sans"]
+plt.rcParams["font.family"] = "sans-serif"
+plt.rcParams["axes.unicode_minus"] = False
+
 ROOT = Path(__file__).resolve().parents[1]
 FIGDIR = ROOT / "reports/figures"
 FIGDIR.mkdir(parents=True, exist_ok=True)
@@ -26,13 +32,29 @@ RAW = ROOT / "data/raw"
 MANIFEST_PATH = ROOT / "data/metadata/manifest.csv"
 
 
+def safe_savefig(fig: plt.Figure, out_path: Path, **kwargs) -> None:
+    """Save figure with retry logic against transient Windows file locks."""
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    temp_path = out_path.with_name(f"{out_path.stem}_tmp.png")
+    fig.savefig(temp_path, **kwargs)
+    for _ in range(5):
+        try:
+            if out_path.exists():
+                out_path.unlink()
+            temp_path.replace(out_path)
+            return
+        except (OSError, PermissionError):
+            time.sleep(0.1)
+    temp_path.replace(out_path)
+
+
 def plot_dataset_samples():
     """Figure 1: Illustrate intra-class variations across Session 1 and Session 2."""
     manifest = pd.read_csv(MANIFEST_PATH)
     palms = [1, 25, 126, 403]
 
-    fig, axes = plt.subplots(len(palms), 4, figsize=(10, 10), dpi=300)
-    plt.subplots_adjust(wspace=0.15, hspace=0.35)
+    fig, axes = plt.subplots(len(palms), 4, figsize=(10, 10.5), dpi=300)
+    plt.subplots_adjust(top=0.91, bottom=0.03, left=0.05, right=0.95, wspace=0.15, hspace=0.35)
 
     for row_idx, palm_id in enumerate(palms):
         s1_imgs = manifest[(manifest.palm_id == palm_id) & (manifest.session == "session1")][
@@ -57,14 +79,15 @@ def plot_dataset_samples():
             ax.axis("off")
 
     fig.suptitle(
-        "Tongji Contactless Palmprint: Session 1 (Gallery) vs Session 2 (Probe)\nMinh họa biến thiên chiếu sáng, góc xoay và độ co giãn nếp vân giữa 2 phiên",
+        "Tongji Contactless Palmprint: Session 1 (Gallery) vs Session 2 (Probe)\n"
+        "Minh họa biến thiên chiếu sáng, góc xoay và độ co giãn nếp vân giữa 2 phiên",
         fontsize=12,
         fontweight="bold",
-        y=0.98,
+        y=0.965,
     )
 
     out_path = FIGDIR / "dataset_samples_session1_vs_session2.png"
-    plt.savefig(out_path, bbox_inches="tight")
+    safe_savefig(fig, out_path, bbox_inches="tight")
     plt.close(fig)
     print(f"Generated: {out_path}")
 
@@ -84,12 +107,12 @@ def plot_compcode_pipeline():
     # 5. 600-D histogram
 
     # (a) Input ROI, (b) Gabor kernels, (c) Orientation map, (d) 10x10 grid, (e, f) Histograms
-    fig, axes = plt.subplots(2, 4, figsize=(14, 7), dpi=300)
-    plt.subplots_adjust(wspace=0.25, hspace=0.3)
+    fig, axes = plt.subplots(2, 4, figsize=(14, 7.5), dpi=300)
+    plt.subplots_adjust(top=0.88, bottom=0.08, left=0.06, right=0.96, wspace=0.28, hspace=0.38)
 
     # (a) Input ROI
     axes[0, 0].imshow(img, cmap="gray")
-    axes[0, 0].set_title("(a) ROI Gốc (128×128)", fontsize=10, fontweight="bold")
+    axes[0, 0].set_title("(a) ROI Gốc (128×128)", fontsize=10, fontweight="bold", pad=8)
     axes[0, 0].axis("off")
 
     # (b) 6 Gabor Kernels combined into one visual
@@ -103,6 +126,7 @@ def plot_compcode_pipeline():
         "(b) 6 Bộ lọc Gabor (41×41)\nθ = 0°, 30°, 60°, 90°, 120°, 150°",
         fontsize=10,
         fontweight="bold",
+        pad=8,
     )
     axes[0, 1].axis("off")
 
@@ -114,6 +138,7 @@ def plot_compcode_pipeline():
         "(c) Bản đồ Competitive Code\nargmin phản hồi thung lũng (0–5)",
         fontsize=10,
         fontweight="bold",
+        pad=8,
     )
     axes[0, 2].axis("off")
     cbar = fig.colorbar(im_ori, ax=axes[0, 2], ticks=range(6), fraction=0.046, pad=0.04)
@@ -128,7 +153,10 @@ def plot_compcode_pipeline():
         cv2.line(grid_img, (c, 0), (c, 128), (255, 60, 60), 1)
     axes[0, 3].imshow(grid_img)
     axes[0, 3].set_title(
-        "(d) Phân hoạch lưới không gian\n10×10 khối (14×14 px/khối)", fontsize=10, fontweight="bold"
+        "(d) Phân hoạch lưới không gian\n10×10 khối (14×14 px/khối)",
+        fontsize=10,
+        fontweight="bold",
+        pad=8,
     )
     axes[0, 3].axis("off")
 
@@ -142,36 +170,42 @@ def plot_compcode_pipeline():
     axes[1, 0].set_xticks(range(6))
     axes[1, 0].set_xticklabels(["0°", "30°", "60°", "90°", "120°", "150°"], fontsize=8)
     axes[1, 0].set_title(
-        "(e) Histogram 6 hướng\ntại Khối [0, 0] (Chuẩn hóa L1)", fontsize=10, fontweight="bold"
+        "(e) Histogram 6 hướng\ntại Khối [0, 0] (Chuẩn hóa L1)",
+        fontsize=10,
+        fontweight="bold",
+        pad=8,
     )
     axes[1, 0].set_ylabel("Mật độ hướng")
     axes[1, 0].grid(axis="y", linestyle="--", alpha=0.5)
 
-    # Vector 600-D full representation
-    ax_vec = plt.subplot(2, 4, (6, 8))
+    # Remove all unused bottom row subplots so they do not overlap ax_vec
+    axes[1, 1].remove()
+    axes[1, 2].remove()
+    axes[1, 3].remove()
+
+    # Vector 600-D full representation spanning slots 6, 7, 8
+    ax_vec = fig.add_subplot(2, 4, (6, 8))
     ax_vec.plot(vec, color="#1f77b4", linewidth=0.8)
     ax_vec.fill_between(range(len(vec)), vec, color="#1f77b4", alpha=0.3)
     ax_vec.set_title(
         "(f) Vector Đặc trưng Toàn cục 600 Chiều (100 khối × 6 hướng, Chuẩn hóa L2)",
         fontsize=10,
         fontweight="bold",
+        pad=8,
     )
     ax_vec.set_xlabel("Chỉ số đặc trưng (0 đến 599)")
     ax_vec.set_ylabel("Giá trị đặc trưng")
     ax_vec.set_xlim(0, 600)
     ax_vec.grid(True, linestyle="--", alpha=0.5)
 
-    # Hide unused axes[1, 1] if needed or remove
-    axes[1, 1].remove()
-
     fig.suptitle(
         "Quy trình Trích xuất Đặc trưng Competitive Code (CompCode 600-D)",
-        fontsize=13,
+        fontsize=12.5,
         fontweight="bold",
-        y=0.98,
+        y=0.965,
     )
     out_path = FIGDIR / "compcode_feature_extraction_pipeline.png"
-    plt.savefig(out_path, bbox_inches="tight")
+    safe_savefig(fig, out_path, bbox_inches="tight")
     plt.close(fig)
     print(f"Generated: {out_path}")
 
@@ -257,20 +291,20 @@ def plot_accuracy_vs_latency():
             label=m["name"],
         )
 
-        # Position offset annotations
+        # Position offset annotations cleanly without collisions
         dx, dy = 1.0, 0.8
         if "Linear SVM" in m["name"]:
-            dx, dy = 1.0, -1.8
+            dx, dy = 1.2, -2.6
         elif "CRC_RLS" in m["name"]:
-            dx, dy = -6.5, 1.2
+            dx, dy = -1.5, 2.2
         elif "1-NN" in m["name"]:
-            dx, dy = 1.2, -1.5
+            dx, dy = 1.2, -2.2
         elif "Nearest Cosine" in m["name"]:
-            dx, dy = 1.2, 0.8
+            dx, dy = 1.2, 1.6
         elif "Centroid Cosine" in m["name"]:
-            dx, dy = 1.2, -1.8
+            dx, dy = 1.2, -3.0
         elif "Logits" in m["name"]:
-            dx, dy = -16.0, 1.5
+            dx, dy = -15.0, 1.8
 
         ax.annotate(
             f"{m['name'].split(':')[1].strip()}\n({m['rank1']:.2f}%, {m['latency']:.1f} ms)",
@@ -278,14 +312,14 @@ def plot_accuracy_vs_latency():
             xytext=(m["latency"] + dx, m["rank1"] + dy),
             fontsize=8.5,
             fontweight="bold",
-            bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="gray", alpha=0.85),
+            bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="gray", alpha=0.9),
         )
 
     ax.set_title(
         "Đánh đổi giữa Độ chính xác (Rank-1 %) và Độ trễ CPU (ms/ảnh)\nClosed-set 1:N trên 6.000 probe Tongji Session 2",
         fontsize=12,
         fontweight="bold",
-        pad=12,
+        pad=14,
     )
     ax.set_xlabel(
         "Độ trễ CPU đơn luồng (ms/ảnh) — Càng thấp càng nhanh", fontsize=10, fontweight="bold"
@@ -299,7 +333,7 @@ def plot_accuracy_vs_latency():
     ax.legend(loc="lower right", fontsize=8.5, framealpha=0.9)
 
     out_path = FIGDIR / "accuracy_vs_latency_tradeoff.png"
-    plt.savefig(out_path, bbox_inches="tight")
+    safe_savefig(fig, out_path, bbox_inches="tight")
     plt.close(fig)
     print(f"Generated: {out_path}")
 
@@ -343,8 +377,8 @@ def plot_qualitative_predictions():
         },
     ]
 
-    fig, axes = plt.subplots(4, 3, figsize=(9, 11), dpi=300)
-    plt.subplots_adjust(wspace=0.25, hspace=0.45)
+    fig, axes = plt.subplots(4, 3, figsize=(9.5, 11.5), dpi=300)
+    plt.subplots_adjust(top=0.91, bottom=0.03, left=0.05, right=0.95, wspace=0.25, hspace=0.45)
 
     for row_idx, case in enumerate(cases):
         probe_path = RAW / manifest[manifest.sample_uid == case["probe_uid"]]["path"].iloc[0]
@@ -368,7 +402,7 @@ def plot_qualitative_predictions():
         # Col 0: Probe Session 2
         axes[row_idx, 0].imshow(probe_img, cmap="gray")
         axes[row_idx, 0].set_title(
-            f"Probe (Session 2)\nTrue ID: {case['true_id']}", fontsize=9, fontweight="bold"
+            f"Probe (Session 2)\nTrue ID: {case['true_id']}", fontsize=9, fontweight="bold", pad=6
         )
         axes[row_idx, 0].axis("off")
 
@@ -378,6 +412,7 @@ def plot_qualitative_predictions():
             f"Ground Truth (Session 1)\nGallery ID: {case['true_id']}",
             fontsize=9,
             color="green" if case["type"] == "SUCCESS" else "black",
+            pad=6,
         )
         axes[row_idx, 1].axis("off")
 
@@ -388,19 +423,20 @@ def plot_qualitative_predictions():
             "Dự đoán ĐÚNG" if case["type"] == "SUCCESS" else f"Dự đoán SAI (ID: {case['pred_id']})"
         )
         axes[row_idx, 2].set_title(
-            f"Top-1 Match (Session 1)\n{label}", fontsize=9, color=color, fontweight="bold"
+            f"Top-1 Match (Session 1)\n{label}", fontsize=9, color=color, fontweight="bold", pad=6
         )
         axes[row_idx, 2].axis("off")
 
     fig.suptitle(
-        "Phân tích Định tính Các Trường Hợp Nhận Dạng Đúng & Sai của Mô hình CRC_RLS\nSo sánh mẫu truy vấn Session 2 với mẫu thực tế và mẫu bị nhầm lẫn trong Gallery Session 1",
-        fontsize=11,
+        "Phân tích Định tính Các Trường Hợp Nhận Dạng Đúng & Sai của Mô hình CRC_RLS\n"
+        "So sánh mẫu truy vấn Session 2 với mẫu thực tế và mẫu bị nhầm lẫn trong Gallery Session 1",
+        fontsize=11.5,
         fontweight="bold",
-        y=0.98,
+        y=0.965,
     )
 
     out_path = FIGDIR / "qualitative_predictions_success_failure.png"
-    plt.savefig(out_path, bbox_inches="tight")
+    safe_savefig(fig, out_path, bbox_inches="tight")
     plt.close(fig)
     print(f"Generated: {out_path}")
 
