@@ -377,8 +377,12 @@ def generate_figures(
         )
 
     plt.tight_layout()
+    report_fig_dir = fig_dir.parents[1] / "reports/figures"
+    report_fig_dir.mkdir(parents=True, exist_ok=True)
+
     fig_path1 = fig_dir / "cv_vs_cross_session_comparison.png"
     plt.savefig(fig_path1, dpi=300)
+    plt.savefig(report_fig_dir / "cv_vs_cross_session_comparison.png", dpi=300)
     plt.close()
     print(f"Generated chart: {fig_path1}")
 
@@ -414,6 +418,7 @@ def generate_figures(
     plt.tight_layout()
     fig_path2 = fig_dir / "cmc_curves_feature_ablation.png"
     plt.savefig(fig_path2, dpi=300)
+    plt.savefig(report_fig_dir / "cmc_curves_feature_ablation.png", dpi=300)
     plt.close()
     print(f"Generated chart: {fig_path2}")
 
@@ -451,6 +456,7 @@ def generate_figures(
     plt.tight_layout()
     fig_path3 = fig_dir / "pca_variance_explained.png"
     plt.savefig(fig_path3, dpi=300)
+    plt.savefig(report_fig_dir / "pca_variance_explained.png", dpi=300)
     plt.close()
     print(f"Generated chart: {fig_path3}")
 
