@@ -72,6 +72,20 @@ Thực nghiệm đo đạc độc lập trên **6.000 probe Session 2** đối c
   - Competitive Coding chỉ lấy chỉ số hướng vân nổi trội nhất ($\arg\min$), bất biến với biên độ tương phản.
   - Spatial Block Histogram ($10 \times 10$ ô) tạo dung sai cho phép co giãn da tự nhiên và dịch chuyển cục bộ mà không làm mất thông tin nhận dạng.
 
+### Trực quan hóa bản chất của Giảm chiều PCA:
+
+1. **Không gian các thành phần chính (Eigenpalms)**:
+   ![Eigenpalms](outputs/feature_ablation/figures/pca_eigenpalms_visualization.png)
+   *Mean Palm và Top 11 Eigenpalms trên 6.000 mẫu Session 1: Các thành phần chính đầu tiên chỉ phản ánh biến thiên ánh sáng nền và hình thái thô, hoàn toàn không mã hóa được các đường chỉ vân tay.*
+
+2. **Quá trình tái tạo ảnh qua các số chiều $k$ (Reconstruction Progression)**:
+   ![PCA Reconstruction](outputs/feature_ablation/figures/pca_reconstruction_progression.png)
+   *So sánh tái tạo qua $k \in \{5, 20, 50, 100, 256, 500\}$: Ở $k=256$ (cấu hình E3), ảnh chỉ giữ được bóng sáng mờ; toàn bộ đường vân chỉ tay vi mô bị làm phẳng nhẵn nhụi, giải thích vì sao PCA thất bại ở Cross-Session.*
+
+3. **Hiện tượng "Trôi phiên" (Session Shift) trên không gian chiếu 2D**:
+   ![Session Shift](outputs/feature_ablation/figures/pca_session_shift_scatter.png)
+   *Chiếu PC1 vs PC2 trên 5 Palm ID: Mũi tên nét đứt chỉ ra sự trôi dạt tọa độ của cùng một người giữa 2 phiên lấy mẫu, khiến khoảng cách giữa Session 1 và Session 2 của cùng một người lớn hơn khoảng cách với người khác.*
+
 ---
 
 ## 4. Phân định: Cài đặt từ đầu (Code tay) vs Thư viện sử dụng

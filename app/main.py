@@ -158,10 +158,11 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-tab_demo, tab_feature, tab_benchmark, tab_about = st.tabs(
+tab_demo, tab_feature, tab_ablation, tab_benchmark, tab_about = st.tabs(
     [
         "🔍 Nhận dạng Sinh trắc",
-        "🔬 Trực quan hóa Đặc trưng",
+        "🔬 Đặc trưng CompCode",
+        "📉 Giảm chiều & Bóc tách PCA",
         "📊 Bảng vàng Benchmark",
         "📖 Thông tin Đề tài",
     ]
@@ -392,7 +393,69 @@ with tab_feature:
 
 
 # =========================================================
-# TAB 3: BẢNG VÀNG BENCHMARK & ĐỒ THỊ
+# TAB 3: GIẢM CHIỀU & BÓC TÁCH ĐẶC TRƯNG PCA
+# =========================================================
+with tab_ablation:
+    st.subheader("📉 Thực nghiệm Bóc tách Đặc trưng & Giảm chiều PCA (E3)")
+    st.markdown(
+        """
+        Nghiên cứu đối chiếu 3 không gian biểu diễn đặc trưng dưới cùng một bộ phân loại duy nhất **1-NN (k=1, Euclidean distance)**:
+        - **Raw Grayscale (16.384 chiều)**: Toàn bộ pixel ảnh $128 \\times 128$ làm phẳng, chuẩn hóa $L_2$.
+        - **PCA (256 chiều)**: Giảm chiều tuyến tính không giám sát bằng Randomized SVD (seed=42, zero-leakage).
+        - **CompCode (600 chiều)**: Hướng đường vân trích xuất qua ngân hàng 6 bộ lọc Gabor 2D.
+        """
+    )
+
+    ab_c1, ab_c2, ab_c3 = st.columns(3)
+    ab_c1.metric("Raw Grayscale (16.384-D)", "77.18%", "Giảm 22.22% so với CV")
+    ab_c2.metric("PCA (256-D)", "76.72%", "Giảm 22.71% so với CV (Nhanh nhất: 0.09 ms)")
+    ab_c3.metric("CompCode (600-D)", "94.43%", "+17.25% so với Raw (Ổn định nhất)")
+
+    st.markdown("---")
+    st.markdown("##### 1. Trực quan hóa Không gian Thành phần chính (Eigenpalms):")
+    eigen_path = WS / "outputs/feature_ablation/figures/pca_eigenpalms_visualization.png"
+    if eigen_path.exists():
+        st.image(
+            str(eigen_path),
+            caption="Mean Palm (Bản đồ trung bình) và Top 11 Eigenpalms của Session 1. Các thành phần đầu tiên chỉ bắt ánh sáng và bóng đổ diện rộng.",
+            use_container_width=True,
+        )
+
+    st.markdown("---")
+    st.markdown(
+        "##### 2. Quá trình Tái tạo ảnh lòng bàn tay qua các mức số chiều (Reconstruction Progression):"
+    )
+    rec_path = WS / "outputs/feature_ablation/figures/pca_reconstruction_progression.png"
+    if rec_path.exists():
+        st.image(
+            str(rec_path),
+            caption="Tái tạo ảnh qua số chiều k từ 5 đến 500. Ở k=256, toàn bộ nếp vân vi mô bị làm phẳng nhẵn nhụi, chỉ còn bóng mờ thô.",
+            use_container_width=True,
+        )
+
+    st.markdown("---")
+    st.markdown("##### 3. Hiện tượng 'Trôi phiên' (Session Shift) trên không gian chiếu 2D:")
+    c_s1, c_s2 = st.columns(2)
+    with c_s1:
+        shift_path = WS / "outputs/feature_ablation/figures/pca_session_shift_scatter.png"
+        if shift_path.exists():
+            st.image(
+                str(shift_path),
+                caption="Mũi tên dịch chuyển tọa độ của cùng một người giữa 2 phiên, dẫn đến chồng lấn cụm và nhận dạng sai ở Cross-Session.",
+                use_container_width=True,
+            )
+    with c_s2:
+        gap_path = WS / "outputs/feature_ablation/figures/cv_vs_cross_session_comparison.png"
+        if gap_path.exists():
+            st.image(
+                str(gap_path),
+                caption="Khoảng cách tổng quát hóa (Generalization Gap): CV nội phiên đạt >99.4% nhưng Raw và PCA sụp đổ ở Cross-Session.",
+                use_container_width=True,
+            )
+
+
+# =========================================================
+# TAB 4: BẢNG VÀNG BENCHMARK & ĐỒ THỊ
 # =========================================================
 with tab_benchmark:
     st.subheader("📊 Bảng vàng Thành tích Thực nghiệm (Benchmark trên 6.000 probe Session 2)")
