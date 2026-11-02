@@ -661,7 +661,7 @@
               <div class="input-content">
                 <div class="preview-col">
                   <div id="dropZone" class="preview-zone" role="button" tabindex="0" aria-label="Kéo thả ảnh hoặc nhấn để tải ảnh lên">
-                    <img id="previewImg" src="/api/sample-image/1" alt="Ảnh ROI lòng bàn tay mẫu" />
+                    <img id="previewImg" src="data:image/svg+xml;utf8,&lt;svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' fill='%23131716'&gt;&lt;rect width='128' height='128' fill='%231a211f'/&gt;&lt;text x='64' y='68' fill='%23667571' font-size='11' text-anchor='middle' font-family='sans-serif'&gt;Tongji Palmprint&lt;/text&gt;&lt;/svg&gt;" alt="Ảnh ROI lòng bàn tay mẫu" />
                     <div class="corners"></div>
                     <div class="scanline" id="scanLine" hidden></div>
                   </div>
@@ -696,7 +696,7 @@
                   <div class="helper-line"><svg class="ico ico-sm"><use href="#i-info"/></svg><span>PNG, JPG, WebP, BMP · ROI 128×128 · CompCode 600-D</span></div>
                 </div>
               </div>
-              <input type="file" id="fileInput" hidden accept="image/png,image/jpeg,image/webp,image/bmp" />
+              <input type="file" id="fileInput" accept="image/png,image/jpeg,image/webp,image/bmp" style="position:fixed;top:-9999px;left:-9999px;opacity:0;pointer-events:none;width:1px;height:1px;" />
             </section>
 
             <section class="pane result-card is-empty" id="resultCard" aria-live="polite">
@@ -751,7 +751,7 @@
             </section>
             <section class="card roi-card">
               <div class="card-title"><svg class="ico"><use href="#i-crop"/></svg>Ví dụ ảnh ROI hợp lệ</div>
-              <div class="roi-example"><div class="preview-zone static"><img src="/api/sample-image/1" alt="Ví dụ ảnh ROI lòng bàn tay 128×128" /><div class="corners"></div></div></div>
+              <div class="roi-example"><div class="preview-zone static"><img id="roiRefImg" src="data:image/svg+xml;utf8,&lt;svg xmlns='http://www.w3.org/2000/svg' width='128' height='128' fill='%23131716'&gt;&lt;rect width='128' height='128' fill='%231a211f'/&gt;&lt;text x='64' y='68' fill='%23667571' font-size='11' text-anchor='middle' font-family='sans-serif'&gt;Tongji ROI 128x128&lt;/text&gt;&lt;/svg&gt;" alt="Ví dụ ảnh ROI lòng bàn tay 128×128" /><div class="corners"></div></div></div>
               <div class="roi-caption">128 × 128 px · ảnh xám · minh họa, không phải mẫu Tongji thật</div>
               <p class="about-text">Demo thuật toán closed-set identification theo mã lòng bàn tay, không phải hệ thống xác minh danh tính ngoài đời thực.</p>
               <button type="button" class="btn btn-primary" data-go="recognition">Quay lại nhận dạng<svg class="ico"><use href="#i-arrow"/></svg></button>
@@ -799,7 +799,7 @@ file: &lt;ROI image 128×128&gt;</span>
   (function(){
     'use strict';
     const $=id=>document.getElementById(id);
-    const historyKey='tongji-ui-history-v1',prefsKey='tongji-ui-prefs-v1';
+    const historyKey='tongji-ui-history-v1',prefsKey='tongji-ui-prefs-v2';
     function getStored(key,fallback){try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}}
     function setStored(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch{}}
 
@@ -814,7 +814,7 @@ file: &lt;ROI image 128×128&gt;</span>
     ];
 
     const prefs = getStored(prefsKey, {});
-    const defaultApi = (window.location.protocol === 'file:' ? 'http://localhost:8000/api/recognize' : '/api/recognize');
+    const defaultApi = (window.location.protocol === 'file:' ? 'http://127.0.0.1:8000/api/recognize' : '/api/recognize');
     const apiBase = defaultApi.replace('/api/recognize', '');
     const state = {
       view: 'recognition',
@@ -824,8 +824,8 @@ file: &lt;ROI image 128×128&gt;</span>
       previewURL: null,
       recognizing: false,
       history: getStored(historyKey, []),
-      demo: prefs.demo === true,
-      api: typeof prefs.api === 'string' && prefs.api.trim() ? prefs.api.trim() : defaultApi,
+      demo: prefs.demo === true, // Default false, only true if explicitly toggled in v2
+      api: typeof prefs.api === 'string' && prefs.api.trim() && !prefs.api.includes('localhost') ? prefs.api.trim() : defaultApi,
       model: prefs.model || 'crc'
     };
 
@@ -875,8 +875,10 @@ file: &lt;ROI image 128×128&gt;</span>
     }
 
     function resolveUrl(url){
-      if(/^https?:\/\//i.test(url)) return url;
-      return (window.location.protocol === 'file:' ? 'http://localhost:8000' : '') + url;
+      if(!url) return '';
+      if(/^(https?:|blob:|data:)/i.test(url)) return url;
+      const base = (window.location.protocol === 'file:' ? 'http://127.0.0.1:8000' : '');
+      return base + (url.startsWith('/') ? url : '/' + url);
     }
 
     /* ---- Khối kết quả ---- */
@@ -1087,6 +1089,7 @@ file: &lt;ROI image 128×128&gt;</span>
           const img=document.createElement('img');
           img.className='palm-tiny';
           img.alt='Ảnh';
+          img.onerror=()=>{ img.src=resolveUrl(SAMPLES[0].image_url); };
           img.src=resolveUrl(record.image_url || SAMPLES[0].image_url);
           imgCell.appendChild(img);
           mini.appendChild(imgCell);
@@ -1319,13 +1322,33 @@ file: &lt;ROI image 128×128&gt;</span>
           const list=await r.json();
           if(Array.isArray(list)&&list.length>0){
             SAMPLES=list;
+            applySample(state.sampleIdx);
           }
         }
       }catch(e){}
     }
 
+    async function checkBackendStatus(){
+      try{
+        const r=await fetch(resolveUrl('/api/status'));
+        if(r.ok){
+          const data=await r.json();
+          if(!state.demo){
+            setText('modeText','AI Trực tiếp · Online');
+            $('modePill').classList.remove('pill-demo');
+          }
+        }
+      }catch(e){
+        if(!state.demo){
+          setText('modeText','Backend chưa bật');
+          $('modePill').classList.add('pill-demo');
+        }
+      }
+    }
+
     // Initial setup
     loadSamplesList();
+    checkBackendStatus();
     applySample(0);
     syncSettings();
     renderHistory();

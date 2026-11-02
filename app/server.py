@@ -137,12 +137,25 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Custom CORS middleware to guarantee all origins including null (file:///) work reliably
+@app.middleware("http")
+async def add_cors_headers(request, call_next):
+    if request.method == "OPTIONS":
+        response = Response(status_code=204)
+    else:
+        response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, HEAD"
+    response.headers["Access-Control-Allow-Headers"] = "*"
+    return response
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 
@@ -160,6 +173,11 @@ async def serve_ui():
     if not ui_path.exists():
         raise HTTPException(status_code=404, detail="Tongji_Palmprint_UI.html not found")
     return FileResponse(ui_path, media_type="text/html")
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return Response(status_code=204)
 
 
 @app.get("/api/status")

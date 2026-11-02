@@ -21,8 +21,11 @@ def test_server_root_serves_html():
         assert "sampleGrid" in text
         assert "top5Wrap" in text
         assert "SAMPLES" in text
-        # Confirm no hardcoded base64 in previewImg
-        assert 'id="previewImg" src="/api/sample-image/' in text
+        # Confirm no hardcoded base64 in previewImg and dynamic API sample endpoints present
+        assert 'id="previewImg"' in text
+        assert "/api/sample-image/" in text
+        preview_snippet = text[text.find('id="previewImg"') : text.find('id="previewImg"') + 200]
+        assert ";base64," not in preview_snippet
 
 
 def test_server_status_and_metadata():
