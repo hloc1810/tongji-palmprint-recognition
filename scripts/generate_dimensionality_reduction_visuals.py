@@ -43,8 +43,8 @@ def generate_eigenpalms_plot(pca: PCA, save_paths: list[Path]) -> None:
     for idx in range(11):
         ax = axes[idx + 1]
         comp_img = pca.components_[idx].reshape(128, 128)
-        # Use colormap to show positive and negative variance modes
-        ax.imshow(comp_img, cmap="coolwarm")
+        # Academic grayscale visualization of eigen-vectors (standard publication style)
+        ax.imshow(normalize_display(comp_img), cmap="gray")
         ax.set_title(
             f"Eigenpalm #{idx + 1}\n({var_ratios[idx]:.1f}% Var)",
             fontsize=9,
@@ -117,7 +117,7 @@ def generate_reconstruction_progression(
                 f"k = {k}{is_e3_dim}\nPSNR: {psnr:.1f} dB | -{compression:.1f}%",
                 fontsize=8,
                 fontweight="bold" if k == 256 else "normal",
-                color="#b30000" if k == 256 else "black",
+                color="#2b5c8f" if k == 256 else "#2d3748",
                 pad=6,
             )
             ax.axis("off")
@@ -148,9 +148,9 @@ def generate_session_shift_scatter(
     """Plot 2D projection (PC1 vs PC2) showing the session shift / domain drift."""
     fig, ax = plt.subplots(figsize=(8.5, 6.5), dpi=300)
 
-    # Choose 5 representative Palm IDs
+    # Choose 5 representative Palm IDs with elegant academic palette (ColorBrewer/Dark2)
     target_ids = [1, 2, 3, 4, 5]
-    colors = ["#e41a1c", "#377eb8", "#4daf4a", "#984ea3", "#ff7f00"]
+    colors = ["#2b5c8f", "#d95f02", "#1b9e77", "#7570b3", "#4a5568"]
 
     # Transform all samples of target IDs
     z_s1 = pca.transform(x_s1)
