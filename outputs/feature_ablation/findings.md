@@ -56,3 +56,39 @@ Thực nghiệm so sánh 3 phương pháp biểu diễn trên bộ dữ liệu T
 
 > **Kết luận**:
 > Trong giao thức nhận dạng cross-session trên Tongji, **CompCode cho thấy hiệu quả phân biệt cao hơn đáng kể so với Raw Grayscale và PCA** khi cùng sử dụng bộ phân loại 1-NN. Việc khai thác cấu trúc hướng vân thông qua ngân hàng bộ lọc Gabor kết hợp mã hóa thi đấu và phân đoạn không gian là yếu tố quan trọng giúp hệ thống thích ứng tốt hơn trước sự thay đổi phiên thu nhận dữ liệu.
+
+---
+
+## 5. So sánh Thống kê Cặp đôi (Paired Cluster Bootstrap Comparison)
+
+> **Cơ sở lý thuyết**: *Pattern Classification, 2nd Edition* (Duda, Hart & Stork), Chương 9.6 — *Estimating and Comparing Classifiers*.  
+> **Phương pháp**: Paired Cluster Bootstrap theo từng cá nhân (**Palm ID**) trên toàn bộ 6.000 ảnh probe Session 2 với $B=10.000$ lần lấy mẫu lại có hoàn lại (seed=42).  
+> **Lưu ý phương pháp luận**: Do Session 2 được sử dụng làm tập kiểm thử hậu nghiệm (*exploratory/post-hoc analysis*), các khoảng tin cậy dưới đây phản ánh độ ổn định thống kê trong phân phối dữ liệu Tongji hiện có, **không được coi là bằng chứng xác nhận độc lập (out-of-domain confirmation)** cho các hệ thống camera thực tế khác.
+
+### 5.1. Bảng Kết quả So sánh Cặp đôi
+
+| Cặp so sánh ($M_A - M_B$) | Rank-1 $M_A$ (%) | Rank-1 $M_B$ (%) | Chênh lệch quan sát (pp) | Khoảng tin cậy 95% Bootstrap (pp) | Độ lệch chuẩn Bootstrap (pp) | p-value |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **CompCode - Raw Grayscale** | **94.43%** | 77.18% | **+17.25 pp** | **[+15.18, +19.32] pp** | 1.06 pp | < 0.0001 |
+| **CompCode - PCA (256-D)** | **94.43%** | 76.72% | **+17.72 pp** | **[+15.67, +19.83] pp** | 1.07 pp | < 0.0001 |
+| **Raw Grayscale - PCA (256-D)** | 77.18% | 76.72% | **+0.47 pp** | **[-0.87, +1.83] pp** | 0.68 pp | 0.5042 |
+
+### 5.2. Diễn giải Khoa học theo Duda et al.
+
+1. **CompCode vượt trội có ý nghĩa thống kê so với Raw Pixels và PCA**:
+   - Khoảng tin cậy 95% của chênh lệch giữa CompCode và Raw Grayscale là $[+15.18, +19.32]$ điểm phần trăm, nằm hoàn toàn bên phải điểm 0 ($p < 0.0001$).
+   - Tương tự, CompCode vượt trội PCA với khoảng tin cậy $[+15.67, +19.83]$ điểm phần trăm ($p < 0.0001$).
+   - Điều này xác nhận rằng ưu thế của CompCode trước sự thay đổi phiên chụp (*cross-session covariate shift*) là hoàn toàn thực chất và ổn định khi lấy mẫu lại theo từng cá nhân, không phải là biến động ngẫu nhiên do một nhóm nhỏ Palm ID quyết định.
+
+2. **Raw Pixels và PCA không có sự khác biệt mang ý nghĩa thống kê**:
+   - Chênh lệch quan sát giữa Raw Grayscale (77.18%) và PCA (76.72%) chỉ là $+0.47$ điểm phần trăm.
+   - Khoảng tin cậy Bootstrap 95% là $[-0.87, +1.83]$ điểm phần trăm, bao hàm giá trị 0 ($p = 0.5042$).
+   - **Phân tích nguyên nhân**:
+     - Phép chiếu tuyến tính không giám sát PCA giữ lại 256 thành phần chính giải thích $93.77\%$ tổng phương sai của Session 1.
+     - Tuy nhiên, trong nhận diện ảnh xám lòng bàn tay, các hướng biến thiên phương sai lớn nhất trong Session 1 chủ yếu gắn liền với mức độ chiếu sáng tổng thể và độ phản xạ nền. Khi kiểm thử sang Session 2 với ánh sáng thay đổi, không gian con PCA không tách biệt được nếp vân đặc thù tốt hơn không gian pixel gốc.
+     - Dù vậy, PCA mang lại lợi thế vượt trội về kích thước vector (giảm từ 16.384 chiều xuống 256 chiều, tiết kiệm 98,4% bộ nhớ) và tốc độ khớp nhanh gấp gần 7 lần (0.09 ms so với 0.61 ms), trong khi duy trì hiệu năng tương đương về mặt thống kê với Raw Pixels.
+
+### 5.3. Minh chứng Thực nghiệm Đi kèm
+- Tệp dữ liệu thống kê cặp đôi: `outputs/feature_ablation/paired_bootstrap_results.csv`
+- Cấu hình và mã băm toàn vẹn: `outputs/feature_ablation/bootstrap_config.json`
+- Biểu đồ phân phối hiệu số bootstrap: `outputs/feature_ablation/figures/paired_feature_differences.png`

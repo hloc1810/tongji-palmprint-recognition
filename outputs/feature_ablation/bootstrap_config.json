@@ -1,0 +1,18 @@
+{
+  "experiment_id": "E3",
+  "description": "Paired cluster bootstrap comparison across feature representations on Session 2 probes",
+  "curriculum_reference": "Pattern Classification, 2nd Edition (Duda, Hart & Stork), Section 9.6: Estimating and Comparing Classifiers",
+  "evaluation_nature": "exploratory_post_hoc",
+  "n_samples": 6000,
+  "n_clusters": 600,
+  "cluster_key": "Palm ID (true_palm_id)",
+  "bootstrap_iterations": 10000,
+  "random_seed": 42,
+  "resampling_strategy": "paired_cluster_sampling_with_replacement",
+  "predictions_sha256": {
+    "raw": "119a1c33e82e83f4205143ec5a9189e857b74da9914b56b529232c759e64bf48",
+    "pca": "5664a873263d9c6aa87ed6071ee9d0d1ac5774e71826e3405a376777e06d519e",
+    "compcode": "b515337664211a311a397db6819f258b197defd153fb52cffe519f272277c329"
+  },
+  "results_sha256": "67db1d39d210b9e6d1c6556149d48fadc9ce4a76d463953da7ca432dd63c8a86"
+}

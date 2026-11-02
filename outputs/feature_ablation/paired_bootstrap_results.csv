@@ -1,0 +1,4 @@
+comparison,method_a,method_b,n_samples,n_clusters,rank1_a_pct,rank1_b_pct,observed_diff_pp,ci_95_low_pp,ci_95_high_pp,bootstrap_mean_pp,bootstrap_std_pp,p_value
+CompCode - Raw,CompCode,Raw Grayscale,6000,600,94.4333,77.1833,17.25,15.1833,19.3167,17.2625,1.0582,0.0001
+CompCode - PCA,CompCode,PCA (256-D),6000,600,94.4333,76.7167,17.7167,15.6667,19.8333,17.7286,1.0745,0.0001
+Raw - PCA,Raw Grayscale,PCA (256-D),6000,600,77.1833,76.7167,0.4667,-0.8667,1.8333,0.4661,0.6803,0.5042
