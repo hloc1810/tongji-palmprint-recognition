@@ -1,5 +1,5 @@
 {
-  "data_root": "D:\\palmprint-recognition\\data\\raw",
+  "data_root": "D:\\Nhandienmau\\DA\\data\\raw",
   "strict": true,
   "folds": 5,
   "seed": 42,
