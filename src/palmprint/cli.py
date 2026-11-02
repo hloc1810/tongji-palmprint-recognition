@@ -56,6 +56,12 @@ def parser() -> argparse.ArgumentParser:
     stress = commands.add_parser("robustness")
     stress.add_argument("--model", choices=["knn", "svm", "crc"], required=True)
     stress.add_argument("--limit", type=int, default=0)
+    srv = commands.add_parser("serve", help="Start FastAPI web identification server")
+    srv.add_argument("--host", default="0.0.0.0", help="Host interface to bind (default: 0.0.0.0)")
+    srv.add_argument("--port", type=int, default=8000, help="Port to listen on (default: 8000)")
+    commands.add_parser("smoke", help="Run end-to-end synthetic pipeline smoke test")
+    aud = commands.add_parser("audit", help="Audit dataset ROI input integrity and feature sanity")
+    aud.add_argument("--data", type=Path, required=True, help="Path to Tongji ROI dataset directory")
     return p
 
 
@@ -102,6 +108,73 @@ def main(argv: list[str] | None = None) -> None:
                 result = benchmark_cpu(ws, args.model, limit=args.limit)
             else:
                 result = robustness(ws, args.model, limit=args.limit or None)
+        elif args.command == "serve":
+            import uvicorn
+
+            print(f"Starting Tongji Palmprint Web Server on http://{args.host}:{args.port}")
+            uvicorn.run("app.server:app", host=args.host, port=args.port)
+            return
+        elif args.command == "smoke":
+            import shutil
+            import tempfile
+
+            with tempfile.TemporaryDirectory(prefix="palmprint_smoke_") as d:
+                root = Path(d)
+                sub_ws = root / "workspace"
+                shutil.copytree(ws / "configs", sub_ws / "configs")
+                fake = root / "synthetic_roi"
+                generate_synthetic_roi(fake, palms=6, samples=4)
+                summary = prepare(sub_ws, fake, strict=False, folds=2)
+                for name in ("knn", "svm", "crc"):
+                    cross_validate(sub_ws, name, sub_ws / "configs/compcode.yaml")
+                    final_train(sub_ws, name, sub_ws / "configs/compcode.yaml")
+                lock_protocol(sub_ws)
+                for name in ("knn", "svm", "crc"):
+                    evaluate_final(sub_ws, name, sub_ws / "configs/compcode.yaml")
+                rep_df = generate_report(sub_ws)
+                result = {
+                    "smoke_test": "passed",
+                    "n_images": summary["n_images"],
+                    "synthetic_report": rep_df.to_dict(orient="records"),
+                }
+        elif args.command == "audit":
+            import numpy as np
+
+            from .data.dataset import read_gray, resolve_path
+            from .data.preparation import load_manifest
+            from .features.compcode import CompCodeConfig, CompCodeExtractor
+            from .utils import env_info, read_yaml
+
+            summary = prepare(ws, args.data.resolve(), strict=True, folds=5, seed=42)
+            manifest, info = load_manifest(ws)
+            config = CompCodeConfig(**read_yaml(ws / "configs/compcode.yaml"))
+            extractor = CompCodeExtractor(config)
+            samples = manifest[
+                (manifest.session == "session1") & manifest.palm_id.isin([1, 150, 300, 450, 600])
+            ]
+            samples = samples.groupby("palm_id", sort=True).head(1)
+            sanity = []
+            for row in samples.itertuples(index=False):
+                gray = read_gray(resolve_path(args.data.resolve(), row.path))
+                codes = extractor.orientation_map(gray)
+                feature = extractor.histogram(codes)
+                sanity.append(
+                    {
+                        "sample_uid": row.sample_uid,
+                        "shape": list(gray.shape),
+                        "dtype": str(gray.dtype),
+                        "orientation_codes": np.unique(codes).tolist(),
+                        "feature_dimension": len(feature),
+                        "feature_l2_norm": float(np.linalg.norm(feature)),
+                    }
+                )
+            result = {
+                "audit": summary,
+                "manifest_sha256": info["manifest_sha256"],
+                "environment": env_info(),
+                "session1_feature_sanity": sanity,
+                "status": "passed",
+            }
         else:
             raise RuntimeError("Unknown command")
     print(json.dumps(result, ensure_ascii=False, indent=2, default=str))

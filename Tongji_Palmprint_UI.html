@@ -815,7 +815,6 @@ file: &lt;ROI image 128×128&gt;</span>
 
     const prefs = getStored(prefsKey, {});
     const defaultApi = (window.location.protocol === 'file:' ? 'http://127.0.0.1:8000/api/recognize' : '/api/recognize');
-    const apiBase = defaultApi.replace('/api/recognize', '');
     const state = {
       view: 'recognition',
       file: null,
