@@ -22,6 +22,11 @@ from ..features.compcode import CompCodeConfig, CompCodeExtractor
 from ..utils import atomic_json
 from .metrics import compute_metrics, ranking
 
+# Configure clean typography with native Vietnamese support and no clipping
+plt.rcParams["font.sans-serif"] = ["Segoe UI", "Arial", "DejaVu Sans"]
+plt.rcParams["font.family"] = "sans-serif"
+plt.rcParams["axes.unicode_minus"] = False
+
 
 def data_eda(ws: Path) -> dict:
     df, _ = load_manifest(ws)
@@ -31,28 +36,106 @@ def data_eda(ws: Path) -> dict:
     tables.mkdir(parents=True, exist_ok=True)
     pivot = df.groupby(["session", "palm_id"]).size().unstack(0, fill_value=0)
     pivot.to_csv(tables / "images_per_palm_session.csv")
-    for key, label in (
-        ("brightness", "Brightness (mean intensity)"),
-        ("contrast", "Contrast (pixel standard deviation)"),
-        ("blur_proxy", "Laplacian variance (proxy only)"),
-    ):
-        fig, ax = plt.subplots(figsize=(7, 4))
-        for name, group in df.groupby("session"):
-            ax.hist(group[key].to_numpy(), bins=32, alpha=0.55, label=name)
-        ax.set_xlabel(label)
-        ax.set_ylabel("Number of ROI images")
-        ax.legend()
+
+    colors = {"session1": "#2b5c8f", "session2": "#d95f02"}
+    names = {"session1": "Session 1 (Gallery)", "session2": "Session 2 (Probe)"}
+
+    # 1. Unified 1x3 distribution panel for report (300 DPI)
+    fig_all, axes = plt.subplots(1, 3, figsize=(15, 4.5), dpi=300)
+    keys_labels = [
+        ("brightness", "Cường độ sáng trung bình (Mean Intensity)", [0, 255]),
+        ("contrast", "Độ tương phản (Pixel Standard Deviation)", None),
+        ("blur_proxy", "Độ sắc nét (Biến sai toán tử Laplacian)", None),
+    ]
+
+    for idx, (key, label, xlim) in enumerate(keys_labels):
+        ax = axes[idx]
+        for s_name, group in df.groupby("session"):
+            vals = group[key].to_numpy()
+            m = float(np.mean(vals))
+            ax.hist(
+                vals,
+                bins=32,
+                alpha=0.6,
+                color=colors[s_name],
+                label=f"{names[s_name]} (TB: {m:.1f})",
+                edgecolor="black",
+                linewidth=0.5,
+            )
+            ax.axvline(m, color=colors[s_name], linestyle="--", linewidth=1.5)
+        ax.set_xlabel(label, fontsize=9.5, fontweight="bold")
+        ax.set_ylabel("Số lượng ảnh ROI", fontsize=9.5, fontweight="bold")
+        ax.grid(True, linestyle=":", alpha=0.6)
+        ax.legend(fontsize=8.5, frameon=True)
+        if xlim:
+            ax.set_xlim(xlim)
+
+    fig_all.suptitle(
+        "Phân bố các Thuộc tính Chất lượng Ảnh ROI của Bộ dữ liệu Tongji (Session 1 vs Session 2)",
+        fontsize=12,
+        fontweight="bold",
+        y=0.98,
+    )
+    fig_all.tight_layout(rect=[0, 0, 1, 0.92])
+    fig_all.savefig(out / "eda_quality_distributions.png", dpi=300, bbox_inches="tight")
+    plt.close(fig_all)
+
+    # 2. Individual figures (at 300 DPI) for backward compatibility
+    for key, label, _ in keys_labels:
+        fig, ax = plt.subplots(figsize=(7, 4.2), dpi=300)
+        for s_name, group in df.groupby("session"):
+            vals = group[key].to_numpy()
+            m = float(np.mean(vals))
+            ax.hist(
+                vals,
+                bins=32,
+                alpha=0.6,
+                color=colors[s_name],
+                label=f"{names[s_name]} (TB: {m:.1f})",
+                edgecolor="black",
+                linewidth=0.5,
+            )
+            ax.axvline(m, color=colors[s_name], linestyle="--", linewidth=1.5)
+        ax.set_xlabel(label, fontsize=10, fontweight="bold")
+        ax.set_ylabel("Số lượng ảnh ROI", fontsize=10, fontweight="bold")
+        ax.grid(True, linestyle=":", alpha=0.6)
+        ax.legend(fontsize=9, frameon=True)
         fig.tight_layout()
-        fig.savefig(out / f"eda_{key}.png", dpi=170)
+        fig.savefig(out / f"eda_{key}.png", dpi=300, bbox_inches="tight")
         plt.close(fig)
-    fig, ax = plt.subplots(figsize=(9, 4))
-    ax.plot(pivot.index, pivot.session1, label="session1")
-    ax.plot(pivot.index, pivot.session2, label="session2", alpha=0.7)
-    ax.set(xlabel="Palm ID", ylabel="Images per palm", title="Observed class counts")
-    ax.legend()
+
+    # 3. Class balance plot (300 DPI)
+    fig, ax = plt.subplots(figsize=(9, 4.2), dpi=300)
+    ax.plot(
+        pivot.index,
+        pivot.session1,
+        label="Session 1 (Gallery)",
+        color=colors["session1"],
+        linewidth=1.5,
+    )
+    ax.plot(
+        pivot.index,
+        pivot.session2,
+        label="Session 2 (Probe)",
+        color=colors["session2"],
+        linewidth=1.2,
+        linestyle="--",
+    )
+    ax.set_xlabel("Chỉ số lớp bàn tay (Palm ID 1 đến 600)", fontsize=10, fontweight="bold")
+    ax.set_ylabel("Số lượng ảnh / Palm ID", fontsize=10, fontweight="bold")
+    ax.set_title(
+        "Phân bố số lượng mẫu theo lớp (600 Palm ID cân bằng tuyệt đối: 10 ảnh/phiên)",
+        fontsize=11,
+        fontweight="bold",
+        pad=10,
+    )
+    ax.set_ylim(0, 15)
+    ax.grid(True, linestyle=":", alpha=0.6)
+    ax.legend(fontsize=9, frameon=True)
     fig.tight_layout()
-    fig.savefig(out / "eda_class_counts.png", dpi=170)
+    fig.savefig(out / "eda_class_counts.png", dpi=300, bbox_inches="tight")
     plt.close(fig)
+
     quality = (
         df.groupby("session")[["brightness", "contrast", "blur_proxy"]]
         .agg(["mean", "std", "min", "max"])

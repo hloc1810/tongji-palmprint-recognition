@@ -64,6 +64,7 @@ python scripts/run_smoke.py
 
 ## 4. Tài liệu chi tiết & Báo cáo thực nghiệm
 
+- [Phân tích Khám phá Dữ liệu EDA (Phân bố & Chất lượng ảnh)](reports/EDA.md)
 - [Báo cáo Benchmark đầy đủ (M1–M4)](reports/TONGJI_BENCHMARK.md)
 - [Báo cáo Thực nghiệm Deep CNN (ResNet18 3 Seeds)](reports/CNN_EXPERIMENTS.md)
 - [Báo cáo Bóc tách Đặc trưng E3 (Raw vs PCA vs CompCode)](outputs/feature_ablation/findings.md)

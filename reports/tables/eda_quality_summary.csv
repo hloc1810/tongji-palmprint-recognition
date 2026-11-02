@@ -1,0 +1,5 @@
+,brightness,brightness,brightness,brightness,contrast,contrast,contrast,contrast,blur_proxy,blur_proxy,blur_proxy,blur_proxy
+,mean,std,min,max,mean,std,min,max,mean,std,min,max
+session,,,,,,,,,,,,
+session1,131.49931,26.35039,67.71576,222.46716,17.6536,5.07937,6.19643,39.26288,27.58325,14.05435,4.21939,101.63961
+session2,132.59261,22.39992,64.69751,208.31934,17.80458,4.40873,7.81886,35.08394,27.79002,12.94046,4.96856,116.03325
