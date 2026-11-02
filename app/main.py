@@ -417,7 +417,7 @@ with tab_ablation:
     if eigen_path.exists():
         st.image(
             str(eigen_path),
-            caption="Mean Palm (Bản đồ trung bình) và Top 11 Eigenpalms của Session 1. Các thành phần đầu tiên chỉ bắt ánh sáng và bóng đổ diện rộng.",
+            caption="Mean Palm (Bản đồ trung bình) và Top 11 Eigenpalms của Session 1. Các thành phần đầu tiên chủ yếu mô tả cường độ sáng diện rộng và hình thái lòng bàn tay.",
             use_container_width=True,
         )
 
@@ -429,19 +429,19 @@ with tab_ablation:
     if rec_path.exists():
         st.image(
             str(rec_path),
-            caption="Tái tạo ảnh qua số chiều k từ 5 đến 500. Ở k=256, toàn bộ nếp vân vi mô bị làm phẳng nhẵn nhụi, chỉ còn bóng mờ thô.",
+            caption="Tái tạo ảnh qua số chiều k từ 5 đến 500. Ở k=256, ảnh tái tạo phản ánh dáng bàn tay và độ sáng tổng thể; các nếp vân tần số cao bị giảm độ nét.",
             use_container_width=True,
         )
 
     st.markdown("---")
-    st.markdown("##### 3. Hiện tượng 'Trôi phiên' (Session Shift) trên không gian chiếu 2D:")
+    st.markdown("##### 3. Hiện tượng Dịch chuyển phiên (Session Shift) trên không gian chiếu 2D:")
     c_s1, c_s2 = st.columns(2)
     with c_s1:
         shift_path = WS / "outputs/feature_ablation/figures/pca_session_shift_scatter.png"
         if shift_path.exists():
             st.image(
                 str(shift_path),
-                caption="Mũi tên dịch chuyển tọa độ của cùng một người giữa 2 phiên, dẫn đến chồng lấn cụm và nhận dạng sai ở Cross-Session.",
+                caption="Mũi tên nét đứt thể hiện xu hướng dịch chuyển tọa độ trung bình của từng Palm ID giữa Session 1 và Session 2.",
                 use_container_width=True,
             )
     with c_s2:
@@ -449,7 +449,7 @@ with tab_ablation:
         if gap_path.exists():
             st.image(
                 str(gap_path),
-                caption="Khoảng cách tổng quát hóa (Generalization Gap): CV nội phiên đạt >99.4% nhưng Raw và PCA sụp đổ ở Cross-Session.",
+                caption="Khoảng cách tổng quát hóa (Generalization Gap): CV nội phiên đạt >99.4%, nhưng độ chính xác của Raw và PCA giảm đáng kể khi kiểm thử chéo phiên.",
                 use_container_width=True,
             )
 

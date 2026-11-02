@@ -63,28 +63,28 @@ Thực nghiệm đo đạc độc lập trên **6.000 probe Session 2** đối c
 | **F3 — CompCode** | 600 | 99.98 ± 0.04% | **94.43%** | [93.02%, 95.68%] | **96.97%** | **93.56%** | **-5.55%** | 0.11 ms |
 
 ### Nhận xét và Phân tích khoa học:
-- **Hiện tượng "Bẫy kiểm định chéo" (Within-Session CV Trap)**: Trong cùng Session 1, cả Raw Pixels và PCA đều đạt Rank-1 $>99.4\%$. Nếu chỉ kiểm định nội phiên, người nghiên cứu dễ lầm tưởng rằng không cần trích xuất đặc trưng phức tạp.
-- **Sự sụp đổ của Raw Pixels và PCA ở Cross-Session (-22%)**:
-  - *Raw Pixels*: Khoảng cách Euclidean $d^2(x, y) = \sum (x_i - y_i)^2$ rất nhạy cảm với dịch chuyển không gian (spatial shift). Sự thay đổi nhẹ về góc đặt tay và cường độ sáng giữa hai phiên làm toàn bộ lưới pixel bị trôi, khiến khoảng cách cùng lớp vượt khoảng cách khác lớp.
-  - *PCA*: Theo giáo trình Duda (*Pattern Classification*), PCA tìm các trục có phương sai toàn cục lớn nhất. Trên ảnh bàn tay, các trục này đại diện cho sự biến thiên ánh sáng nền và hình thái tổng thể, bỏ qua vi cấu trúc đường vân. Khi sang Session 2, sự thay đổi nguồn sáng làm vector chiếu PCA bị sai lệch.
-- **Tính ưu việt của CompCode (+17.25% so với Raw, +17.71% so với PCA)**:
-  - Bộ lọc Gabor khử thành phần một chiều (Zero-DC: `kernel -= kernel.mean()`), triệt tiêu biến thiên độ sáng nền.
-  - Competitive Coding chỉ lấy chỉ số hướng vân nổi trội nhất ($\arg\min$), bất biến với biên độ tương phản.
-  - Spatial Block Histogram ($10 \times 10$ ô) tạo dung sai cho phép co giãn da tự nhiên và dịch chuyển cục bộ mà không làm mất thông tin nhận dạng.
+- **Sự khác biệt giữa kiểm định nội phiên và kiểm thử chéo phiên (Within-Session CV vs Cross-Session)**: Trong cùng Session 1, cả Raw Pixels và PCA đều đạt Rank-1 $>99.4\%$. Kết quả này cho thấy nếu chỉ đánh giá trong một phiên thu nhận duy nhất, mô hình có thể đạt độ chính xác cao nhưng chưa phản ánh đầy đủ khả năng khái quát hóa khi điều kiện môi trường thay đổi.
+- **Mức sụt giảm của Raw Pixels và PCA ở Cross-Session (-22 điểm phần trăm)**:
+  - *Raw Pixels*: Khoảng cách Euclidean $d^2(x, y) = \sum (x_i - y_i)^2$ nhạy cảm với sự dịch chuyển không gian (spatial shift). Sự thay đổi nhẹ về góc đặt tay và cường độ chiếu sáng giữa hai phiên làm lệch các vị trí điểm ảnh tương ứng, khiến khoảng cách giữa các ảnh cùng một bàn tay tăng lên đáng kể.
+  - *PCA*: Theo giáo trình Duda (*Pattern Classification*), PCA xác định các trục trực giao có phương sai toàn cục lớn nhất. Trên tập ảnh xám bàn tay, các trục này chủ yếu mô tả sự biến thiên ánh sáng diện rộng và hình thái tổng thể, ít phản ánh các nếp vân vi mô. Khi sang Session 2 với điều kiện chụp khác biệt, vector tọa độ PCA có xu hướng bị trôi dạt.
+- **Hiệu quả phân biệt của CompCode (+17.25% so với Raw, +17.71% so với PCA)**:
+  - Bộ lọc Gabor với cấu hình khử một chiều (Zero-DC: `kernel -= kernel.mean()`) giúp giảm thiểu ảnh hưởng của sự thay đổi độ sáng nền.
+  - Cơ chế Competitive Coding xác định hướng vân nổi trội qua phép so sánh cực tiểu ($\arg\min$), ít phụ thuộc vào biên độ tương phản cục bộ.
+  - Phân hoạch biểu đồ khối không gian ($10 \times 10$ ô) cung cấp dung sai nhất định đối với các dịch chuyển và co giãn da cục bộ.
 
-### Trực quan hóa bản chất của Giảm chiều PCA:
+### Trực quan hóa không gian giảm chiều PCA:
 
 1. **Không gian các thành phần chính (Eigenpalms)**:
    ![Eigenpalms](outputs/feature_ablation/figures/pca_eigenpalms_visualization.png)
-   *Mean Palm và Top 11 Eigenpalms trên 6.000 mẫu Session 1: Các thành phần chính đầu tiên chỉ phản ánh biến thiên ánh sáng nền và hình thái thô, hoàn toàn không mã hóa được các đường chỉ vân tay.*
+   *Mean Palm và Top 11 Eigenpalms trên 6.000 mẫu Session 1: Các thành phần chính đầu tiên chủ yếu mô tả biến thiên cường độ sáng diện rộng và hình thái tổng thể của lòng bàn tay.*
 
 2. **Quá trình tái tạo ảnh qua các số chiều $k$ (Reconstruction Progression)**:
    ![PCA Reconstruction](outputs/feature_ablation/figures/pca_reconstruction_progression.png)
-   *So sánh tái tạo qua $k \in \{5, 20, 50, 100, 256, 500\}$: Ở $k=256$ (cấu hình E3), ảnh chỉ giữ được bóng sáng mờ; toàn bộ đường vân chỉ tay vi mô bị làm phẳng nhẵn nhụi, giải thích vì sao PCA thất bại ở Cross-Session.*
+   *So sánh tái tạo qua $k \in \{5, 20, 50, 100, 256, 500\}$: Ở $k=256$ (cấu hình E3), ảnh tái tạo phản ánh dáng bàn tay và độ sáng tổng thể, trong khi các nếp vân tần số cao có xu hướng bị làm mờ.*
 
-3. **Hiện tượng "Trôi phiên" (Session Shift) trên không gian chiếu 2D**:
+3. **Hiện tượng dịch chuyển phiên (Session Shift) trên không gian chiếu 2D**:
    ![Session Shift](outputs/feature_ablation/figures/pca_session_shift_scatter.png)
-   *Chiếu PC1 vs PC2 trên 5 Palm ID: Mũi tên nét đứt chỉ ra sự trôi dạt tọa độ của cùng một người giữa 2 phiên lấy mẫu, khiến khoảng cách giữa Session 1 và Session 2 của cùng một người lớn hơn khoảng cách với người khác.*
+   *Chiếu PC1 vs PC2 trên 5 Palm ID: Mũi tên nét đứt thể hiện xu hướng dịch chuyển tọa độ trung bình của từng Palm ID giữa Session 1 và Session 2 dưới phép chiếu PCA.*
 
 ---
 

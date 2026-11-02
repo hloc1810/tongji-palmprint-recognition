@@ -55,7 +55,7 @@ def generate_eigenpalms_plot(pca: PCA, save_paths: list[Path]) -> None:
 
     fig.suptitle(
         "Không gian các thành phần chính (Eigenpalms) từ Session 1 (PCA trên 6.000 mẫu)\n"
-        "Nhận xét: Các vector riêng đầu tiên chỉ phản ánh biến thiên ánh sáng và hình thái lớn, không chứa thông tin vi vân.",
+        "Các vector riêng đầu tiên chủ yếu mô tả biến thiên cường độ sáng và hình thái diện rộng của lòng bàn tay.",
         fontsize=11,
         fontweight="bold",
         y=0.98,
@@ -124,7 +124,7 @@ def generate_reconstruction_progression(
 
     fig.suptitle(
         "Tái tạo ảnh lòng bàn tay qua các mức số chiều PCA (k từ 5 đến 500)\n"
-        "Ở k=256 (cấu hình E3), ảnh chỉ giữ được bóng sáng mờ và hình thái thô; toàn bộ vi cấu trúc nếp vân bị làm phẳng.",
+        "Ở k=256 (cấu hình E3), ảnh tái tạo thể hiện hình thái và phân bố sáng tổng thể; các nếp vân tần số cao bị giảm độ nét.",
         fontsize=11,
         fontweight="bold",
         y=0.98,
@@ -213,8 +213,8 @@ def generate_session_shift_scatter(
     ax.set_xlabel(f"Principal Component 1 ({var1:.1f}% Variance)", fontsize=10, fontweight="bold")
     ax.set_ylabel(f"Principal Component 2 ({var2:.1f}% Variance)", fontsize=10, fontweight="bold")
     ax.set_title(
-        "Trực quan hóa 'Session Shift' trên không gian 2D PCA (PC1 vs PC2)\n"
-        "Mũi tên nét đứt minh chứng sự trôi dạt tọa độ của cùng một người giữa 2 phiên thu nhận.",
+        "Trực quan hóa dịch chuyển phiên (Session Shift) trên không gian 2D PCA (PC1 vs PC2)\n"
+        "Mũi tên nét đứt thể hiện xu hướng dịch chuyển tọa độ trung bình của từng Palm ID giữa Session 1 và Session 2.",
         fontsize=11,
         fontweight="bold",
         pad=10,
