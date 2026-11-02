@@ -20,7 +20,9 @@ def test_server_root_serves_html():
         assert "modelSelect" in text
         assert "sampleGrid" in text
         assert "top5Wrap" in text
-        assert "const SAMPLES = [" in text
+        assert "SAMPLES" in text
+        # Confirm no hardcoded base64 in previewImg
+        assert 'id="previewImg" src="/api/sample-image/' in text
 
 
 def test_server_status_and_metadata():
@@ -42,16 +44,22 @@ def test_server_status_and_metadata():
         assert "crc" in ids and "svm" in ids and "knn" in ids
 
 
-def test_server_samples_endpoint():
+def test_server_samples_and_image_endpoint():
     with TestClient(app) as client:
         res = client.get("/api/samples")
         assert res.status_code == 200
         samples = res.json()
         assert len(samples) >= 6
         for s in samples:
-            assert "data_url" in s and s["data_url"].startswith("data:image/png;base64,")
+            assert "image_url" in s and s["image_url"].startswith("/api/sample-image/")
             assert "palm_id" in s and isinstance(s["palm_id"], int)
             assert "filename" in s
+
+            # Fetch the actual sample image via dynamic image endpoint
+            img_res = client.get(s["image_url"])
+            assert img_res.status_code == 200
+            assert img_res.headers["content-type"] == "image/png"
+            assert len(img_res.content) > 1000
 
 
 def test_server_recognize_real_image():

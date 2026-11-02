@@ -6,7 +6,6 @@ inference endpoints using the project's frozen CompCode models (CRC_RLS, Linear 
 
 from __future__ import annotations
 
-import base64
 import contextlib
 import time
 from pathlib import Path
@@ -16,7 +15,7 @@ import cv2
 import joblib
 import numpy as np
 import uvicorn
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 
@@ -30,6 +29,7 @@ MODELS: dict[str, Any] = {}
 EXTRACTOR: CompCodeExtractor | None = None
 FEATURE_CONFIG: dict[str, Any] = {}
 SAMPLES: list[dict[str, Any]] = []
+SAMPLE_IMAGES: dict[int, bytes] = {}
 
 MODEL_METADATA = {
     "crc": {
@@ -79,7 +79,7 @@ SAMPLE_DEFINITIONS = [
 
 def load_all_artifacts() -> None:
     """Preload models, feature extractor, and sample probes into memory."""
-    global EXTRACTOR, FEATURE_CONFIG, MODELS, SAMPLES
+    global EXTRACTOR, FEATURE_CONFIG, MODELS, SAMPLE_IMAGES, SAMPLES
 
     for name in ("crc", "svm", "knn"):
         path = WS / "artifacts" / f"{name}.joblib"
@@ -94,6 +94,7 @@ def load_all_artifacts() -> None:
         EXTRACTOR = CompCodeExtractor(CompCodeConfig(**FEATURE_CONFIG))
 
     SAMPLES.clear()
+    SAMPLE_IMAGES.clear()
     for sid, fname, true_pid, label in SAMPLE_DEFINITIONS:
         img_path = WS / "data/raw/session2" / fname
         if not img_path.exists():
@@ -102,7 +103,8 @@ def load_all_artifacts() -> None:
         if img is None:
             continue
         _, buf = cv2.imencode(".png", img)
-        b64 = "data:image/png;base64," + base64.b64encode(buf).decode("ascii")
+        png_bytes = buf.tobytes()
+        SAMPLE_IMAGES[sid] = png_bytes
         SAMPLES.append(
             {
                 "id": sid,
@@ -113,7 +115,7 @@ def load_all_artifacts() -> None:
                 "session": "session2",
                 "width": int(img.shape[1]),
                 "height": int(img.shape[0]),
-                "data_url": b64,
+                "image_url": f"/api/sample-image/{sid}",
             }
         )
 
@@ -127,7 +129,6 @@ async def lifespan(app: FastAPI):
 
 # Eager preload on import so all endpoints have models and samples immediately
 load_all_artifacts()
-
 
 app = FastAPI(
     title="Tongji Contactless Palmprint Recognition API",
@@ -179,6 +180,19 @@ async def get_models():
 @app.get("/api/samples")
 async def get_samples():
     return SAMPLES
+
+
+@app.get("/api/sample-image/{sample_id}")
+async def get_sample_image(sample_id: int):
+    if not SAMPLE_IMAGES:
+        load_all_artifacts()
+    if sample_id not in SAMPLE_IMAGES:
+        raise HTTPException(status_code=404, detail="Sample image not found")
+    return Response(
+        content=SAMPLE_IMAGES[sample_id],
+        media_type="image/png",
+        headers={"Cache-Control": "public, max-age=86400"},
+    )
 
 
 @app.post("/api/recognize")
