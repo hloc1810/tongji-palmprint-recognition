@@ -29,3 +29,8 @@ data/raw/**
 # Exclude duplicate verification view and intermediate dev checkpoints
 outputs/cnn_experiments/verification_view/
 outputs/runs/*/best_dev.pth
+
+# Intermediate feature caches
+outputs/cache/
+outputs/feature_ablation/cache/
+
