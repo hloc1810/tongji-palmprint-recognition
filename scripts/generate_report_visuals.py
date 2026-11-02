@@ -8,8 +8,10 @@ Outputs:
 """
 
 from pathlib import Path
+
 import cv2
 import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
@@ -28,31 +30,39 @@ def plot_dataset_samples():
     """Figure 1: Illustrate intra-class variations across Session 1 and Session 2."""
     manifest = pd.read_csv(MANIFEST_PATH)
     palms = [1, 25, 126, 403]
-    
+
     fig, axes = plt.subplots(len(palms), 4, figsize=(10, 10), dpi=300)
     plt.subplots_adjust(wspace=0.15, hspace=0.35)
-    
+
     for row_idx, palm_id in enumerate(palms):
-        s1_imgs = manifest[(manifest.palm_id == palm_id) & (manifest.session == "session1")]["path"].tolist()[:2]
-        s2_imgs = manifest[(manifest.palm_id == palm_id) & (manifest.session == "session2")]["path"].tolist()[:2]
-        
+        s1_imgs = manifest[(manifest.palm_id == palm_id) & (manifest.session == "session1")][
+            "path"
+        ].tolist()[:2]
+        s2_imgs = manifest[(manifest.palm_id == palm_id) & (manifest.session == "session2")][
+            "path"
+        ].tolist()[:2]
+
         cols = [
             (s1_imgs[0], f"Palm {palm_id} — S1 (#1)\n(Gallery)"),
             (s1_imgs[1], f"Palm {palm_id} — S1 (#2)\n(Gallery)"),
             (s2_imgs[0], f"Palm {palm_id} — S2 (#1)\n(Probe)"),
             (s2_imgs[1], f"Palm {palm_id} — S2 (#2)\n(Probe)"),
         ]
-        
+
         for col_idx, (rel_path, title) in enumerate(cols):
             ax = axes[row_idx, col_idx]
             img = cv2.imread(str(RAW / rel_path), cv2.IMREAD_GRAYSCALE)
             ax.imshow(img, cmap="gray", vmin=0, vmax=255)
             ax.set_title(title, fontsize=9, fontweight="bold" if "S2" in title else "normal")
             ax.axis("off")
-            
-    fig.suptitle("Tongji Contactless Palmprint: Session 1 (Gallery) vs Session 2 (Probe)\nMinh họa biến thiên chiếu sáng, góc xoay và độ co giãn nếp vân giữa 2 phiên", 
-                 fontsize=12, fontweight="bold", y=0.98)
-    
+
+    fig.suptitle(
+        "Tongji Contactless Palmprint: Session 1 (Gallery) vs Session 2 (Probe)\nMinh họa biến thiên chiếu sáng, góc xoay và độ co giãn nếp vân giữa 2 phiên",
+        fontsize=12,
+        fontweight="bold",
+        y=0.98,
+    )
+
     out_path = FIGDIR / "dataset_samples_session1_vs_session2.png"
     plt.savefig(out_path, bbox_inches="tight")
     plt.close(fig)
@@ -63,42 +73,25 @@ def plot_compcode_pipeline():
     """Figure 2: CompCode 600-D feature extraction pipeline."""
     sample_path = RAW / "session1/00001.bmp"
     img = cv2.imread(str(sample_path), cv2.IMREAD_GRAYSCALE)
-    
+
     cfg = CompCodeConfig()
     extractor = CompCodeExtractor(cfg)
-    
+
     # 1. Input ROI
     # 2. 6 Gabor Kernels
     # 3. Orientation Map (0..5)
     # 4. 10x10 spatial grid on ROI
     # 5. 600-D histogram
-    
-    fig = plt.figure(figsize=(14, 8), dpi=300)
-    gs = fig.add_gridspec(2, 6, height_ratios=[1, 1], hspace=0.35, wspace=0.25)
-    
-    # Top-Left: Original ROI
-    ax_roi = fig.add_subplot(gs[0, 0:2])
-    ax_roi.imshow(img, cmap="gray")
-    ax_roi.set_title("(a) Input ROI (128×128)", fontsize=11, fontweight="bold")
-    ax_roi.axis("off")
-    
-    # Top-Right: 6 Gabor Kernels (2x3 or 1x6)
-    # We display them in the remaining columns of row 0
-    thetas = [0, 30, 60, 90, 120, 150]
-    for i, kernel in enumerate(extractor.kernels):
-        ax_k = fig.add_subplot(gs[0, 2 + i % 4 if i < 4 else 0]) # wait, let's make clean layout
-        pass
-    plt.close(fig)
 
-    # Let's do a dedicated, elegant 3-column / 2-row layout:
+    # (a) Input ROI, (b) Gabor kernels, (c) Orientation map, (d) 10x10 grid, (e, f) Histograms
     fig, axes = plt.subplots(2, 4, figsize=(14, 7), dpi=300)
     plt.subplots_adjust(wspace=0.25, hspace=0.3)
-    
+
     # (a) Input ROI
     axes[0, 0].imshow(img, cmap="gray")
     axes[0, 0].set_title("(a) ROI Gốc (128×128)", fontsize=10, fontweight="bold")
     axes[0, 0].axis("off")
-    
+
     # (b) 6 Gabor Kernels combined into one visual
     gabor_montage = np.zeros((41 * 2, 41 * 3), dtype=np.float32)
     for idx, k in enumerate(extractor.kernels):
@@ -106,18 +99,26 @@ def plot_compcode_pipeline():
         c_i = idx % 3
         gabor_montage[r_i * 41 : (r_i + 1) * 41, c_i * 41 : (c_i + 1) * 41] = k
     axes[0, 1].imshow(gabor_montage, cmap="seismic")
-    axes[0, 1].set_title("(b) 6 Bộ lọc Gabor (41×41)\nθ = 0°, 30°, 60°, 90°, 120°, 150°", fontsize=10, fontweight="bold")
+    axes[0, 1].set_title(
+        "(b) 6 Bộ lọc Gabor (41×41)\nθ = 0°, 30°, 60°, 90°, 120°, 150°",
+        fontsize=10,
+        fontweight="bold",
+    )
     axes[0, 1].axis("off")
-    
+
     # (c) CompCode Orientation Map
     ori_map = extractor.orientation_map(img)
     cmap_ori = plt.get_cmap("tab10", 6)
     im_ori = axes[0, 2].imshow(ori_map, cmap=cmap_ori, vmin=0, vmax=5)
-    axes[0, 2].set_title("(c) Bản đồ Competitive Code\nargmin phản hồi thung lũng (0–5)", fontsize=10, fontweight="bold")
+    axes[0, 2].set_title(
+        "(c) Bản đồ Competitive Code\nargmin phản hồi thung lũng (0–5)",
+        fontsize=10,
+        fontweight="bold",
+    )
     axes[0, 2].axis("off")
     cbar = fig.colorbar(im_ori, ax=axes[0, 2], ticks=range(6), fraction=0.046, pad=0.04)
     cbar.ax.set_yticklabels(["0°", "30°", "60°", "90°", "120°", "150°"], fontsize=8)
-    
+
     # (d) 10x10 Spatial Grid on ROI
     grid_img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
     block_px = cfg.block_pixels
@@ -126,34 +127,49 @@ def plot_compcode_pipeline():
     for c in range(0, 128, block_px):
         cv2.line(grid_img, (c, 0), (c, 128), (255, 60, 60), 1)
     axes[0, 3].imshow(grid_img)
-    axes[0, 3].set_title("(d) Phân hoạch lưới không gian\n10×10 khối (14×14 px/khối)", fontsize=10, fontweight="bold")
+    axes[0, 3].set_title(
+        "(d) Phân hoạch lưới không gian\n10×10 khối (14×14 px/khối)", fontsize=10, fontweight="bold"
+    )
     axes[0, 3].axis("off")
-    
+
     # Feature Vector 600-D
     vec = extractor.transform(img)
-    
+
     # Combine bottom row for histogram & block representation
-    axes[1, 0].bar(range(6), vec[:6], color=plt.cm.tab10(np.arange(6)), edgecolor="black", linewidth=0.5)
+    axes[1, 0].bar(
+        range(6), vec[:6], color=plt.cm.tab10(np.arange(6)), edgecolor="black", linewidth=0.5
+    )
     axes[1, 0].set_xticks(range(6))
     axes[1, 0].set_xticklabels(["0°", "30°", "60°", "90°", "120°", "150°"], fontsize=8)
-    axes[1, 0].set_title("(e) Histogram 6 hướng\ntại Khối [0, 0] (Chuẩn hóa L1)", fontsize=10, fontweight="bold")
+    axes[1, 0].set_title(
+        "(e) Histogram 6 hướng\ntại Khối [0, 0] (Chuẩn hóa L1)", fontsize=10, fontweight="bold"
+    )
     axes[1, 0].set_ylabel("Mật độ hướng")
     axes[1, 0].grid(axis="y", linestyle="--", alpha=0.5)
-    
+
     # Vector 600-D full representation
     ax_vec = plt.subplot(2, 4, (6, 8))
     ax_vec.plot(vec, color="#1f77b4", linewidth=0.8)
     ax_vec.fill_between(range(len(vec)), vec, color="#1f77b4", alpha=0.3)
-    ax_vec.set_title("(f) Vector Đặc trưng Toàn cục 600 Chiều (100 khối × 6 hướng, Chuẩn hóa L2)", fontsize=10, fontweight="bold")
+    ax_vec.set_title(
+        "(f) Vector Đặc trưng Toàn cục 600 Chiều (100 khối × 6 hướng, Chuẩn hóa L2)",
+        fontsize=10,
+        fontweight="bold",
+    )
     ax_vec.set_xlabel("Chỉ số đặc trưng (0 đến 599)")
     ax_vec.set_ylabel("Giá trị đặc trưng")
     ax_vec.set_xlim(0, 600)
     ax_vec.grid(True, linestyle="--", alpha=0.5)
-    
+
     # Hide unused axes[1, 1] if needed or remove
     axes[1, 1].remove()
-    
-    fig.suptitle("Quy trình Trích xuất Đặc trưng Competitive Code (CompCode 600-D)", fontsize=13, fontweight="bold", y=0.98)
+
+    fig.suptitle(
+        "Quy trình Trích xuất Đặc trưng Competitive Code (CompCode 600-D)",
+        fontsize=13,
+        fontweight="bold",
+        y=0.98,
+    )
     out_path = FIGDIR / "compcode_feature_extraction_pipeline.png"
     plt.savefig(out_path, bbox_inches="tight")
     plt.close(fig)
@@ -163,24 +179,84 @@ def plot_compcode_pipeline():
 def plot_accuracy_vs_latency():
     """Figure 3: Accuracy (Rank-1 %) vs CPU Latency (ms) Pareto Trade-off."""
     models_data = [
-        {"name": "M3: CompCode + CRC_RLS", "rank1": 98.2667, "latency": 14.71, "color": "#2ca02c", "marker": "o", "pareto": True},
-        {"name": "M2: CompCode + Linear SVM", "rank1": 97.3667, "latency": 3.71, "color": "#1f77b4", "marker": "s", "pareto": True},
-        {"name": "M1: CompCode + 1-NN", "rank1": 94.4333, "latency": 11.00, "color": "#ff7f0e", "marker": "^", "pareto": False},
-        {"name": "M4-E2: ResNet18 Nearest Cosine", "rank1": 73.7444, "latency": 19.34, "color": "#9467bd", "marker": "D", "pareto": False},
-        {"name": "M4-E2: ResNet18 Centroid Cosine", "rank1": 68.8278, "latency": 19.34, "color": "#8c564b", "marker": "v", "pareto": False},
-        {"name": "M4-E1: ResNet18 Logits (Softmax)", "rank1": 64.3611, "latency": 48.72, "color": "#d62728", "marker": "X", "pareto": False},
+        {
+            "name": "M3: CompCode + CRC_RLS",
+            "rank1": 98.2667,
+            "latency": 14.71,
+            "color": "#2ca02c",
+            "marker": "o",
+            "pareto": True,
+        },
+        {
+            "name": "M2: CompCode + Linear SVM",
+            "rank1": 97.3667,
+            "latency": 3.71,
+            "color": "#1f77b4",
+            "marker": "s",
+            "pareto": True,
+        },
+        {
+            "name": "M1: CompCode + 1-NN",
+            "rank1": 94.4333,
+            "latency": 11.00,
+            "color": "#ff7f0e",
+            "marker": "^",
+            "pareto": False,
+        },
+        {
+            "name": "M4-E2: ResNet18 Nearest Cosine",
+            "rank1": 73.7444,
+            "latency": 19.34,
+            "color": "#9467bd",
+            "marker": "D",
+            "pareto": False,
+        },
+        {
+            "name": "M4-E2: ResNet18 Centroid Cosine",
+            "rank1": 68.8278,
+            "latency": 19.34,
+            "color": "#8c564b",
+            "marker": "v",
+            "pareto": False,
+        },
+        {
+            "name": "M4-E1: ResNet18 Logits (Softmax)",
+            "rank1": 64.3611,
+            "latency": 48.72,
+            "color": "#d62728",
+            "marker": "X",
+            "pareto": False,
+        },
     ]
-    
+
     fig, ax = plt.subplots(figsize=(10, 6), dpi=300)
-    
+
     # Pareto frontier line between SVM and CRC
-    ax.plot([3.71, 14.71], [97.3667, 98.2667], linestyle="--", color="#2ca02c", linewidth=2, label="Biên Pareto tối ưu (Pareto Frontier)")
-    ax.fill_between([3.71, 14.71, 55], [97.3667, 98.2667, 98.2667], [60, 60, 60], color="#2ca02c", alpha=0.06)
-    
+    ax.plot(
+        [3.71, 14.71],
+        [97.3667, 98.2667],
+        linestyle="--",
+        color="#2ca02c",
+        linewidth=2,
+        label="Biên Pareto tối ưu (Pareto Frontier)",
+    )
+    ax.fill_between(
+        [3.71, 14.71, 55], [97.3667, 98.2667, 98.2667], [60, 60, 60], color="#2ca02c", alpha=0.06
+    )
+
     for m in models_data:
-        ax.scatter(m["latency"], m["rank1"], s=180, color=m["color"], marker=m["marker"], 
-                   edgecolor="black", linewidth=1.2, zorder=5, label=m["name"])
-        
+        ax.scatter(
+            m["latency"],
+            m["rank1"],
+            s=180,
+            color=m["color"],
+            marker=m["marker"],
+            edgecolor="black",
+            linewidth=1.2,
+            zorder=5,
+            label=m["name"],
+        )
+
         # Position offset annotations
         dx, dy = 1.0, 0.8
         if "Linear SVM" in m["name"]:
@@ -195,21 +271,33 @@ def plot_accuracy_vs_latency():
             dx, dy = 1.2, -1.8
         elif "Logits" in m["name"]:
             dx, dy = -16.0, 1.5
-            
-        ax.annotate(f"{m['name'].split(':')[1].strip()}\n({m['rank1']:.2f}%, {m['latency']:.1f} ms)", 
-                    (m["latency"], m["rank1"]), xytext=(m["latency"] + dx, m["rank1"] + dy),
-                    fontsize=8.5, fontweight="bold",
-                    bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="gray", alpha=0.85))
-        
-    ax.set_title("Đánh đổi giữa Độ chính xác (Rank-1 %) và Độ trễ CPU (ms/ảnh)\nClosed-set 1:N trên 6.000 probe Tongji Session 2", 
-                 fontsize=12, fontweight="bold", pad=12)
-    ax.set_xlabel("Độ trễ CPU đơn luồng (ms/ảnh) — Càng thấp càng nhanh", fontsize=10, fontweight="bold")
-    ax.set_ylabel("Tỷ lệ nhận dạng Rank-1 (%) — Càng cao càng chính xác", fontsize=10, fontweight="bold")
+
+        ax.annotate(
+            f"{m['name'].split(':')[1].strip()}\n({m['rank1']:.2f}%, {m['latency']:.1f} ms)",
+            (m["latency"], m["rank1"]),
+            xytext=(m["latency"] + dx, m["rank1"] + dy),
+            fontsize=8.5,
+            fontweight="bold",
+            bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="gray", alpha=0.85),
+        )
+
+    ax.set_title(
+        "Đánh đổi giữa Độ chính xác (Rank-1 %) và Độ trễ CPU (ms/ảnh)\nClosed-set 1:N trên 6.000 probe Tongji Session 2",
+        fontsize=12,
+        fontweight="bold",
+        pad=12,
+    )
+    ax.set_xlabel(
+        "Độ trễ CPU đơn luồng (ms/ảnh) — Càng thấp càng nhanh", fontsize=10, fontweight="bold"
+    )
+    ax.set_ylabel(
+        "Tỷ lệ nhận dạng Rank-1 (%) — Càng cao càng chính xác", fontsize=10, fontweight="bold"
+    )
     ax.set_xlim(0, 55)
     ax.set_ylim(60, 101)
     ax.grid(True, linestyle="--", alpha=0.5)
     ax.legend(loc="lower right", fontsize=8.5, framealpha=0.9)
-    
+
     out_path = FIGDIR / "accuracy_vs_latency_tradeoff.png"
     plt.savefig(out_path, bbox_inches="tight")
     plt.close(fig)
@@ -219,51 +307,98 @@ def plot_accuracy_vs_latency():
 def plot_qualitative_predictions():
     """Figure 4: Qualitative success and failure cases with probe vs gallery."""
     manifest = pd.read_csv(MANIFEST_PATH)
-    crc_pred = pd.read_csv(ROOT / "outputs/runs/crc/predictions.csv")
-    
+
     # 2 Successes: Palm 1 and Palm 23
     # 2 Failures from CRC:
     # 1. Probe 00131: True Palm 14, Predicted Palm 360
     # 2. Probe 00241: True Palm 25, Predicted Palm 545
     cases = [
-        {"type": "SUCCESS", "title": "Thành công #1 (Chính xác)", "probe_uid": "session2/00001", "true_id": 1, "pred_id": 1},
-        {"type": "SUCCESS", "title": "Thành công #2 (Chính xác)", "probe_uid": "session2/00021", "true_id": 3, "pred_id": 3},
-        {"type": "FAILURE", "title": "Thất bại #1 (Nhầm lẫn)", "probe_uid": "session2/00131", "true_id": 14, "pred_id": 360},
-        {"type": "FAILURE", "title": "Thất bại #2 (Nhầm lẫn)", "probe_uid": "session2/00241", "true_id": 25, "pred_id": 545},
+        {
+            "type": "SUCCESS",
+            "title": "Thành công #1 (Chính xác)",
+            "probe_uid": "session2/00001",
+            "true_id": 1,
+            "pred_id": 1,
+        },
+        {
+            "type": "SUCCESS",
+            "title": "Thành công #2 (Chính xác)",
+            "probe_uid": "session2/00021",
+            "true_id": 3,
+            "pred_id": 3,
+        },
+        {
+            "type": "FAILURE",
+            "title": "Thất bại #1 (Nhầm lẫn)",
+            "probe_uid": "session2/00131",
+            "true_id": 14,
+            "pred_id": 360,
+        },
+        {
+            "type": "FAILURE",
+            "title": "Thất bại #2 (Nhầm lẫn)",
+            "probe_uid": "session2/00241",
+            "true_id": 25,
+            "pred_id": 545,
+        },
     ]
-    
+
     fig, axes = plt.subplots(4, 3, figsize=(9, 11), dpi=300)
     plt.subplots_adjust(wspace=0.25, hspace=0.45)
-    
+
     for row_idx, case in enumerate(cases):
         probe_path = RAW / manifest[manifest.sample_uid == case["probe_uid"]]["path"].iloc[0]
-        true_s1_path = RAW / manifest[(manifest.palm_id == case["true_id"]) & (manifest.session == "session1")]["path"].iloc[0]
-        pred_s1_path = RAW / manifest[(manifest.palm_id == case["pred_id"]) & (manifest.session == "session1")]["path"].iloc[0]
-        
+        true_s1_path = (
+            RAW
+            / manifest[(manifest.palm_id == case["true_id"]) & (manifest.session == "session1")][
+                "path"
+            ].iloc[0]
+        )
+        pred_s1_path = (
+            RAW
+            / manifest[(manifest.palm_id == case["pred_id"]) & (manifest.session == "session1")][
+                "path"
+            ].iloc[0]
+        )
+
         probe_img = cv2.imread(str(probe_path), cv2.IMREAD_GRAYSCALE)
         true_img = cv2.imread(str(true_s1_path), cv2.IMREAD_GRAYSCALE)
         pred_img = cv2.imread(str(pred_s1_path), cv2.IMREAD_GRAYSCALE)
-        
+
         # Col 0: Probe Session 2
         axes[row_idx, 0].imshow(probe_img, cmap="gray")
-        axes[row_idx, 0].set_title(f"Probe (Session 2)\nTrue ID: {case['true_id']}", fontsize=9, fontweight="bold")
+        axes[row_idx, 0].set_title(
+            f"Probe (Session 2)\nTrue ID: {case['true_id']}", fontsize=9, fontweight="bold"
+        )
         axes[row_idx, 0].axis("off")
-        
+
         # Col 1: True Match (Session 1 Gallery)
         axes[row_idx, 1].imshow(true_img, cmap="gray")
-        axes[row_idx, 1].set_title(f"Ground Truth (Session 1)\nGallery ID: {case['true_id']}", fontsize=9, color="green" if case["type"] == "SUCCESS" else "black")
+        axes[row_idx, 1].set_title(
+            f"Ground Truth (Session 1)\nGallery ID: {case['true_id']}",
+            fontsize=9,
+            color="green" if case["type"] == "SUCCESS" else "black",
+        )
         axes[row_idx, 1].axis("off")
-        
+
         # Col 2: Predicted Top-1 (Session 1 Gallery)
         axes[row_idx, 2].imshow(pred_img, cmap="gray")
         color = "green" if case["type"] == "SUCCESS" else "red"
-        label = "Dự đoán ĐÚNG" if case["type"] == "SUCCESS" else f"Dự đoán SAI (ID: {case['pred_id']})"
-        axes[row_idx, 2].set_title(f"Top-1 Match (Session 1)\n{label}", fontsize=9, color=color, fontweight="bold")
+        label = (
+            "Dự đoán ĐÚNG" if case["type"] == "SUCCESS" else f"Dự đoán SAI (ID: {case['pred_id']})"
+        )
+        axes[row_idx, 2].set_title(
+            f"Top-1 Match (Session 1)\n{label}", fontsize=9, color=color, fontweight="bold"
+        )
         axes[row_idx, 2].axis("off")
-        
-    fig.suptitle("Phân tích Định tính Các Trường Hợp Nhận Dạng Đúng & Sai của Mô hình CRC_RLS\nSo sánh mẫu truy vấn Session 2 với mẫu thực tế và mẫu bị nhầm lẫn trong Gallery Session 1", 
-                 fontsize=11, fontweight="bold", y=0.98)
-    
+
+    fig.suptitle(
+        "Phân tích Định tính Các Trường Hợp Nhận Dạng Đúng & Sai của Mô hình CRC_RLS\nSo sánh mẫu truy vấn Session 2 với mẫu thực tế và mẫu bị nhầm lẫn trong Gallery Session 1",
+        fontsize=11,
+        fontweight="bold",
+        y=0.98,
+    )
+
     out_path = FIGDIR / "qualitative_predictions_success_failure.png"
     plt.savefig(out_path, bbox_inches="tight")
     plt.close(fig)

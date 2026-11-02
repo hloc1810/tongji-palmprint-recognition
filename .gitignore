@@ -25,3 +25,7 @@ Thumbs.db
 # Heavy raw biometric dataset (excluded from GitHub, kept locally)
 data/raw/**
 !data/raw/.gitkeep
+
+# Exclude duplicate verification view and intermediate dev checkpoints
+outputs/cnn_experiments/verification_view/
+outputs/runs/*/best_dev.pth

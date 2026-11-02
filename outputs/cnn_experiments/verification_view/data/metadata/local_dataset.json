@@ -1,7 +1,0 @@
-{
-  "data_root": "D:\\palmprint-recognition\\data\\raw",
-  "strict": true,
-  "folds": 5,
-  "seed": 42,
-  "manifest_sha256": "99bbbe45a4807d48801a28a6aadfec2efee46a3f4c4fe3d3af8e2337241c8ae0"
-}

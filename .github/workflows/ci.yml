@@ -26,12 +26,16 @@ jobs:
           python -m ruff check src app scripts tests
           python -m ruff format --check src app scripts tests
       - name: Unit and synthetic integration tests
-        run: python -m pytest -q -ra --junitxml=validation/pytest.xml
+        run: |
+          mkdir -p validation
+          python -m pytest -q -ra --junitxml=validation/pytest.xml
       - name: Synthetic end-to-end smoke test
         run: python scripts/run_smoke.py
       - name: Record resolved dependency versions
         if: always()
-        run: python -m pip freeze > validation/dependencies.txt
+        run: |
+          mkdir -p validation
+          python -m pip freeze > validation/dependencies.txt
       - name: Upload test evidence
         if: always()
         uses: actions/upload-artifact@v4

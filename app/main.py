@@ -13,10 +13,9 @@ from pathlib import Path
 
 import cv2
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
-from PIL import Image
 import streamlit as st
+from PIL import Image
 
 from palmprint.data.dataset import resolve_path
 from palmprint.data.preparation import load_manifest
@@ -116,10 +115,12 @@ with st.sidebar:
     for p in sorted((WS / "artifacts").glob("resnet18_seed*_gallery512.npz")):
         seed = p.stem.removeprefix("resnet18_seed").removesuffix("_gallery512")
         if seed == "17":
-            available_keys.extend([
-                f"resnet18_seed{seed}_embedding_nearest",
-                f"resnet18_seed{seed}_embedding_centroid",
-            ])
+            available_keys.extend(
+                [
+                    f"resnet18_seed{seed}_embedding_nearest",
+                    f"resnet18_seed{seed}_embedding_centroid",
+                ]
+            )
     if (WS / "artifacts/resnet18_seed17.pth").exists():
         available_keys.append("resnet18_seed17")
 
@@ -148,15 +149,23 @@ with st.sidebar:
 # ---------------------------------------------------------
 # Main Interface Tabs
 # ---------------------------------------------------------
-st.markdown('<div class="main-header">🖐️ Hệ thống Nhận diện Lòng bàn tay không tiếp xúc</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">Contactless Palmprint Identification trên bộ dữ liệu chuẩn Tongji University (600 Palm ID · Closed-set 1:N)</div>', unsafe_allow_html=True)
+st.markdown(
+    '<div class="main-header">🖐️ Hệ thống Nhận diện Lòng bàn tay không tiếp xúc</div>',
+    unsafe_allow_html=True,
+)
+st.markdown(
+    '<div class="sub-header">Contactless Palmprint Identification trên bộ dữ liệu chuẩn Tongji University (600 Palm ID · Closed-set 1:N)</div>',
+    unsafe_allow_html=True,
+)
 
-tab_demo, tab_feature, tab_benchmark, tab_about = st.tabs([
-    "🔍 Nhận dạng Sinh trắc",
-    "🔬 Trực quan hóa Đặc trưng",
-    "📊 Bảng vàng Benchmark",
-    "📖 Thông tin Đề tài",
-])
+tab_demo, tab_feature, tab_benchmark, tab_about = st.tabs(
+    [
+        "🔍 Nhận dạng Sinh trắc",
+        "🔬 Trực quan hóa Đặc trưng",
+        "📊 Bảng vàng Benchmark",
+        "📖 Thông tin Đề tài",
+    ]
+)
 
 
 # =========================================================
@@ -188,9 +197,13 @@ with tab_demo:
                 st.write("")
                 st.write("")
                 if st.button("🎲 Ngẫu nhiên"):
-                    st.session_state["selected_probe_uid"] = random.choice(test_samples.sample_uid.tolist())
+                    st.session_state["selected_probe_uid"] = random.choice(
+                        test_samples.sample_uid.tolist()
+                    )
 
-            default_uid = st.session_state.get("selected_probe_uid", test_samples.sample_uid.iloc[0])
+            default_uid = st.session_state.get(
+                "selected_probe_uid", test_samples.sample_uid.iloc[0]
+            )
             probe_uids = test_samples.sample_uid.tolist()
             default_index = probe_uids.index(default_uid) if default_uid in probe_uids else 0
 
@@ -207,7 +220,11 @@ with tab_demo:
             sample_name = selected_uid
 
             img_preview = Image.open(query_image_path)
-            st.image(img_preview, caption=f"Mẫu truy vấn: {sample_name} (Ground Truth: Palm ID {true_palm_id})", width=220)
+            st.image(
+                img_preview,
+                caption=f"Mẫu truy vấn: {sample_name} (Ground Truth: Palm ID {true_palm_id})",
+                width=220,
+            )
 
         else:
             uploaded = st.file_uploader(
@@ -232,15 +249,20 @@ with tab_demo:
             else:
                 with st.spinner("Đang trích xuất đặc trưng và so khớp..."):
                     try:
+
                         def execute_predict(img_p):
                             if "_embedding_" in selected_model_key:
                                 from palmprint.evaluation.embedding import predict_one_embedding
+
                                 head, strategy = selected_model_key.split("_embedding_", 1)
                                 seed = int(head.removeprefix("resnet18_seed"))
                                 return predict_one_embedding(WS, seed, img_p, strategy=strategy)
                             if selected_model_key.startswith("resnet18_seed"):
                                 from palmprint.evaluation.cnn import predict_one_cnn
-                                return predict_one_cnn(WS, int(selected_model_key.removeprefix("resnet18_seed")), img_p)
+
+                                return predict_one_cnn(
+                                    WS, int(selected_model_key.removeprefix("resnet18_seed")), img_p
+                                )
                             return predict_one(WS, selected_model_key, img_p)
 
                         if query_image_path is not None:
@@ -278,32 +300,41 @@ with tab_demo:
                         # Top-5 Table
                         st.markdown("##### 🏆 Bảng xếp hạng Top-5 ứng viên gần nhất:")
                         score_label = "Khoảng cách / Sai số (Càng nhỏ càng khớp)"
-                        df_top5 = pd.DataFrame({
-                            "Thứ hạng": [f"Top {i+1}" for i in range(len(top5_ids))],
-                            "Palm ID": [f"Palm #{pid}" for pid in top5_ids],
-                            score_label: [f"{s:.4f}" for s in top5_scores],
-                            "Trạng thái": ["✅ Khớp nhất (Top-1)" if i == 0 else "—" for i in range(len(top5_ids))],
-                        })
+                        df_top5 = pd.DataFrame(
+                            {
+                                "Thứ hạng": [f"Top {i + 1}" for i in range(len(top5_ids))],
+                                "Palm ID": [f"Palm #{pid}" for pid in top5_ids],
+                                score_label: [f"{s:.4f}" for s in top5_scores],
+                                "Trạng thái": [
+                                    "✅ Khớp nhất (Top-1)" if i == 0 else "—"
+                                    for i in range(len(top5_ids))
+                                ],
+                            }
+                        )
                         st.dataframe(df_top5, use_container_width=True, hide_index=True)
 
                         # Gallery Matching Side-by-Side Verification
                         st.markdown("##### 🖼️ Mẫu đăng ký đối chiếu trong Gallery (Session 1):")
                         cols_gal = st.columns(min(5, len(top5_ids)))
                         for idx, (col_g, pid) in enumerate(zip(cols_gal, top5_ids)):
-                            match_cand = df_manifest[(df_manifest.session == "session1") & (df_manifest.palm_id == pid)].iloc[0]
+                            match_cand = df_manifest[
+                                (df_manifest.session == "session1") & (df_manifest.palm_id == pid)
+                            ].iloc[0]
                             cand_path = resolve_path(dataset_info["data_root"], match_cand.path)
                             with col_g:
-                                is_top1 = (idx == 0)
+                                is_top1 = idx == 0
                                 st.image(
                                     Image.open(cand_path),
-                                    caption=f"{'👉 ' if is_top1 else ''}Palm #{pid} (Top {idx+1})",
+                                    caption=f"{'👉 ' if is_top1 else ''}Palm #{pid} (Top {idx + 1})",
                                     use_container_width=True,
                                 )
 
                     except Exception as e:
                         st.error(f"Lỗi khi thực hiện nhận dạng: {e}")
         else:
-            st.info("👈 Hãy chọn một ảnh bên trái rồi bấm **BẮT ĐẦU NHẬN DẠNG** để đối soát thời gian thực.")
+            st.info(
+                "👈 Hãy chọn một ảnh bên trái rồi bấm **BẮT ĐẦU NHẬN DẠNG** để đối soát thời gian thực."
+            )
 
 
 # =========================================================
@@ -318,7 +349,9 @@ with tab_feature:
     extractor = get_compcode_extractor()
 
     # Load image for visualization
-    sample_for_vis = query_image_path if query_image_path is not None else (WS / "data/raw/session1/00001.bmp")
+    sample_for_vis = (
+        query_image_path if query_image_path is not None else (WS / "data/raw/session1/00001.bmp")
+    )
     gray_roi = cv2.imread(str(sample_for_vis), cv2.IMREAD_GRAYSCALE)
 
     c_v1, c_v2, c_v3 = st.columns(3)
@@ -386,23 +419,39 @@ with tab_benchmark:
     with c_fig1:
         tradeoff_img = WS / "reports/figures/accuracy_vs_latency_tradeoff.png"
         if tradeoff_img.exists():
-            st.image(str(tradeoff_img), caption="Đồ thị Đánh đổi Độ chính xác vs Độ trễ CPU (Pareto Frontier)", use_container_width=True)
+            st.image(
+                str(tradeoff_img),
+                caption="Đồ thị Đánh đổi Độ chính xác vs Độ trễ CPU (Pareto Frontier)",
+                use_container_width=True,
+            )
 
     with c_fig2:
         model_cmp_img = WS / "reports/figures/model_comparison.png"
         if model_cmp_img.exists():
-            st.image(str(model_cmp_img), caption="So sánh Rank-1, Rank-5 và Macro-F1 giữa các mô hình", use_container_width=True)
+            st.image(
+                str(model_cmp_img),
+                caption="So sánh Rank-1, Rank-5 và Macro-F1 giữa các mô hình",
+                use_container_width=True,
+            )
 
     c_fig3, c_fig4 = st.columns(2)
     with c_fig3:
         cmc_img = WS / "reports/figures/cnn_vs_classical_cmc_rank20.png"
         if cmc_img.exists():
-            st.image(str(cmc_img), caption="Đường cong CMC Rank 1–20 giữa Cổ điển và Deep Learning", use_container_width=True)
+            st.image(
+                str(cmc_img),
+                caption="Đường cong CMC Rank 1–20 giữa Cổ điển và Deep Learning",
+                use_container_width=True,
+            )
 
     with c_fig4:
         error_img = WS / "reports/figures/qualitative_predictions_success_failure.png"
         if error_img.exists():
-            st.image(str(error_img), caption="Trực quan hóa các ca nhận dạng đúng và sai thực tế", use_container_width=True)
+            st.image(
+                str(error_img),
+                caption="Trực quan hóa các ca nhận dạng đúng và sai thực tế",
+                use_container_width=True,
+            )
 
 
 # =========================================================
@@ -423,10 +472,11 @@ with tab_about:
            - Chọn tham số chỉ bằng **5-fold CV nội bộ trên Session 1**. Khóa toàn bộ mô hình trước khi đánh giá trên Session 2.
         2. **Cơ chế đặc trưng Competitive Code (CompCode 600-D):**
            - Dùng 6 bộ lọc Gabor với cấu hình `zero_dc = True` tự động triệt tiêu sai lệch ánh sáng nền mà không làm mờ nếp vân.
-        3. **Tìm ra 2 mô hình tối ưu tuyệt đối:**
+        3. **Hai mô hình hiệu quả theo bài toán:**
            - **CRC_RLS (M3)** đạt độ chính xác cao nhất (**98.27%** Rank-1) nhờ cơ chế biểu diễn cộng tác.
-           - **Linear SVM (M2)** đạt tốc độ suy luận nhanh nhất (**3.71 ms/ảnh**, model 2.7 MB), tối ưu cho triển khai phần cứng nhúng.
-        4. **Khám phá học thuật về Deep Metric Learning:**
-           - Chứng minh được không gian **Cosine Embedding (Nearest)** giúp ResNet18 tăng vọt **+9.38% Rank-1** so với tầng phân loại Softmax bị overfitting khi dữ liệu ít mẫu.
+           - **Linear SVM (M2)** đạt tốc độ suy luận nhanh nhất (**3.71 ms/ảnh**, model 2.7 MB), phù hợp triển khai phần cứng thời gian thực.
+        4. **Thực nghiệm hậu nghiệm với Embedding-based Cosine Matching:**
+           - Mạng ResNet18 được huấn luyện bằng hàm mất mát phân loại (Cross-Entropy).
+           - Thử nghiệm trích xuất vector embedding 512-D so khớp Cosine là đánh giá hậu nghiệm (exploratory), cải thiện +9.38 điểm % Rank-1 so với Softmax logits, thể hiện giá trị mô tả về lợi thế của không gian biểu diễn đặc trưng.
         """
     )

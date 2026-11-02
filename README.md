@@ -39,7 +39,10 @@ Thực nghiệm đo đạc độc lập trên **6.000 probe Session 2** đối c
 ### Phân tích khoa học nổi bật:
 1. **CRC_RLS (M3) đạt hiệu năng cao nhất (98.27%)**: Nhờ cơ chế biểu diễn cộng tác (*collaborative representation*), toàn bộ 6.000 mẫu trong gallery cùng tham gia tái tạo mẫu truy vấn thông qua hồi quy Ridge có điều chuẩn $L_2$, giúp triệt tiêu sai lệch ánh sáng và góc chụp giữa 2 phiên hiệu quả nhất.
 2. **Linear SVM (M2) đạt tốc độ nhanh nhất (3.71 ms/ảnh)**: Trong pha suy luận, SVM One-vs-Rest chỉ thực hiện 1 phép nhân ma trận trọng số $W \in \mathbb{R}^{600 \times 600}$ với vector đặc trưng 600-D, nhanh gấp 4 lần CRC và 13 lần ResNet18 mà vẫn đạt Rank-1 rất cao (97.37%).
-3. **Hiệu quả của không gian Cosine Embedding (+9.38% Rank-1)**: Trên tập dữ liệu ít mẫu (10 ảnh/lớp), tầng Softmax 600 lớp gặp hiện tượng quá khớp (overfitting, 64.36%). Khi trích xuất vector đặc trưng 512-D từ tầng áp chót và so khớp bằng khoảng cách Cosine, Rank-1 đạt **73.74%**, cho thấy không gian embedding học được tính tương đồng tốt hơn lớp phân loại cứng.
+3. **Đánh giá hậu nghiệm với Cosine Embedding (+9.38 điểm % Rank-1)**:
+   - Mô hình ResNet18 được huấn luyện bằng hàm mất mát phân loại (*Cross-Entropy loss* trên 600 lớp Session 1), **đây là phương pháp embedding-based matching, chưa phải huấn luyện bằng metric learning chuyên biệt (như contrastive loss hay triplet loss)**.
+   - Thử nghiệm trích xuất vector đặc trưng 512-D và so khớp khoảng cách Cosine (M4-E2) là **thực nghiệm hậu nghiệm (post-hoc / exploratory)** được thực hiện sau khi đã quan sát kết quả Session 2.
+   - Do đó, mức tăng +9.38 điểm phần trăm Rank-1 so với Softmax logits mang **giá trị mô tả (descriptive)** về tiềm năng của không gian biểu diễn đặc trưng, nhưng **chưa phải là bằng chứng xác nhận (confirmatory)** trên một tập kiểm thử độc lập thứ ba.
 
 ---
 
@@ -113,8 +116,9 @@ Triển khai trong `src/palmprint/models/resnet.py`:
 - *Triển khai tối ưu*: Giải hệ tuyến tính bằng phân rã Cholesky một lần duy nhất lúc fit ($\lambda = 0.1$).
 - *Sai số tái tạo (Residual)*: $\text{score}_c(y) = \|y - A_c x_c^*\|_2$ (không chia cho chuẩn hệ số lớp để giữ tính toàn vẹn thứ hạng).
 
-### M4 — ResNet18 & Cosine Embedding Matching
-- *Cơ sở lý thuyết*: Duda et al., Chương 6; Deep Metric Learning.
+### M4 — ResNet18 & Embedding-based Cosine Matching
+- *Cơ sở lý thuyết*: Duda et al., Chương 6; Embedding-based feature matching & Cosine distance.
+- *Bản chất huấn luyện*: Mạng được huấn luyện bằng classification loss (Cross-Entropy). Việc trích xuất vector 512-D từ tầng AvgPool để so khớp Cosine là kỹ thuật embedding-based matching (không phải huấn luyện bằng contrastive/triplet loss).
 - *Kiến trúc*: Pretrained ImageNet ResNet18, thay head phân loại 600 lớp, fine-tune Layer 4.
 - *Chiến lược trích xuất Embedding*:
   - Lấy vector đặc trưng 512-D từ tầng áp chót (AvgPool) $\to$ Chuẩn hóa $L_2$.
@@ -204,3 +208,10 @@ python scripts/run_smoke.py
    - A. Kong and D. Zhang, *"Competitive coding scheme for palmprint verification"*, **ICPR**, 2004.
 4. **ResNet & Deep Learning**:
    - K. He, X. Zhang, S. Ren, and J. Sun, *"Deep residual learning for image recognition"*, **CVPR**, 2016.
+
+---
+
+## 8. Quản trị dữ liệu & Quyền riêng tư sinh trắc học
+
+- **Quản lý quyền truy cập**: Toàn bộ dữ liệu ảnh gốc, metadata manifest, gallery embedding và trọng số mô hình cần được lưu trữ trong Private Repository hoặc giới hạn quyền truy cập theo đúng thỏa thuận sử dụng nghiên cứu phi thương mại của Đại học Đồng Tế (Tongji University).
+- **Tối ưu dung lượng repository**: Các checkpoint trung gian phát sinh trong quá trình huấn luyện và các bản sao chẩn đoán (như `verification_view/` hay `best_dev.pth`) đã được loại bỏ khỏi git index để tránh lưu trùng lặp và giữ cho lịch sử Git tinh gọn. Người dùng tái lập kết quả thông qua các artifact chính thức trong thư mục `artifacts/`.
