@@ -64,6 +64,8 @@ python scripts/run_smoke.py
 
 ## 4. Tài liệu chi tiết & Báo cáo thực nghiệm
 
+- [Notebook 01: Phân tích Khám phá Dữ liệu (EDA)](notebooks/01_eda.ipynb)
+- [Notebook 02: Phân tích Kết quả & Chẩn đoán Lỗi](notebooks/02_results_analysis.ipynb)
 - [Phân tích Khám phá Dữ liệu EDA (Phân bố & Chất lượng ảnh)](reports/EDA.md)
 - [Báo cáo Benchmark đầy đủ (M1–M4)](reports/TONGJI_BENCHMARK.md)
 - [Báo cáo Thực nghiệm Deep CNN (ResNet18 3 Seeds)](reports/CNN_EXPERIMENTS.md)

@@ -29,7 +29,6 @@ WS = Path(__file__).resolve().parents[1]
 # ---------------------------------------------------------
 st.set_page_config(
     page_title="Hệ thống Nhận diện Lòng bàn tay Tongji | Nhóm 01",
-    page_icon="🖐️",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -93,7 +92,6 @@ def get_compcode_extractor():
 # Sidebar: Setup & Model Selection
 # ---------------------------------------------------------
 with st.sidebar:
-    st.image("https://img.icons8.com/fluency/96/hand.png", width=64)
     st.markdown("### **Tongji Palmprint ID**")
     st.caption("BÀI TẬP LỚN CUỐI KỲ · MÔN NHẬN DẠNG MẪU\n**Đề tài 09 — Nhóm 01**")
     st.markdown("---")
@@ -125,7 +123,7 @@ with st.sidebar:
         available_keys.append("resnet18_seed17")
 
     selected_display = st.selectbox(
-        "🧠 Thuật toán nhận dạng:",
+        "Thuật toán nhận dạng:",
         options=[MODEL_MAP.get(k, k) for k in available_keys],
         index=0,
     )
@@ -133,7 +131,7 @@ with st.sidebar:
     selected_model_key = [k for k in available_keys if MODEL_MAP.get(k, k) == selected_display][0]
 
     st.markdown("---")
-    st.markdown("#### ⚙️ Thông số hệ thống:")
+    st.markdown("#### Thông số hệ thống:")
     st.markdown(
         """
         - **Đối tượng:** 600 Palm ID
@@ -150,7 +148,7 @@ with st.sidebar:
 # Main Interface Tabs
 # ---------------------------------------------------------
 st.markdown(
-    '<div class="main-header">🖐️ Hệ thống Nhận diện Lòng bàn tay không tiếp xúc</div>',
+    '<div class="main-header">Hệ thống Nhận diện Lòng bàn tay không tiếp xúc</div>',
     unsafe_allow_html=True,
 )
 st.markdown(
@@ -160,11 +158,11 @@ st.markdown(
 
 tab_demo, tab_feature, tab_ablation, tab_benchmark, tab_about = st.tabs(
     [
-        "🔍 Nhận dạng Sinh trắc",
-        "🔬 Đặc trưng CompCode",
-        "📉 Giảm chiều & Bóc tách PCA",
-        "📊 Bảng vàng Benchmark",
-        "📖 Thông tin Đề tài",
+        "Nhận dạng Sinh trắc",
+        "Đặc trưng CompCode",
+        "Giảm chiều & Bóc tách PCA",
+        "Bảng xếp hạng Benchmark",
+        "Thông tin Đề tài",
     ]
 )
 
@@ -197,7 +195,7 @@ with tab_demo:
             with c_rand:
                 st.write("")
                 st.write("")
-                if st.button("🎲 Ngẫu nhiên"):
+                if st.button("Chọn ngẫu nhiên"):
                     st.session_state["selected_probe_uid"] = random.choice(
                         test_samples.sample_uid.tolist()
                     )
@@ -239,7 +237,7 @@ with tab_demo:
                 sample_name = uploaded.name
                 st.image(img_preview, caption=f"Ảnh tải lên: {sample_name}", width=220)
 
-        btn_run = st.button("🚀 BẮT ĐẦU NHẬN DẠNG", type="primary", use_container_width=True)
+        btn_run = st.button("BẮT ĐẦU NHẬN DẠNG", type="primary", use_container_width=True)
 
     with col_result:
         st.subheader("2. Kết quả Đối soát & Nhận diện")
@@ -283,12 +281,12 @@ with tab_demo:
                         if true_palm_id is not None:
                             if pred_id == true_palm_id:
                                 st.markdown(
-                                    f'<div class="success-box">✅ XÁC NHẬN CHÍNH XÁC: Nhận diện thành công Palm ID #{pred_id} (Trùng khớp 100% với nhãn thật #{true_palm_id})</div>',
+                                    f'<div class="success-box">XÁC NHẬN CHÍNH XÁC: Nhận diện thành công Palm ID #{pred_id} (Trùng khớp 100% với nhãn thật #{true_palm_id})</div>',
                                     unsafe_allow_html=True,
                                 )
                             else:
                                 st.markdown(
-                                    f'<div class="error-box">⚠️ DỰ ĐOÁN SAI: Hệ thống chọn Palm ID #{pred_id} (Nhãn thực tế là Palm ID #{true_palm_id})</div>',
+                                    f'<div class="error-box">DỰ ĐOÁN SAI: Hệ thống chọn Palm ID #{pred_id} (Nhãn thực tế là Palm ID #{true_palm_id})</div>',
                                     unsafe_allow_html=True,
                                 )
 
@@ -299,7 +297,7 @@ with tab_demo:
                         m3.metric("Thuật toán", selected_model_key.split("_")[0].upper())
 
                         # Top-5 Table
-                        st.markdown("##### 🏆 Bảng xếp hạng Top-5 ứng viên gần nhất:")
+                        st.markdown("##### Bảng xếp hạng Top-5 ứng viên gần nhất:")
                         score_label = "Khoảng cách / Sai số (Càng nhỏ càng khớp)"
                         df_top5 = pd.DataFrame(
                             {
@@ -307,7 +305,7 @@ with tab_demo:
                                 "Palm ID": [f"Palm #{pid}" for pid in top5_ids],
                                 score_label: [f"{s:.4f}" for s in top5_scores],
                                 "Trạng thái": [
-                                    "✅ Khớp nhất (Top-1)" if i == 0 else "—"
+                                    "Khớp nhất (Top-1)" if i == 0 else "—"
                                     for i in range(len(top5_ids))
                                 ],
                             }
@@ -315,7 +313,7 @@ with tab_demo:
                         st.dataframe(df_top5, use_container_width=True, hide_index=True)
 
                         # Gallery Matching Side-by-Side Verification
-                        st.markdown("##### 🖼️ Mẫu đăng ký đối chiếu trong Gallery (Session 1):")
+                        st.markdown("##### Mẫu đăng ký đối chiếu trong Gallery (Session 1):")
                         cols_gal = st.columns(min(5, len(top5_ids)))
                         for idx, (col_g, pid) in enumerate(zip(cols_gal, top5_ids)):
                             match_cand = df_manifest[
@@ -326,7 +324,7 @@ with tab_demo:
                                 is_top1 = idx == 0
                                 st.image(
                                     Image.open(cand_path),
-                                    caption=f"{'👉 ' if is_top1 else ''}Palm #{pid} (Top {idx + 1})",
+                                    caption=f"{'[Top-1] ' if is_top1 else ''}Palm #{pid} (Top {idx + 1})",
                                     use_container_width=True,
                                 )
 
@@ -334,7 +332,7 @@ with tab_demo:
                         st.error(f"Lỗi khi thực hiện nhận dạng: {e}")
         else:
             st.info(
-                "👈 Hãy chọn một ảnh bên trái rồi bấm **BẮT ĐẦU NHẬN DẠNG** để đối soát thời gian thực."
+                "Hãy chọn một ảnh bên trái rồi bấm **BẮT ĐẦU NHẬN DẠNG** để đối soát thời gian thực."
             )
 
 
@@ -342,7 +340,7 @@ with tab_demo:
 # TAB 2: TRỰC QUAN HÓA ĐẶC TRƯNG COMPCODE
 # =========================================================
 with tab_feature:
-    st.subheader("🔬 Cơ chế Hoạt động của Trích xuất Đặc trưng Competitive Code (CompCode 600-D)")
+    st.subheader("Cơ chế Hoạt động của Trích xuất Đặc trưng Competitive Code (CompCode 600-D)")
     st.write(
         "Khám phá 'bên trong mô hình': Xem cách bộ lọc Gabor 6 hướng phản ứng với vân tay, tạo bản đồ hướng và sinh vector đặc trưng 600 chiều."
     )
@@ -396,7 +394,7 @@ with tab_feature:
 # TAB 3: GIẢM CHIỀU & BÓC TÁCH ĐẶC TRƯNG PCA
 # =========================================================
 with tab_ablation:
-    st.subheader("📉 Thực nghiệm Bóc tách Đặc trưng & Giảm chiều PCA (E3)")
+    st.subheader("Thực nghiệm Bóc tách Đặc trưng & Giảm chiều PCA (E3)")
     st.markdown(
         """
         Nghiên cứu đối chiếu 3 không gian biểu diễn đặc trưng dưới cùng một bộ phân loại duy nhất **1-NN (k=1, Euclidean distance)**:
@@ -455,10 +453,10 @@ with tab_ablation:
 
 
 # =========================================================
-# TAB 4: BẢNG VÀNG BENCHMARK & ĐỒ THỊ
+# TAB 4: BẢNG XẾP HẠNG BENCHMARK & ĐỒ THỊ
 # =========================================================
 with tab_benchmark:
-    st.subheader("📊 Bảng vàng Thành tích Thực nghiệm (Benchmark trên 6.000 probe Session 2)")
+    st.subheader("Bảng Thành tích Thực nghiệm (Benchmark trên 6.000 probe Session 2)")
 
     # Key metric cards
     k1, k2, k3, k4 = st.columns(4)
@@ -468,7 +466,7 @@ with tab_benchmark:
     k4.metric("Dữ liệu thử nghiệm", "6.000 ảnh", "Session 2 Probe")
 
     st.markdown("---")
-    st.markdown("##### 📋 Bảng đối chiếu toàn bộ các Pipeline:")
+    st.markdown("##### Bảng đối chiếu toàn bộ các Pipeline:")
 
     table_path = WS / "reports/tables/tongji_benchmark_summary.csv"
     if table_path.exists():
@@ -476,7 +474,7 @@ with tab_benchmark:
         st.dataframe(df_bench, use_container_width=True)
 
     st.markdown("---")
-    st.markdown("##### 📈 Các đồ thị phân tích chuyên sâu (Xuất bản 300 DPI):")
+    st.markdown("##### Các đồ thị phân tích chuyên sâu (Xuất bản 300 DPI):")
 
     c_fig1, c_fig2 = st.columns(2)
     with c_fig1:
@@ -518,10 +516,10 @@ with tab_benchmark:
 
 
 # =========================================================
-# TAB 4: THÔNG TIN ĐỀ TÀI & NHÓM
+# TAB 5: THÔNG TIN ĐỀ TÀI & NHÓM
 # =========================================================
 with tab_about:
-    st.subheader("📖 BÀI TẬP LỚN CUỐI KỲ — MÔN NHẬN DẠNG MẪU (PATTERN RECOGNITION)")
+    st.subheader("BÀI TẬP LỚN CUỐI KỲ — MÔN NHẬN DẠNG MẪU (PATTERN RECOGNITION)")
     st.markdown(
         """
         - **Đề tài số 09:** Nhận diện lòng bàn tay không tiếp xúc (*Contactless Palmprint Recognition*)
@@ -529,7 +527,7 @@ with tab_about:
         - **Repository:** [`github.com/hloc1810/tongji-palmprint-recognition`](https://github.com/hloc1810/tongji-palmprint-recognition)
 
         ---
-        #### 🎯 Tóm tắt đóng góp chính của đề tài:
+        #### Tóm tắt đóng góp chính của đề tài:
         1. **Quy trình chuẩn mực chống rò rỉ dữ liệu (No Data Leakage):**
            - Áp dụng giao thức nghiêm ngặt **Cross-Session (Session 1 train, Session 2 test)**.
            - Chọn tham số chỉ bằng **5-fold CV nội bộ trên Session 1**. Khóa toàn bộ mô hình trước khi đánh giá trên Session 2.

@@ -13,7 +13,7 @@ def build_eda_notebook() -> nbformat.NotebookNode:
     # Cell 1: Header
     nb.cells.append(
         new_markdown_cell(
-            """# 🖐️ Tongji Contactless Palmprint — Phân tích Khám phá Dữ liệu (EDA)
+            """# Tongji Contactless Palmprint — Phân tích Khám phá Dữ liệu (EDA)
 
 > **Môn học**: Nhận dạng mẫu (*Pattern Recognition*) — Đề tài 09 (Nhóm 01)  
 > **Bộ dữ liệu**: Tongji Contactless Palmprint Dataset (600 Palm ID, 12.000 ảnh ROI mức xám $128 \\times 128$)  
@@ -43,7 +43,7 @@ plt.rcParams["axes.unicode_minus"] = False
 
 manifest_path = WS / "data/metadata/manifest.csv"
 df = pd.read_csv(manifest_path)
-print(f"✅ Đã nạp manifest thành công: {len(df):,} mẫu ảnh ROI từ {df.palm_id.nunique()} Palm ID.")"""
+print(f"Đã nạp manifest thành công: {len(df):,} mẫu ảnh ROI từ {df.palm_id.nunique()} Palm ID.")"""
         )
     )
 
@@ -202,7 +202,7 @@ pca.fit(x_s1)
 
 exp_var = pca.explained_variance_ratio_ * 100.0
 cum_var = np.cumsum(exp_var)
-print(f"✅ PCA 256 chiều giải thích tổng cộng {cum_var[-1]:.2f}% phương sai dữ liệu Session 1.")
+print(f"PCA 256 chiều giải thích tổng cộng {cum_var[-1]:.2f}% phương sai dữ liệu Session 1.")
 
 # Scree plot phân bố phương sai
 fig, ax1 = plt.subplots(figsize=(8, 3.8), dpi=150)
@@ -291,7 +291,7 @@ def build_results_analysis_notebook() -> nbformat.NotebookNode:
     # Cell 1: Header
     nb.cells.append(
         new_markdown_cell(
-            """# 📊 Tongji Contactless Palmprint — Phân tích Kết quả & Chẩn đoán Lỗi (Error Diagnostics)
+            """# Tongji Contactless Palmprint — Phân tích Kết quả & Chẩn đoán Lỗi (Error Diagnostics)
 
 > **Môn học**: Nhận dạng mẫu (*Pattern Recognition*) — Đề tài 09 (Nhóm 01)  
 > **Giao thức**: Closed-set 1:N đối chiếu 6.000 probe Session 2 với 6.000 gallery Session 1.  
@@ -317,7 +317,7 @@ plt.rcParams["font.sans-serif"] = ["Segoe UI", "Arial", "DejaVu Sans"]
 plt.rcParams["font.family"] = "sans-serif"
 plt.rcParams["axes.unicode_minus"] = False
 
-print("✅ Đã khởi tạo môi trường phân tích kết quả.")"""
+print("Đã khởi tạo môi trường phân tích kết quả.")"""
         )
     )
 
@@ -413,9 +413,9 @@ n_total = len(df_merged)
 n_correct = int(df_merged.correct.sum())
 n_wrong = n_total - n_correct
 
-print(f"📊 Tổng số mẫu kiểm thử Session 2: {n_total:,}")
-print(f"✅ Dự đoán chính xác:               {n_correct:,} ({n_correct/n_total*100:.2f}%)")
-print(f"❌ Dự đoán nhầm lẫn:                {n_wrong:,} ({n_wrong/n_total*100:.2f}%)")
+print(f"Tổng số mẫu kiểm thử Session 2: {n_total:,}")
+print(f"Dự đoán chính xác:               {n_correct:,} ({n_correct/n_total*100:.2f}%)")
+print(f"Dự đoán nhầm lẫn:                {n_wrong:,} ({n_wrong/n_total*100:.2f}%)")
 
 # Top 10 cặp Palm ID bị nhầm lẫn nhiều nhất
 confused_pairs = (
@@ -426,7 +426,7 @@ confused_pairs = (
     .sort_values(by="so_lan_nham", ascending=False)
     .head(10)
 )
-print("\\n🔍 Top 10 cặp Palm ID bị nhầm lẫn nhiều nhất:")
+print("\\nTop 10 cặp Palm ID bị nhầm lẫn nhiều nhất:")
 display(confused_pairs.reset_index(drop=True))"""
         )
     )
