@@ -1,0 +1,31 @@
+{
+  "experiment": "E3_feature_representation_ablation",
+  "dataset": "Tongji Official ROI 128x128",
+  "session1_samples": 6000,
+  "session2_samples": 6000,
+  "classes": 600,
+  "classifier": "1-Nearest Neighbor (NearestTemplate, Euclidean)",
+  "features": {
+    "raw": {
+      "dim": 16384,
+      "normalization": "L2 per sample",
+      "description": "128x128 grayscale pixels flattened"
+    },
+    "pca": {
+      "dim": 256,
+      "solver": "randomized",
+      "seed": 42,
+      "normalization": "L2 post-projection",
+      "leakage_control": "fit only on train fold / session1"
+    },
+    "compcode": {
+      "dim": 600,
+      "directions": 6,
+      "kernel_size": 41,
+      "block_pixels": 14,
+      "normalization": "L1 block then L2 global"
+    }
+  },
+  "timing": "2026-11-02 13:19:17",
+  "protocol_status": "exploratory_post_hoc_cross_session"
+}
