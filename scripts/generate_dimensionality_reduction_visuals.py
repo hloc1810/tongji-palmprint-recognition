@@ -15,9 +15,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.decomposition import PCA
 
 from palmprint.data.preparation import load_manifest
+from palmprint.features.pca import PCA
 
 matplotlib.use("Agg")
 
@@ -269,7 +269,7 @@ def main() -> None:
     print(f"Loaded Session 1: {x_s1.shape}, Session 2: {x_s2.shape}")
 
     print("Fitting PCA (256 components, randomized SVD, seed=42)...")
-    pca = PCA(n_components=256, svd_solver="randomized", random_state=42)
+    pca = PCA(n_components=256, random_state=42)
     pca.fit(x_s1)
 
     # Destination paths

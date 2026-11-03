@@ -15,12 +15,12 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.decomposition import PCA
 
 from ..data.dataset import read_gray, resolve_path
 from ..data.preparation import load_manifest
 from ..evaluation.metrics import compute_metrics, ranking
 from ..models.classical import NearestTemplate
+from .pca import PCA
 
 
 def load_or_extract_raw(
@@ -63,7 +63,7 @@ def fit_transform_pca(
 ) -> tuple[PCA, np.ndarray, np.ndarray | None]:
     """Fit randomized PCA on x_train, project x_train and optionally x_test, then L2-normalize."""
     x_tr = np.asarray(x_train, dtype=np.float32)
-    pca = PCA(n_components=n_components, svd_solver="randomized", random_state=seed)
+    pca = PCA(n_components=n_components, random_state=seed)
     z_train = pca.fit_transform(x_tr).astype(np.float32)
     norms_tr = np.linalg.norm(z_train, axis=1, keepdims=True)
     z_train = z_train / np.maximum(norms_tr, 1e-12)

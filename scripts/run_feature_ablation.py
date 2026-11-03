@@ -21,7 +21,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.decomposition import PCA
 
 from palmprint.evaluation.metrics import bootstrap_rank1, compute_metrics, ranking
 from palmprint.features.ablation import (
@@ -30,6 +29,7 @@ from palmprint.features.ablation import (
     load_or_extract_raw,
 )
 from palmprint.features.extraction import load_features
+from palmprint.features.pca import PCA
 from palmprint.models.classical import NearestTemplate
 
 matplotlib.use("Agg")
