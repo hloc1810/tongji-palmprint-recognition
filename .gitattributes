@@ -7,3 +7,6 @@
 *.csv text eol=lf
 *.ipynb text eol=lf
 *.png binary
+
+# Prediction hashes in the M5 metrics cover the exact generated CSV bytes.
+outputs/palmnet_m5/*/predictions.csv -text whitespace=cr-at-eol

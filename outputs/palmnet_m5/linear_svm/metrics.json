@@ -1,0 +1,36 @@
+{
+  "n": 6000,
+  "classes": 600,
+  "rank1": 0.9885,
+  "rank5": 0.9945,
+  "macro_precision": 0.9901118326118327,
+  "macro_recall": 0.9885,
+  "macro_f1": 0.9869430506427409,
+  "cmc": {
+    "1": 0.9885,
+    "2": 0.9911666666666666,
+    "5": 0.9945,
+    "10": 0.996,
+    "20": 0.9971666666666666
+  },
+  "manifest_sha256": "eaeb9ac0a5e0b55050b105031d70aa895c609a4d3fcb018b504c1f0bc55055ea",
+  "model_sha256": "a2362e89ed7a0ca829df0c90d45328367fc48df6ec26ce9c106f6bdcf4ff5b05",
+  "classifier_artifact_sha256": "85811522fc398a7409d55cc92757966fd14f8bc44cd77e16fb2f9cbdc16b9899",
+  "feature_dim": 1024,
+  "selection_fit_session": "session1",
+  "hyperparameter_tuning": "none",
+  "selection_seconds": 18.834892200000468,
+  "fit_seconds": 81.6256856,
+  "probe_selection_seconds": 7.916106200000286,
+  "matching_seconds": 0.1556641999995918,
+  "score_kind": "negative LinearSVC margin",
+  "interpretation": "Exploratory; includes 1024-column variance selection. Use selected_1nn as the common-representation control.",
+  "model": "linear_svm",
+  "variant": "PCA-Gabor PalmNet (author Python port; not all paper variants)",
+  "rank1_ci95_palm_bootstrap": [
+    0.9824958333333333,
+    0.9938333333333333
+  ],
+  "prediction_sha256": "33cffbd465f10f765d15fdc063bfcf050f434128add0df8ce51ef5730d0b99ef",
+  "scores_sha256": "1143e79e291ee027ab2ab4d9d33960c4e5292d2a225f5cf056d85fe66c09cc63"
+}

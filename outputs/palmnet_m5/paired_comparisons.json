@@ -1,0 +1,32 @@
+{
+  "nearest_template_minus_selected_1nn": {
+    "delta_rank1_pp": 1.200000000000001,
+    "ci95_pp": [
+      0.65,
+      1.866666666666667
+    ],
+    "bootstrap_unit": "Palm ID",
+    "iterations": 10000,
+    "seed": 42
+  },
+  "linear_svm_minus_selected_1nn": {
+    "delta_rank1_pp": 0.06666666666667043,
+    "ci95_pp": [
+      -0.2,
+      0.3
+    ],
+    "bootstrap_unit": "Palm ID",
+    "iterations": 10000,
+    "seed": 42
+  },
+  "crc_rls_minus_selected_1nn": {
+    "delta_rank1_pp": -0.050000000000005596,
+    "ci95_pp": [
+      -0.3833333333333333,
+      0.26666666666666666
+    ],
+    "bootstrap_unit": "Palm ID",
+    "iterations": 10000,
+    "seed": 42
+  }
+}

@@ -1,5 +1,11 @@
 # Tongji Contactless Palmprint Recognition
 
+**M5: PCA-Gabor PalmNet + Nearest-Template Matching** — đã chạy đủ 6.000 probe:
+**Rank-1 99,9833%, Rank-5 100%**, đúng 5.999/6.000 ảnh. Fit trên Session 1. Có thêm
+nhánh chọn đặc trưng cho Linear SVM, CRC_RLS và đối chứng 1-NN cùng biểu diễn.
+Xem [giao thức, lệnh chạy và kết quả M5](reports/PALMNET_M5.md) và
+[hướng dẫn cấu trúc repository](reports/REPOSITORY_GUIDE.md).
+
 > **Nhận diện lòng bàn tay không tiếp xúc (*Contactless Palmprint Recognition*)**  
 > Đề tài 09 — Nhóm 01 | Môn Nhận dạng mẫu (*Pattern Recognition*)  
 > Dataset: **Tongji Contactless Palmprint** (600 Palm ID, 12.000 ảnh ROI 128×128, 2 phiên độc lập).
@@ -12,6 +18,7 @@
 
 | Nhóm | Pipeline | Mô hình | Rank-1 (%) | Rank-5 (%) | Macro-F1 (%) | Độ trễ CPU (ms) |
 | :--- | :--- | :--- | ---:| ---:| ---:| ---:|
+| **M5 bổ sung** | **M5** | **PCA-Gabor PalmNet + 1-NN** (12.288.000-D sparse) | **99.9833%** | **100%** | **99.9833%** | [Theo batch](reports/PALMNET_M5.md) |
 | **Benchmark chính** | **M3** | **CompCode + CRC_RLS** ($\lambda=0.1$) | **98.27%** | **99.08%** | **97.99%** | 14.71 ms |
 | | **M2** | **CompCode + Linear SVM** ($C=1$) | **97.37%** | **98.52%** | **96.82%** | **3.71 ms** |
 | | **M1** | **CompCode + 1-NN** (Euclidean) | **94.43%** | **96.97%** | **93.56%** | 11.00 ms |
@@ -89,7 +96,8 @@ python scripts/run_paired_bootstrap_e3.py
 python -m pytest -q
 python scripts/run_smoke.py
 ```
-> Toàn bộ kiểm thử tự động vượt qua (`74 passed, 1 skipped`).
+> M5 đã qua 27 kiểm thử liên quan trong dự án và 51 kiểm thử số học upstream;
+> phạm vi kiểm tra và bằng chứng được ghi trong [báo cáo M5](reports/PALMNET_M5.md).
 
 ---
 

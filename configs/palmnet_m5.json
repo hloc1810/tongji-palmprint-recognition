@@ -1,0 +1,32 @@
+{
+  "variant": "PCA-Gabor PalmNet (author Python port)",
+  "vendor_url": "https://github.com/AngeloUNIMI/PalmNet",
+  "vendor_commit": "f0a12e6d5f585c7eb0bf5c6804a98bd1d6587e22",
+  "fit_session": "session1",
+  "gallery_session": "session1",
+  "probe_session": "session2",
+  "classes": 600,
+  "templates_per_class": 10,
+  "image_size": 128,
+  "pca_patch_size": 15,
+  "pca_filters": 15,
+  "fixed_orientations": 10,
+  "adaptive_orientation_candidates": 10,
+  "selected_wavelets": 5,
+  "hist_block_size": [23, 23],
+  "block_overlap": 0,
+  "feature_dimension": 12288000,
+  "dtype": "float64",
+  "histogram_normalization": "matlab",
+  "matching": "min squared Euclidean over gallery templates per Palm ID",
+  "max_patches_per_image": null,
+  "classifier_experiments": {
+    "selection": "top variance, fitted only on Session1",
+    "selected_columns": 1024,
+    "normalization": "L2 after selection",
+    "svm_C": 1.0,
+    "crc_lambda": 0.1,
+    "control": "1NN on the same selected representation",
+    "tuning": "none; fixed exploratory settings, not selected by Session2"
+  }
+}

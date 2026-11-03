@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "scope": "post-run verification only; no tuning",
+  "sample_uids": [
+    "session2/00001",
+    "session2/00273",
+    "session2/02000",
+    "session2/06000"
+  ],
+  "max_absolute_distance_roundoff": 0.0021867752075195312,
+  "all_600_class_distances_compared": true,
+  "top5_rankings_identical": true,
+  "seconds": 39.66097700000137
+}

@@ -137,6 +137,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+
 # Custom CORS middleware to guarantee all origins including null (file:///) work reliably
 @app.middleware("http")
 async def add_cors_headers(request, call_next):
@@ -148,6 +149,7 @@ async def add_cors_headers(request, call_next):
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, HEAD"
     response.headers["Access-Control-Allow-Headers"] = "*"
     return response
+
 
 app.add_middleware(
     CORSMiddleware,

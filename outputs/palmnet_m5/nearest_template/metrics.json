@@ -1,0 +1,59 @@
+{
+  "n": 6000,
+  "classes": 600,
+  "rank1": 0.9998333333333334,
+  "rank5": 1.0,
+  "macro_precision": 0.9998484848484848,
+  "macro_recall": 0.9998333333333332,
+  "macro_f1": 0.9998329156223893,
+  "cmc": {
+    "1": 0.9998333333333334,
+    "2": 0.9998333333333334,
+    "5": 1.0,
+    "10": 1.0,
+    "20": 1.0
+  },
+  "evaluation": "Tongji Session1 gallery / Session2 probe; 600 closed-set Palm IDs",
+  "score_kind": "min squared Euclidean over 10 gallery templates per Palm ID",
+  "manifest_sha256": "eaeb9ac0a5e0b55050b105031d70aa895c609a4d3fcb018b504c1f0bc55055ea",
+  "model_sha256": "a2362e89ed7a0ca829df0c90d45328367fc48df6ec26ce9c106f6bdcf4ff5b05",
+  "vendor": {
+    "url": "https://github.com/AngeloUNIMI/PalmNet",
+    "source_sha256": "0db9b9e060d35019ab798146d3bbb3224824a48d91adfddff5aa5f4a0a98fc22",
+    "files": {
+      "palmnet/__init__.py": "2dc5c107f2a9f7c48bc181d864ad6feab22f30a47dceebbb1ced390fbd7b4f3b",
+      "palmnet/__main__.py": "d220d88dd9a25cd0629c5176dd6532a2db1da40eb014a8e80796b0ddeb134918",
+      "palmnet/cli.py": "0e5f436465024a41da485041a1a1d2a114869d4c9a5c1702bb7976e988e23d6b",
+      "palmnet/config.py": "b98778fdd642e9827a0ae1283d61a64b97a13058e7ad927c338d081b21fe2ac4",
+      "palmnet/data.py": "c0431691a3c171c9f87b7d087e23a6f86022c60fe04c4c9b4a804ec2edbeed3f",
+      "palmnet/evaluation.py": "f36b5d0b1ae1ba60bf096fcaa73542b25f7e863961e3ba3f54e9653b6d42be1e",
+      "palmnet/gabor.py": "ed9914e7cf7d05587b3768fca72bcca863b3cd4cebaace9572d8ef20249df048",
+      "palmnet/hashing.py": "ff25fee45350bbe7bc9aae4819043256f2f6eb5b163ba6b23c52154f18d15747",
+      "palmnet/model.py": "cf83b5b5dc98162f6cfc6a2169fd36668c25dbbd76125532339a7d5f2b92a8c6",
+      "palmnet/ops.py": "fca7f0c4a5604765f49ef6362df31495aedb8a0e61df69309b90cafdf256e1de",
+      "palmnet/preprocessing.py": "8f3510c71bd8b68e103a6da8372952d3c1b7fd5937d2efcb671970608f2f0074"
+    },
+    "commit": "f0a12e6d5f585c7eb0bf5c6804a98bd1d6587e22"
+  },
+  "feature_dim": 12288000,
+  "matching_backend": "hybrid",
+  "matching_threads": 4,
+  "adapter_source_sha256": "cce7a75ac3d6edc6f07dcc004ddec2385023d79393db4ff091dbce91b24792cc",
+  "hash_verification": true,
+  "fit_seconds": 303.0335866000005,
+  "gallery_feature_seconds": 710.379906600001,
+  "probe_feature_seconds": 667.2818792999988,
+  "matching_seconds": 889.9132086999998,
+  "matching_ms_per_probe_batch_amortized": 148.31886811666664,
+  "probe_feature_ms_per_probe_batch_amortized": 111.2136465499998,
+  "timing_note": "Batch amortized, includes sparse cache IO; resume may reuse cache. Not comparable to existing single-query CPU latency.",
+  "approximation": false,
+  "model": "nearest_template",
+  "variant": "PCA-Gabor PalmNet (author Python port; not all paper variants)",
+  "rank1_ci95_palm_bootstrap": [
+    0.9995,
+    1.0
+  ],
+  "prediction_sha256": "171cd1711f14f3fa7bb1d2962776402671ee2eee50277a48405670fec415c51b",
+  "scores_sha256": "f9449be289b8f56cdb2ec74468662d4007fa33cbb6de829b89748476af092564"
+}

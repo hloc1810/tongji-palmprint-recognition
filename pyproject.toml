@@ -15,12 +15,15 @@ dependencies = [
 ]
 [project.optional-dependencies]
 cnn = ["torch>=2.2", "torchvision>=0.17"]
+palmnet = ["torch>=2.2", "sparse-dot-topn>=1.2,<2"]
 demo = ["streamlit>=1.37"]
-test = ["pytest>=8", "ruff>=0.7"]
+api = ["fastapi", "uvicorn", "python-multipart"]
+test = ["pytest>=8", "ruff>=0.7", "fastapi", "uvicorn", "python-multipart", "httpx"]
 
 [project.scripts]
 palmprint = "palmprint.cli:main"
 palmprint-cnn = "palmprint.cli_cnn:main"
+palmprint-palmnet = "palmprint.training.palmnet:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

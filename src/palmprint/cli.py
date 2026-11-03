@@ -61,7 +61,9 @@ def parser() -> argparse.ArgumentParser:
     srv.add_argument("--port", type=int, default=8000, help="Port to listen on (default: 8000)")
     commands.add_parser("smoke", help="Run end-to-end synthetic pipeline smoke test")
     aud = commands.add_parser("audit", help="Audit dataset ROI input integrity and feature sanity")
-    aud.add_argument("--data", type=Path, required=True, help="Path to Tongji ROI dataset directory")
+    aud.add_argument(
+        "--data", type=Path, required=True, help="Path to Tongji ROI dataset directory"
+    )
     return p
 
 

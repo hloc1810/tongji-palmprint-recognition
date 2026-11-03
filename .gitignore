@@ -34,3 +34,15 @@ outputs/runs/*/best_dev.pth
 outputs/cache/
 outputs/feature_ablation/cache/
 
+# External research source and large PalmNet feature checkpoints
+.runtime/PalmNet/
+artifacts/palmnet_m5/
+outputs/palmnet_m5/cache/
+outputs/palmnet_m5/*pytest_tmp/
+outputs/palmnet_m5/regression_tmp/
+outputs/palmnet_m5/regression*_tmp/
+outputs/palmnet_m5/*_tmp/
+outputs/palmnet_m5/*.pid
+outputs/palmnet_m5/*.log
+outputs/palmnet_m5/*/scores.npz
+

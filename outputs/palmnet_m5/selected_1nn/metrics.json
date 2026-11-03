@@ -1,0 +1,36 @@
+{
+  "n": 6000,
+  "classes": 600,
+  "rank1": 0.9878333333333333,
+  "rank5": 0.9931666666666666,
+  "macro_precision": 0.98913764013764,
+  "macro_recall": 0.9878333333333335,
+  "macro_f1": 0.9860968812113987,
+  "cmc": {
+    "1": 0.9878333333333333,
+    "2": 0.9911666666666666,
+    "5": 0.9931666666666666,
+    "10": 0.9953333333333333,
+    "20": 0.9963333333333333
+  },
+  "manifest_sha256": "eaeb9ac0a5e0b55050b105031d70aa895c609a4d3fcb018b504c1f0bc55055ea",
+  "model_sha256": "a2362e89ed7a0ca829df0c90d45328367fc48df6ec26ce9c106f6bdcf4ff5b05",
+  "classifier_artifact_sha256": "85811522fc398a7409d55cc92757966fd14f8bc44cd77e16fb2f9cbdc16b9899",
+  "feature_dim": 1024,
+  "selection_fit_session": "session1",
+  "hyperparameter_tuning": "none",
+  "selection_seconds": 18.834892200000468,
+  "fit_seconds": 0.01736669999991136,
+  "probe_selection_seconds": 7.916106200000286,
+  "matching_seconds": 1.8081789999996545,
+  "score_kind": "min squared Euclidean on selected L2 features",
+  "interpretation": "Exploratory; includes 1024-column variance selection. Use selected_1nn as the common-representation control.",
+  "model": "selected_1nn",
+  "variant": "PCA-Gabor PalmNet (author Python port; not all paper variants)",
+  "rank1_ci95_palm_bootstrap": [
+    0.9811666666666666,
+    0.9935
+  ],
+  "prediction_sha256": "70737ac65b5347b8d6d0bb34387040135bab8f30df1676c02c5c3da481ee1749",
+  "scores_sha256": "139c226ce547c8b7a8bcd5b4f4e2758a8bb9ecaf1d36f588f8ae81b9b3449fb9"
+}
