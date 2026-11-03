@@ -1,14 +1,68 @@
-"""Tests for FastAPI backend server and real model inference endpoints."""
+"""Test FastAPI inference using real classifiers and synthetic ROI fixtures."""
 
 from __future__ import annotations
 
+import shutil
+from dataclasses import asdict
 from pathlib import Path
 
+import joblib
+import numpy as np
+import pytest
 from fastapi.testclient import TestClient
 
+import app.server as server
 from app.server import app
+from palmprint.data.dataset import generate_synthetic_roi, read_gray
+from palmprint.features.compcode import CompCodeConfig, CompCodeExtractor
+from palmprint.models.classical import CollaborativeRidge, LinearSVM, NearestTemplate
 
 WS = Path(__file__).resolve().parents[1]
+
+
+@pytest.fixture(scope="module")
+def synthetic_workspace(tmp_path_factory):
+    """An isolated, explicitly synthetic dataset; never a Tongji benchmark."""
+    workspace = tmp_path_factory.mktemp("server_synthetic")
+    shutil.copy2(WS / "Tongji_Palmprint_UI.html", workspace / "Tongji_Palmprint_UI.html")
+    generate_synthetic_roi(workspace / "data/raw", palms=6, samples=2, seed=17)
+    config = CompCodeConfig()
+    extractor = CompCodeExtractor(config)
+    names = [f"{(palm - 1) * 10 + 1:05d}.png" for palm in range(1, 7)]
+    images = [read_gray(workspace / "data/raw/session2" / name) for name in names]
+    features = np.stack([extractor.transform(image) for image in images])
+    labels = np.arange(1, 7, dtype=np.int32)
+    artifacts = workspace / "artifacts"
+    artifacts.mkdir()
+    for name, model in (
+        ("crc", CollaborativeRidge(lam=0.1)),
+        ("svm", LinearSVM(C=1.0)),
+        ("knn", NearestTemplate()),
+    ):
+        model.fit(features, labels)
+        joblib.dump(
+            {"model": model, "feature_config": asdict(config)}, artifacts / f"{name}.joblib"
+        )
+    return workspace, names
+
+
+@pytest.fixture(autouse=True)
+def isolated_server(monkeypatch, synthetic_workspace):
+    workspace, names = synthetic_workspace
+    monkeypatch.setattr(server, "WS", workspace)
+    monkeypatch.setattr(
+        server,
+        "SAMPLE_DEFINITIONS",
+        [(i, name, i, f"Synthetic palm {i}") for i, name in enumerate(names, 1)],
+    )
+    for name, value in (
+        ("MODELS", {}),
+        ("EXTRACTOR", None),
+        ("FEATURE_CONFIG", {}),
+        ("SAMPLES", []),
+        ("SAMPLE_IMAGES", {}),
+    ):
+        monkeypatch.setattr(server, name, value)
 
 
 def test_server_root_serves_html():
@@ -65,16 +119,16 @@ def test_server_samples_and_image_endpoint():
             assert len(img_res.content) > 1000
 
 
-def test_server_recognize_real_image():
-    sample_path = WS / "data/raw/session2/00001.bmp"
-    assert sample_path.exists(), "Sample test image must exist"
+def test_server_recognize_synthetic_image(synthetic_workspace):
+    workspace, names = synthetic_workspace
+    sample_path = workspace / "data/raw/session2" / names[0]
     img_bytes = sample_path.read_bytes()
 
     with TestClient(app) as client:
         for model in ("crc", "svm", "knn"):
             res = client.post(
                 "/api/recognize",
-                files={"file": ("00001.bmp", img_bytes, "image/bmp")},
+                files={"file": ("00001.png", img_bytes, "image/png")},
                 data={"model": model},
             )
             assert res.status_code == 200
