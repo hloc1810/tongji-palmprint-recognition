@@ -1,0 +1,10 @@
+{
+  "source_hashes_match": true,
+  "all_400_input_hashes_match": true,
+  "paired_samples": 200,
+  "images_per_palm_per_session": 10,
+  "grayscale_128_rois": 199,
+  "predictions_identical_to_first_run": true,
+  "related_pytest_passed": 31,
+  "ruff": "passed"
+}

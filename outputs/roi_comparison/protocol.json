@@ -1,0 +1,53 @@
+{
+  "seed": 42,
+  "palm_ids": [
+    52,
+    53,
+    57,
+    121,
+    258,
+    261,
+    389,
+    418,
+    459,
+    512
+  ],
+  "roi_config": {
+    "c1": 0.6,
+    "c2": 0.65,
+    "c3": 0.1,
+    "size": 128,
+    "gaussian_kernel": 5,
+    "gaussian_sigma": 1.5,
+    "threshold": 25,
+    "curvature_step_fraction": 0.0375,
+    "curvature_minimum": 0.55,
+    "curvature_peak_spacing_fraction": 0.075,
+    "tangent_patch_fraction": 0.18,
+    "minimum_coverage": 0.98
+  },
+  "compcode_config": {
+    "image_size": 128,
+    "num_directions": 6,
+    "sigma_x": 4.85,
+    "sigma_y": 9.31,
+    "frequency": 0.071,
+    "kernel_size": 41,
+    "block_pixels": 14,
+    "zero_dc": true,
+    "response": "min_real",
+    "border_mode": "reflect101",
+    "histogram_norm": "per_block_l1_then_global_l2"
+  },
+  "classifier": "existing NearestTemplate Euclidean",
+  "gallery": "session1",
+  "probe": "session2",
+  "probe_failure_policy": "count_incorrect",
+  "sample_manifest_sha256": "2d9b171ab3ceb10e1937de8360aee9a237163a3415a010ee60001bf057560cf9",
+  "source_sha256": {
+    "scripts\\run_roi_comparison.py": "e6b5237e6b72cc858e265c45cb27b17e7753a4172462b56a83e1656f87659388",
+    "src\\palmprint\\data\\tongji_roi.py": "0f7142fb00fad72c90ea260e168e1b546ac456b71fb1c0dc44aacab5c8787d19",
+    "src\\palmprint\\features\\compcode.py": "068393348f900bc0c0f5b4b21995546ebcc96f11084355299b557cb5bfcc95ba",
+    "src\\palmprint\\models\\classical.py": "01a3f8e3abb23fd96e7ec223343ece0f6e23c8ae1f0a5bcad6b3f1e63de79e86"
+  }
+}

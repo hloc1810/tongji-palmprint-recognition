@@ -1,5 +1,16 @@
 # Tongji Contactless Palmprint Recognition
 
+**Bổ sung ROI từ ảnh bàn tay gốc (pilot 10 Palm ID):** đã triển khai hình học Tongji 2017
+và chạy so sánh trên cùng 200 ảnh, giữ nguyên CompCode + 1-NN.
+Official ROI: **99/100**; Custom ROI: **98/100** probe đúng.
+Xem [báo cáo ROI và các trường hợp cắt sai](reports/ROI_COMPARISON.md).
+Đây là thực nghiệm 10 lớp, không so trực tiếp với benchmark 600 lớp bên dưới.
+
+```powershell
+# Chọn output mới khi chạy lại để giữ bằng chứng của lần chạy trước
+.venv311/Scripts/python.exe scripts/run_roi_comparison.py --output outputs/roi_comparison_repeat
+```
+
 **M5: PCA-Gabor PalmNet + Nearest-Template Matching** — đã chạy đủ 6.000 probe:
 **Rank-1 99,9833%, Rank-5 100%**, đúng 5.999/6.000 ảnh. Fit trên Session 1. Có thêm
 nhánh chọn đặc trưng cho Linear SVM, CRC_RLS và đối chứng 1-NN cùng biểu diễn.

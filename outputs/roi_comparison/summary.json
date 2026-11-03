@@ -1,0 +1,54 @@
+{
+  "seed": 42,
+  "palm_ids": [
+    52,
+    53,
+    57,
+    121,
+    258,
+    261,
+    389,
+    418,
+    459,
+    512
+  ],
+  "images": 200,
+  "official": {
+    "rank1": 0.99,
+    "correct": 99,
+    "probe_denominator": 100,
+    "valid_probes": 100,
+    "gallery_images": 100,
+    "gallery_classes": 10,
+    "matching_batch_ms": 0.5291999987093732,
+    "matching_ms_per_valid_probe": 0.005291999987093732
+  },
+  "custom": {
+    "rank1": 0.98,
+    "correct": 98,
+    "probe_denominator": 100,
+    "valid_probes": 100,
+    "gallery_images": 99,
+    "gallery_classes": 10,
+    "matching_batch_ms": 0.43430000005173497,
+    "matching_ms_per_valid_probe": 0.00434300000051735,
+    "roi_accepted": 199,
+    "roi_total_ms": 478.22999998606974,
+    "roi_mean_ms": 2.3911499999303487,
+    "roi_median_ms": 1.8951499987451825,
+    "roi_p95_ms": 2.595890001612132
+  },
+  "compcode_mean_ms": {
+    "official": 3.0404405001172563,
+    "custom": 2.9284100502497754
+  },
+  "environment": {
+    "python": "3.11.15 (main, Mar 10 2026, 18:12:25) [MSC v.1944 64 bit (AMD64)]",
+    "platform": "Windows-10-10.0.26300-SP0",
+    "processor": "AMD64 Family 25 Model 80 Stepping 0, AuthenticAMD",
+    "opencv": "5.0.0",
+    "numpy": "2.4.6",
+    "opencv_threads": 1
+  },
+  "protocol_sha256": "e1b56aed2841d369fa935b7857de4964796887baaa230c65ee60dd95f7b870a4"
+}

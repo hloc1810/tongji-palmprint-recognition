@@ -10,3 +10,7 @@
 
 # Prediction hashes in the M5 metrics cover the exact generated CSV bytes.
 outputs/palmnet_m5/*/predictions.csv -text whitespace=cr-at-eol
+
+# ROI evidence hashes cover the exact generated manifest/protocol bytes.
+outputs/roi_comparison/*.csv -text whitespace=cr-at-eol
+outputs/roi_comparison/*.json -text whitespace=cr-at-eol

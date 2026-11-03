@@ -1,0 +1,22 @@
+[
+  [
+    "session1/05119",
+    "High reference similarity"
+  ],
+  [
+    "session1/00522",
+    "Low similarity; inspect geometry"
+  ],
+  [
+    "session1/02575",
+    "Rejected crop: roi_background_fraction:0.0219"
+  ],
+  [
+    "session2/02578",
+    "Recognition error; crop may still be valid"
+  ],
+  [
+    "session2/02609",
+    "Recognition error; crop may still be valid"
+  ]
+]

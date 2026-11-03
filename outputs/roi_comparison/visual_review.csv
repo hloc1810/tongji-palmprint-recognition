@@ -1,0 +1,6 @@
+sample_uid,visual_verdict,note
+session1/05119,plausible,Correct gap pair; visually close to Official ROI
+session1/02578,wrong_gap_selection,Finger-side concavity replaces a real web
+session2/02574,wrong_gap_selection,Wrong gap triple; excessive rotation
+session2/02575,wrong_gap_selection,Wrong gap triple; excessive rotation
+session2/02578,wrong_gap_selection,Wrong gap triple; recognition also fails
