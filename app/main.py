@@ -514,6 +514,34 @@ with tab_benchmark:
                 use_container_width=True,
             )
 
+    st.markdown("---")
+    st.markdown("##### Trực quan hóa Chuyên sâu Phục vụ Báo cáo & Phản biện:")
+    c_def1, c_def2 = st.columns(2)
+    with c_def1:
+        gradcam_img = WS / "reports/figures/resnet18_gradcam_attention.png"
+        if gradcam_img.exists():
+            st.image(
+                str(gradcam_img),
+                caption="Bản đồ Chú ý Grad-CAM (ResNet18 Layer4): Vùng nếp vân lòng bàn tay kích hoạt quyết định phân loại",
+                use_container_width=True,
+            )
+    with c_def2:
+        roi_diag_img = WS / "reports/figures/roi_extraction_pipeline.png"
+        if roi_diag_img.exists():
+            st.image(
+                str(roi_diag_img),
+                caption="Quy trình Hình học Trích xuất ROI từng bước từ ảnh bàn tay thô (Zhang et al. 2017)",
+                use_container_width=True,
+            )
+
+    palmnet_feat_img = WS / "reports/figures/palmnet_filter_bank_and_features.png"
+    if palmnet_feat_img.exists():
+        st.image(
+            str(palmnet_feat_img),
+            caption="Ngân hàng Bộ lọc Gabor-PCA & Bản đồ Phản hồi Đặc trưng của Mô hình PalmNet (M5)",
+            use_container_width=True,
+        )
+
 
 # =========================================================
 # TAB 5: THÔNG TIN ĐỀ TÀI & NHÓM

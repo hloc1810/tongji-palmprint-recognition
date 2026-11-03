@@ -128,6 +128,10 @@ Runner giữ lại các seed đã freeze và kết quả test đã tồn tại; 
 - [Transfer learning — hướng dẫn PyTorch](https://docs.pytorch.org/tutorials/beginner/transfer_learning_tutorial.html).
 - [PyTorch với DirectML trên Windows — Microsoft](https://learn.microsoft.com/en-us/windows/ai/directml/pytorch-windows).
 
+## Trực quan hóa Vùng chú ý Grad-CAM
+
+- [Bản đồ chú ý Grad-CAM (ResNet18 Layer4)](figures/resnet18_gradcam_attention.png): Minh họa vùng lòng bàn tay kích hoạt quyết định phân loại của mạng CNN trên các mẫu Session 1 và Session 2. Vùng nếp vân chính trung tâm tạo phản hồi mạnh nhất.
+
 ## Bổ sung hậu nghiệm: embedding cosine từ cùng checkpoint
 
 Đã đánh giá cả ba seed 17, 29, 43 trên cùng 6.000 probe session2 với gallery 6.000 ảnh session1. Không train thêm hoặc thay thế kết quả logits ở trên.

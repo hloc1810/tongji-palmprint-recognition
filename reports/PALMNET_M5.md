@@ -175,6 +175,8 @@ matching nhanh hơn nhưng vẫn cần bộ trích xuất PalmNet phía trước
 
 ### Kiểm tra kết quả
 
+- [Trực quan hóa Ngân hàng Bộ lọc & Bản đồ Đáp ứng Đặc trưng PalmNet](figures/palmnet_filter_bank_and_features.png): Lưới 15 bộ lọc PCA Stage 1, 15 bộ lọc Gabor Stage 2 và phản hồi năng lượng đặc trưng trên ảnh lòng bàn tay.
+- [Đường cong CMC nhận dạng M5 (Rank 1–20)](figures/palmnet_m5_cmc.png).
 - **27 kiểm thử dự án liên quan + 51 kiểm thử số học upstream đều qua**.
 - Metrics được tính lại từ toàn bộ ma trận điểm; kiểm tra hash, thứ tự sample
   UID và nhãn trên đủ 6.000 probe cho cả bốn phương pháp.

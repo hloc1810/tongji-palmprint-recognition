@@ -101,6 +101,8 @@ dự đoán lặp lại giống lần đầu: [biên bản kiểm tra](../output
 
 ## Chạy lại và dùng riêng thuật toán
 
+- [Sơ đồ quy trình hình học trích xuất ROI từng bước](figures/roi_extraction_pipeline.png): Minh họa từ ảnh bàn tay thô nguyên bản đến ảnh Official ROI 128x128 qua 5 bước phân đoạn, dò kẽ ngón tay và biến đổi affine.
+
 ```powershell
 # Dùng môi trường sẵn có; output mới để không ghi đè bằng chứng cũ
 .venv311/Scripts/python.exe scripts/run_roi_comparison.py --output outputs/roi_comparison_repeat

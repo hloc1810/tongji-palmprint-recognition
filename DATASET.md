@@ -68,6 +68,7 @@ Dự án hỗ trợ cả hai phương thức xử lý ROI:
    - **Tiếp tuyến chung hỗ trợ**: Tìm tiếp tuyến chung dưới (`common_tangent`) qua hai kẽ ngón ngoài với bán kính lân cận `radius = tangent_patch_fraction * separation`.
    - **Thiết lập hệ tọa độ và Cắt Affine**: Dựng trục tọa độ theo tâm tiếp tuyến, dịch vào lòng bàn tay $0.60 \times |X_1 X_2|$ và trích xuất khung ảnh $128 \times 128$ qua phép biến đổi affine (`cv2.warpAffine`).
    - **Kiểm chứng thực nghiệm**: Báo cáo tại [`reports/ROI_COMPARISON.md`](file:///D:/Nhandienmau/DA/reports/ROI_COMPARISON.md) trên 200 ảnh (10 Palm ID) cho thấy tỷ lệ cắt thành công đạt **99.5% (199/200 ảnh)** và độ chính xác nhận dạng Rank-1 đạt **98.00%** (so với 99.00% của Official ROI).
+   - **Sơ đồ quy trình trực quan**: Xem hình minh họa từng bước tại [`reports/figures/roi_extraction_pipeline.png`](file:///D:/Nhandienmau/DA/reports/figures/roi_extraction_pipeline.png).
 
 ### 3.2. Tiền xử lý & Trích xuất đặc trưng trong mã nguồn
 Trong mã nguồn [`src/palmprint/`](file:///D:/Nhandienmau/DA/src/palmprint):
