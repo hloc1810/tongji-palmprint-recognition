@@ -107,8 +107,8 @@ python scripts/run_palmnet_m5.py evaluate-classifiers
 python scripts/summarize_palmnet_m5.py
 ```
 
-`run_palmnet_m5.py` ở gốc và `scripts/run_palmnet_m5.py` gọi cùng module. Có thể
-chạy `palmprint-palmnet` sau khi cài lại package. `--data-root` và
+`scripts/run_palmnet_m5.py` gọi module `palmprint.training.palmnet`. Có thể
+chạy `palmprint-palmnet` sau khi cài package. `--data-root` và
 `--palmnet-python` đặt **trước** subcommand nếu cần thay đường dẫn. Mặc định
 dùng `data/raw` trong workspace, tránh đường dẫn máy cũ trong local metadata.
 

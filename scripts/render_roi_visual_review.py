@@ -45,18 +45,22 @@ def main():
             cv2.circle(overlay, tuple(np.int32(point)), 8, (255, 0, 255), 2)
         axes[index, 0].imshow(cv2.cvtColor(overlay, cv2.COLOR_BGR2RGB))
         axes[index, 0].set_title(f"{uid}\n{verdict}", fontsize=10)
-        axes[index, 1].imshow(read_gray(WS / "data/raw" / session / f"{stem}.bmp"),
-                              cmap="gray", vmin=0, vmax=255)
+        axes[index, 1].imshow(
+            read_gray(WS / "data/raw" / session / f"{stem}.bmp"), cmap="gray", vmin=0, vmax=255
+        )
         axes[index, 1].set_title("Official ROI", fontsize=10)
-        axes[index, 2].imshow(read_gray(OUT / "custom_roi" / session / f"{stem}.png"),
-                              cmap="gray", vmin=0, vmax=255)
+        axes[index, 2].imshow(
+            read_gray(OUT / "custom_roi" / session / f"{stem}.png"), cmap="gray", vmin=0, vmax=255
+        )
         axes[index, 2].set_title("Custom ROI", fontsize=10)
         for ax in axes[index]:
             ax.axis("off")
-    fig.suptitle("Selected visual review: one plausible crop and four confirmed gap errors\n"
-                 "Magenta circles = chosen gap candidates; examples only, no metric filtering",
-                 fontsize=11)
-    fig.tight_layout(rect=(0, 0, 1, .96))
+    fig.suptitle(
+        "Selected visual review: one plausible crop and four confirmed gap errors\n"
+        "Magenta circles = chosen gap candidates; examples only, no metric filtering",
+        fontsize=11,
+    )
+    fig.tight_layout(rect=(0, 0, 1, 0.96))
     fig.savefig(OUT / "visual_review_examples.png", dpi=150)
     plt.close(fig)
 

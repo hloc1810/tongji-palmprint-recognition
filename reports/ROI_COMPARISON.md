@@ -82,7 +82,7 @@ sẽ được tính sai trong mẫu số cố định 100; không loại ảnh k
 - [Minh họa tự động: tương đồng cao/thấp, crop bị từ chối, nhận dạng sai](../outputs/roi_comparison/roi_examples.png).
 - [Một crop hợp lý và bốn ví dụ chọn sai kẽ đã kiểm tra trực quan](../outputs/roi_comparison/visual_review_examples.png),
   [nhãn ví dụ](../outputs/roi_comparison/visual_review.csv),
-  [script vẽ lại minh họa có nhãn](../outputs/render_roi_visual_review.py).
+  [script vẽ lại minh họa có nhãn](../scripts/render_roi_visual_review.py).
 - [Danh sách mẫu, đường dẫn và SHA256](../outputs/roi_comparison/samples.csv).
 - [Tham số và SHA256 mã nguồn khóa trước đánh giá](../outputs/roi_comparison/protocol.json).
 - [Nhật ký trạng thái crop](../outputs/roi_comparison/roi_audit.csv),

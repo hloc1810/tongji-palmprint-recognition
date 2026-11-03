@@ -24,7 +24,9 @@ WS = Path(__file__).resolve().parents[1]
 def synthetic_workspace(tmp_path_factory):
     """An isolated, explicitly synthetic dataset; never a Tongji benchmark."""
     workspace = tmp_path_factory.mktemp("server_synthetic")
-    shutil.copy2(WS / "Tongji_Palmprint_UI.html", workspace / "Tongji_Palmprint_UI.html")
+    static = workspace / "app/static"
+    static.mkdir(parents=True)
+    shutil.copy2(WS / "app/static/index.html", static / "index.html")
     generate_synthetic_roi(workspace / "data/raw", palms=6, samples=2, seed=17)
     config = CompCodeConfig()
     extractor = CompCodeExtractor(config)
@@ -65,9 +67,10 @@ def isolated_server(monkeypatch, synthetic_workspace):
         monkeypatch.setattr(server, name, value)
 
 
-def test_server_root_serves_html():
+@pytest.mark.parametrize("path", ["/", "/Tongji_Palmprint_UI.html"])
+def test_server_root_serves_html(path):
     with TestClient(app) as client:
-        response = client.get("/")
+        response = client.get(path)
         assert response.status_code == 200
         assert "text/html" in response.headers.get("content-type", "")
         text = response.text

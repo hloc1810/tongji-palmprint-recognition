@@ -11,10 +11,16 @@ __pycache__/
 .venv*/
 venv/
 ENV/
+.runtime/
 
 # Testing and cache
 .pytest_cache/
 .ruff_cache/
+.cache/
+.local/
+validation/pytest.xml
+validation/dependencies.txt
+node_modules/
 .coverage
 htmlcov/
 
@@ -33,13 +39,9 @@ outputs/runs/*/best_dev.pth
 
 # Intermediate feature caches
 outputs/cache/
-outputs/roi_comparison_initial/
-outputs/roi_comparison_layout_check/
-outputs/roi_comparison_tests/
 outputs/feature_ablation/cache/
 
 # External research source and large PalmNet feature checkpoints
-.runtime/PalmNet/
 artifacts/palmnet_m5/
 outputs/palmnet_m5/cache/
 outputs/palmnet_m5/*pytest_tmp/

@@ -1,6 +1,6 @@
 """FastAPI Web Backend for Tongji Contactless Palmprint Recognition.
 
-Serves the Tongji_Palmprint_UI.html frontend and provides real-time
+Serves the app/static/index.html frontend and provides real-time
 inference endpoints using the project's frozen CompCode models (CRC_RLS, Linear SVM, 1-NN).
 """
 
@@ -161,19 +161,13 @@ app.add_middleware(
 )
 
 
+@app.get("/Tongji_Palmprint_UI.html", include_in_schema=False)
 @app.get("/")
 async def root():
-    ui_path = WS / "Tongji_Palmprint_UI.html"
+    """Serve the maintained frontend; preserve the former URL for existing links."""
+    ui_path = WS / "app/static/index.html"
     if not ui_path.exists():
-        raise HTTPException(status_code=404, detail="Tongji_Palmprint_UI.html not found")
-    return FileResponse(ui_path, media_type="text/html")
-
-
-@app.get("/Tongji_Palmprint_UI.html")
-async def serve_ui():
-    ui_path = WS / "Tongji_Palmprint_UI.html"
-    if not ui_path.exists():
-        raise HTTPException(status_code=404, detail="Tongji_Palmprint_UI.html not found")
+        raise HTTPException(status_code=404, detail="Frontend app/static/index.html not found")
     return FileResponse(ui_path, media_type="text/html")
 
 

@@ -1,125 +1,131 @@
 # Tongji Contactless Palmprint Recognition
 
-**Bổ sung ROI từ ảnh bàn tay gốc (pilot 10 Palm ID):** đã triển khai hình học Tongji 2017
-và chạy so sánh trên cùng 200 ảnh, giữ nguyên CompCode + 1-NN.
-Official ROI: **99/100**; Custom ROI: **98/100** probe đúng.
-Xem [báo cáo ROI và các trường hợp cắt sai](reports/ROI_COMPARISON.md).
-Đây là thực nghiệm 10 lớp, không so trực tiếp với benchmark 600 lớp bên dưới.
+Đồ án môn **Nhận dạng mẫu**: nhận dạng lòng bàn tay không tiếp xúc theo giao thức
+**closed-set 1:N**, trên Tongji Contactless Palmprint Dataset. Nhóm 01, đề tài 09.
+Mỗi bàn tay là một Palm ID; hai bàn tay của cùng người là hai lớp riêng.
 
-```powershell
-# Chọn output mới khi chạy lại để giữ bằng chứng của lần chạy trước
-.venv311/Scripts/python.exe scripts/run_roi_comparison.py --output outputs/roi_comparison_repeat
+## 1. Bài toán và phạm vi
+
+Benchmark chính sử dụng **Official ROI grayscale 128×128**: 600 Palm ID, 12.000 ảnh,
+hai phiên chụp. Session 1 có 6.000 ảnh dùng cho phát triển mô hình và gallery;
+Session 2 có 6.000 probe dùng để đánh giá chéo phiên. Các thực nghiệm có lịch sử
+quan sát Session 2 được ghi rõ trong từng báo cáo.
+
+```text
+Official ROI → biểu diễn đặc trưng → điểm cho từng Palm ID → xếp hạng 600 lớp
+Ảnh gốc → Custom ROI 128×128 → CompCode → 1-NN              [pilot 10 lớp]
 ```
 
-**M5: PCA-Gabor PalmNet + Nearest-Template Matching** — đã chạy đủ 6.000 probe:
-**Rank-1 99,9833%, Rank-5 100%**, đúng 5.999/6.000 ảnh. Fit trên Session 1. Có thêm
-nhánh chọn đặc trưng cho Linear SVM, CRC_RLS và đối chứng 1-NN cùng biểu diễn.
-Xem [giao thức, lệnh chạy và kết quả M5](reports/PALMNET_M5.md) và
-[hướng dẫn cấu trúc repository](reports/REPOSITORY_GUIDE.md).
+Đóng góp triển khai gồm CompCode histogram không gian, 1-NN/CRC_RLS, so sánh
+ResNet18 và PalmNet, cùng pilot ROI tự triển khai theo hình học Tongji 2017.
+Không khẳng định tương đương từng pixel với mã MATLAB của tác giả.
 
-> **Nhận diện lòng bàn tay không tiếp xúc (*Contactless Palmprint Recognition*)**  
-> Đề tài 09 — Nhóm 01 | Môn Nhận dạng mẫu (*Pattern Recognition*)  
-> Dataset: **Tongji Contactless Palmprint** (600 Palm ID, 12.000 ảnh ROI 128×128, 2 phiên độc lập).
+## 2. Kết quả được lưu trong repository
 
----
+### Benchmark 600 Palm ID
 
-## 1. Kết quả thực nghiệm chính (Benchmark)
+| Pipeline | Biểu diễn và bộ nhận dạng | Rank-1 (%) | Rank-5 (%) |
+|---|---|---:|---:|
+| M1 | CompCode 600-D + 1-NN Euclidean | 94,4333 | 96,9667 |
+| M2 | CompCode 600-D + Linear SVM | 97,3667 | 98,5167 |
+| M3 | CompCode 600-D + CRC_RLS | 98,2667 | 99,0833 |
+| M4-E1 | ResNet18, logits; trung bình 3 seed | 64,3611 ± 1,0409 | 81,9111 ± 0,6545 |
+| M4-E2 | ResNet18, nearest cosine; hậu nghiệm, 3 seed | 73,7444 ± 0,6241 | 87,5000 ± 0,4368 |
+| M5 | PCA-Gabor PalmNet + nearest template | 99,9833 | 100,0000 |
 
-### 1.1. Chuẩn đối sánh mô hình chính (Closed-set 1:N trên 6.000 probe Session 2)
+Mỗi run có 6.000 probe. Dấu ± là **độ lệch chuẩn mẫu giữa 3 seed**, không phải CI.
+M5 đúng 5.999/6.000 probe; là thực nghiệm độc lập với descriptor sparse 12.288.000-D.
+Các pipeline khác nhau về cách học và chọn cấu hình; không quy toàn bộ chênh lệch
+cho riêng bộ phân loại. Chi tiết: [M1–M4](reports/TONGJI_BENCHMARK.md),
+[CNN](reports/CNN_EXPERIMENTS.md), [M5](reports/PALMNET_M5.md).
 
-| Nhóm | Pipeline | Mô hình | Rank-1 (%) | Rank-5 (%) | Macro-F1 (%) | Độ trễ CPU (ms) |
-| :--- | :--- | :--- | ---:| ---:| ---:| ---:|
-| **M5 bổ sung** | **M5** | **PCA-Gabor PalmNet + 1-NN** (12.288.000-D sparse) | **99.9833%** | **100%** | **99.9833%** | [Theo batch](reports/PALMNET_M5.md) |
-| **Benchmark chính** | **M3** | **CompCode + CRC_RLS** ($\lambda=0.1$) | **98.27%** | **99.08%** | **97.99%** | 14.71 ms |
-| | **M2** | **CompCode + Linear SVM** ($C=1$) | **97.37%** | **98.52%** | **96.82%** | **3.71 ms** |
-| | **M1** | **CompCode + 1-NN** (Euclidean) | **94.43%** | **96.97%** | **93.56%** | 11.00 ms |
-| | **M4-E2** | **ResNet18 Nearest Cosine** (512-D)* | 73.74% ± 0.62 | 87.50% ± 0.44 | 70.51% ± 0.81 | ~19.34 ms |
-| | **M4-E1** | **ResNet18 Logits** (Softmax 600 lớp) | 64.36% ± 1.04 | 81.91% ± 0.65 | 60.79% ± 1.10 | ~48.72 ms |
-| **Bóc tách đặc trưng (E3)** | **F3** | **CompCode** (600-D) + 1-NN | **94.43%** | **96.97%** | **93.56%** | 0.11 ms |
-| | **F1** | **Raw Grayscale** (16.384-D) + 1-NN | 77.18% | 85.65% | 75.64% | 0.61 ms |
-| | **F2** | **PCA** (256-D, fit trên Session 1) + 1-NN | 76.72% | 84.75% | 74.67% | **0.09 ms** |
+### Pilot ROI: cùng 10 Palm ID, 200 ảnh
 
-*\* Ghi chú: ResNet18 Nearest Cosine là thử nghiệm hậu nghiệm (exploratory), trích xuất embedding 512-D từ mô hình phân loại để so khoảng cách Cosine; chưa phải huấn luyện metric learning chuyên biệt.*
+| Chỉ số | Official ROI | Custom ROI |
+|---|---:|---:|
+| Ảnh đầu vào | 200 | 200 |
+| Gallery dùng được / probe dùng được | 100 / 100 | 99 / 100 |
+| Crop được chấp nhận tự động | Không áp dụng | 199/200, tức 99,5% |
+| Rank-1, mẫu số 100 probe | 99% | 98% |
+| Thời gian riêng thuật toán ROI trung bình | Không áp dụng | 2,39 ms/ảnh |
 
-### 1.2. Phân tích độ bền vững trước biến đổi ảnh (E6 Robustness Analysis)
+Tỷ lệ chấp nhận tự động **không phải tỷ lệ crop đúng giải phẫu**; đã xác nhận bốn
+ví dụ chọn sai kẽ ngón. Không so trực tiếp pilot này với benchmark 600 lớp.
+Xem [phương pháp, bảng kết quả và lỗi ROI](reports/ROI_COMPARISON.md).
 
-Đánh giá 3 mô hình đã đóng băng trên toàn bộ 6.000 probe Session 2 dưới 5 điều kiện:
-- **Độ sáng ±15**: Cả 3 mô hình đều đạt chênh lệch $\Delta = 0.00$ pp ($p = 1.0000$) nhờ tính chất triệt tiêu thành phần một chiều (Zero-DC) của bộ lọc Gabor CompCode.
-- **Làm mờ Gauss 3×3**: Chênh lệch nằm trong khoảng tin cậy bao hàm 0 (KNN: +0.07 pp, SVM: +0.05 pp, CRC: -0.07 pp, $p > 0.20$), chứng minh tính ổn định của hướng nếp vân chính.
-- **Góc xoay +5°**: Sụt giảm có ý nghĩa thống kê ($p = 0.0001$). CRC_RLS thể hiện độ bền cao nhất (giảm -2.52 pp xuống 95.75%), Linear SVM giảm -5.23 pp (xuống 92.13%), trong khi 1-NN sụt giảm mạnh nhất -14.12 pp (xuống 80.32%).
+## 3. Cài đặt và chạy demo
 
-### 1.3. Cắt giảm thông tin không gian (E3a Global vs Spatial CompCode)
+Python **3.11 hoặc 3.12**; chạy các lệnh từ thư mục gốc repository.
 
-Kiểm chứng chéo 5 nếp (5-fold CV) trên Session 1 với bộ phân loại CRC_RLS ($\lambda=0.1$):
-- **Global CompCode (6-D, 1×1)**: Rank-1 = **8.77% ± 0.59%** (sụp đổ khả năng phân biệt do mất hoàn toàn tọa độ không gian).
-- **Spatial CompCode (150-D, 5×5)** [Exploratory extension]: Rank-1 = **99.98% ± 0.04%**.
-- **Spatial CompCode (600-D, 10×10)** [Pre-registered]: Rank-1 = **100.00% ± 0.00%**.
-
-### 1.4. So sánh thống kê cặp đôi (E3 Paired Cluster Bootstrap)
-
-Paired Cluster Bootstrap theo Palm ID ($B=10.000$ lần, seed=42) trên 6.000 probe Session 2:
-- **CompCode − Raw**: $\Delta = +17.25$ pp, 95% CI $[+15.18, +19.32]$ pp, $p < 0.0001$ (vượt trội có ý nghĩa thống kê).
-- **CompCode − PCA**: $\Delta = +17.72$ pp, 95% CI $[+15.67, +19.83]$ pp, $p < 0.0001$ (vượt trội có ý nghĩa thống kê).
-- **Raw − PCA**: $\Delta = +0.47$ pp, 95% CI $[-0.87, +1.83]$ pp, $p = 0.5042$ (CI bao hàm 0; không có sự khác biệt thống kê).
-
----
-
-## 2. Điểm nhấn cài đặt: Tự viết (From Scratch) vs Thư viện
-
-- **CompCode (600-D)**: Tự tạo ngân hàng 6 bộ lọc Gabor giải tích, khử DC (`kernel -= mean`), Competitive Coding ($\arg\min$ phản hồi thung lũng vân), phân hoạch lưới $10 \times 10$ và chuẩn hóa 2 cấp $L_1 \to L_2$.
-- **CRC_RLS (M3)**: Tự cài đặt thuật toán Collaborative Representation Classifier từ công thức toán; hồi quy Ridge trên ma trận từ điển gallery $A \in \mathbb{R}^{600 \times 6000}$ và tính phần dư tái tạo theo từng lớp. Dùng `scipy.linalg.cho_solve` để giải nghiệm ổn định số học.
-- **Nearest-Template (1-NN)**: Tự viết thuật toán tính ma trận khoảng cách Euclidean bình phương theo khối qua NumPy, không phụ thuộc `sklearn.neighbors`.
-- **Cosine Embedding (512-D)**: Tự tính 600 vector trọng tâm centroid và so khớp nearest cosine theo batch.
-- **Thư viện chuẩn**: `sklearn.svm.LinearSVC` (LIBLINEAR C++ cho M2) và `torchvision.models.resnet18` (PyTorch cho M4).
-
----
-
-## 3. Cài đặt & Sử dụng nhanh
-
-### 3.1. Cài đặt môi trường
 ```powershell
-python -m pip install -e ".[test,demo,cnn]"
+python -m venv .venv
+.venv/Scripts/Activate.ps1
+python -m pip install -e ".[test,api,demo]"
+
+# FastAPI và frontend HTML
+python -m uvicorn app.server:app --host 127.0.0.1 --port 8000
+
+# Hoặc demo Streamlit
+python -m streamlit run app/main.py
 ```
 
-### 3.2. Chạy ứng dụng Web Demo (Streamlit)
+Mở `http://127.0.0.1:8000` khi dùng FastAPI. Demo nhận **Official ROI 128×128**
+và nạp các model CompCode M1–M3 trong `artifacts/`. M4, M5 và Custom ROI chưa
+được nối vào API nhận dạng. Tải dữ liệu theo [hướng dẫn dataset](data/README.md)
+để sử dụng ảnh mẫu; dataset không được đóng gói trong Git.
+
+CNN/PalmNet cần dependency riêng: `python -m pip install -e ".[cnn,palmnet]"`.
+PalmNet còn cần mã tác giả tại commit chỉ định trong [báo cáo M5](reports/PALMNET_M5.md).
+
+## 4. Kiểm tra và tái lập
+
 ```powershell
-streamlit run app/main.py
-```
-> Demo gồm 4 tab: Nhận diện ảnh tương tác, X-Ray đặc trưng CompCode, Trực quan hóa không gian PCA (Eigenpalms & Reconstruction), và Dashboard tổng hợp.
-
-### 3.3. Chạy các thực nghiệm khoa học
-```powershell
-# Thực nghiệm bóc tách đặc trưng (E3)
-python scripts/run_feature_ablation.py
-
-# Thực nghiệm phân tích độ bền vững trước biến đổi ảnh (E6)
-python scripts/run_robustness_e6.py
-
-# Thực nghiệm cắt giảm thông tin không gian (E3a)
-python scripts/run_spatial_ablation_e3a.py
-
-# Thực nghiệm so sánh thống kê cặp đôi bootstrap (E3)
-python scripts/run_paired_bootstrap_e3.py
-```
-
-### 3.4. Chạy kiểm thử tự động
-```powershell
-python -m pytest -q
+python -m ruff check src app scripts tests
+python -m ruff format --check src app scripts tests
+python -m pytest -q -p no:cacheprovider --basetemp .local/tests
 python scripts/run_smoke.py
+
+# Pilot ROI: cần đủ ảnh gốc và Official ROI; dùng output mới
+python scripts/run_roi_comparison.py --output .local/experiments/roi_repeat
 ```
-> M5 đã qua 27 kiểm thử liên quan trong dự án và 51 kiểm thử số học upstream;
-> phạm vi kiểm tra và bằng chứng được ghi trong [báo cáo M5](reports/PALMNET_M5.md).
 
----
+Smoke test dùng ảnh **synthetic**, chỉ kiểm tra phần mềm; không phải kết quả Tongji.
+Các test cần dependency tùy chọn có thể được bỏ qua nếu môi trường chưa cài chúng.
+Không chạy lại `prepare`, huấn luyện hoặc đánh giá vào workspace đã khóa.
+[Hướng dẫn tái lập](docs/REPRODUCIBILITY.md) mô tả workspace mới, thứ tự lệnh và
+giới hạn của các file có trên GitHub.
 
-## 4. Tài liệu chi tiết & Báo cáo thực nghiệm
+## 5. Cấu trúc và tài liệu
 
-- [Notebook 01: Phân tích Khám phá Dữ liệu (EDA)](notebooks/01_eda.ipynb)
-- [Notebook 02: Phân tích Kết quả & Chẩn đoán Lỗi](notebooks/02_results_analysis.ipynb)
-- [Phân tích Khám phá Dữ liệu EDA (Phân bố & Chất lượng ảnh)](reports/EDA.md)
-- [Báo cáo Benchmark đầy đủ (M1–M4)](reports/TONGJI_BENCHMARK.md)
-- [Báo cáo Thực nghiệm Deep CNN (ResNet18 3 Seeds)](reports/CNN_EXPERIMENTS.md)
-- [Báo cáo Bóc tách Đặc trưng & Bootstrap Cặp đôi E3](outputs/feature_ablation/findings.md)
-- [Báo cáo Phân tích Độ bền vững E6](outputs/robustness_e6/findings.md)
-- [Báo cáo Cắt giảm Thông tin Không gian E3a](outputs/spatial_ablation_e3a/findings.md)
-- [Thư viện Hình ảnh Báo cáo chất lượng cao (300 DPI)](reports/figures/)
+| Thư mục | Nội dung |
+|---|---|
+| `src/palmprint/` | Mã thư viện: dữ liệu, đặc trưng, mô hình, huấn luyện, đánh giá, báo cáo |
+| `app/` | Streamlit, FastAPI và `static/index.html` |
+| `scripts/` | Entry point chạy thí nghiệm và vẽ hình đang được duy trì |
+| `configs/` | Cấu hình phương pháp và giao thức |
+| `tests/` | Unit test và integration test bằng dữ liệu synthetic |
+| `docs/` | Phương pháp, tái lập, bảo trì và đề bài gốc |
+| `reports/` | Báo cáo khoa học, bảng và hình kết quả |
+| `outputs/` | Bằng chứng thực nghiệm; snapshot cũ có chủ đích để truy vết |
+| `artifacts/`, `data/` | Model, metadata; dữ liệu và cache lớn được giữ cục bộ |
+| `.local/` | Kiểm thử tạm, lần chạy mới và kho khôi phục cục bộ; không đưa lên Git |
+
+- [Mục lục tài liệu](docs/README.md) · [Phương pháp và tiêu chí đánh giá](docs/METHODOLOGY.md).
+- [Kiến trúc repository](reports/REPOSITORY_GUIDE.md) · [Danh mục báo cáo](reports/README.md).
+- [Hồ sơ thực nghiệm](experiments/README.md) · [Môi trường đã chạy](experiments/environments/README.md).
+- [Quy tắc bảo trì](docs/MAINTENANCE.md) · [Lịch sử dọn repository](docs/REPOSITORY_CLEANUP.md).
+- [Đề bài môn học](docs/references/project_assignment.pdf).
+
+## 6. Nguồn tham khảo
+
+1. Zhang et al. (2017), *Towards contactless palmprint recognition: A novel device,
+   a new benchmark, and a collaborative representation based identification approach*,
+   Pattern Recognition 69, 199–212. [DOI](https://doi.org/10.1016/j.patcog.2017.04.016),
+   [dataset và mã tác giả](https://cslinzhang.github.io/ContactlessPalm/).
+2. Genovese et al. (2019), *PalmNet: Gabor-PCA Convolutional Networks for Touchless
+   Palmprint Recognition*, IEEE TIFS. [Bài báo](https://air.unimi.it/handle/2434/637849),
+   [Python port được dùng](https://github.com/AngeloUNIMI/PalmNet/tree/f0a12e6d5f585c7eb0bf5c6804a98bd1d6587e22).
+
+Các số liệu trong README là kết quả của repository, không phải accuracy được chép
+từ bài báo. Giấy phép của mã PalmNet bên ngoài áp dụng riêng cho nguồn đó;
+repository này chưa công bố giấy phép riêng cho toàn bộ mã dự án.

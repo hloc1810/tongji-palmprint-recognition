@@ -1,41 +1,66 @@
-# Cấu trúc repository Tongji Palmprint Recognition
+# Kiến trúc repository
 
-Repository tổ chức mã theo các bước của bài toán nhận dạng closed-set 1:N.
-Hai phiên Tongji có cùng 600 Palm ID; Session 1 dùng để chọn cấu hình/học model
-và tạo gallery, Session 2 dùng để đánh giá cuối. Bàn tay trái và phải là hai
-Palm ID riêng. Quy tắc cụ thể của từng thực nghiệm nằm trong báo cáo tương ứng.
+## 1. Các tầng mã nguồn
 
-| Vị trí | Vai trò |
+`src/palmprint` là thư viện được cài bằng `pip install -e .`. Các entry point
+chỉ điều phối; logic mô hình và đánh giá nằm trong các module chuyên trách.
+
+| Module | Trách nhiệm | Đầu ra chính |
+|---|---|---|
+| `data/` | Decoder, kiểm tra ROI, ánh xạ Palm ID, manifest, split; Custom ROI | Metadata, fold, ROI |
+| `features/` | CompCode, biểu diễn ablation, chọn đặc trưng sparse PalmNet | Vector hoặc CSR descriptor |
+| `models/` | 1-NN, SVM, CRC_RLS, ResNet, matching sparse | Điểm cho từng Palm ID |
+| `training/` | Chọn cấu hình Session 1, fit final, khóa protocol | Model và metadata freeze |
+| `evaluation/` | Rank-k, Macro-F1, CMC, bootstrap, CNN/embedding | Metrics và dự đoán |
+| `reporting/` | Xác minh bằng chứng và sinh bảng, hình | Báo cáo dẫn xuất |
+| `utils.py` | I/O, hash và thông tin môi trường | JSON có thể truy vết |
+
+Luồng chính là **data → features → model → evaluation → reporting**.
+Huấn luyện gọi cùng bộ trích xuất và mô hình; báo cáo kiểm tra số liệu đã lưu,
+không huấn luyện lại để cải thiện kết quả.
+
+## 2. Entry point và ứng dụng
+
+| Tác vụ | Entry point |
 |---|---|
-| `src/palmprint/data/` | Đọc và kiểm tra ROI, Palm ID, manifest và các fold Session 1. |
-| `src/palmprint/features/` | CompCode, các đặc trưng so sánh và chọn đặc trưng cho PalmNet. |
-| `src/palmprint/models/` | 1-NN, Linear SVM, CRC_RLS, ResNet và matching PalmNet sparse. |
-| `src/palmprint/training/` | Cross-validation, huấn luyện và đóng băng; M5 có luồng chạy độc lập. |
-| `src/palmprint/evaluation/` | Ranking theo lớp, Rank-k, Macro-F1, CMC và bootstrap theo Palm ID. |
-| `src/palmprint/reporting/` | Tổng hợp và xác minh bằng chứng của các thực nghiệm hiện có. |
-| `configs/` | Cấu hình dataset, CompCode, classifier, ResNet và cấu hình tham chiếu M5. |
-| `scripts/` | Entry point cho các thí nghiệm phân tích và benchmark M5. |
-| `app/` và `Tongji_Palmprint_UI.html` | Demo Streamlit và frontend/API FastAPI cho các model CompCode. |
-| `data/metadata/` | Manifest 12.000 ảnh và metadata kiểm tra dữ liệu. |
-| `data/raw/` | Official ROI trên máy cục bộ; ảnh gốc không đưa lên Git. |
-| `artifacts/` | Model và hiện vật huấn luyện; checkpoint bộ trích xuất M5 nằm trong `pretrained/`, gallery và classifier M5 lớn được giữ cục bộ. |
-| `outputs/` | Metrics, dự đoán và kết quả thực nghiệm; cache và ma trận điểm M5 được giữ cục bộ. |
-| `reports/`, `notebooks/`, `experiments/` | Báo cáo, hình vẽ, khám phá dữ liệu và mô tả thí nghiệm. |
-| `tests/`, `.github/workflows/` | Kiểm thử và GitHub Actions trên Python 3.11/3.12. |
+| M1–M3: prepare, CV, train, lock, evaluate | `palmprint` hoặc `python -m palmprint.cli` |
+| M4: CNN và embedding | `palmprint-cnn` hoặc `python -m palmprint.cli_cnn` |
+| M5: PCA-Gabor PalmNet | `palmprint-palmnet` hoặc `python scripts/run_palmnet_m5.py` |
+| Pilot Custom ROI | `python scripts/run_roi_comparison.py` |
+| Minh họa ROI có nhãn | `python scripts/render_roi_visual_review.py` |
+| Smoke test synthetic | `python scripts/run_smoke.py` |
+| FastAPI + HTML | `python -m uvicorn app.server:app` |
+| Streamlit | `python -m streamlit run app/main.py` |
 
-Entry point chính là `palmprint` cho các pipeline CompCode M1–M3,
-`palmprint-cnn` cho ResNet M4, và `palmprint-palmnet` hoặc
-`python scripts/run_palmnet_m5.py` cho M5. M5 hiện là thí nghiệm độc lập:
-API và giao diện nhận dạng hiện tại vẫn nạp ba model CompCode M1–M3; kết quả
-M5 đã được bổ sung vào tài liệu và bảng benchmark.
-Để cài các dependency riêng của API, dùng `python -m pip install -e ".[api]"`.
+Frontend HTML nằm tại `app/static/index.html`; backend phục vụ cả `/` và URL cũ
+`/Tongji_Palmprint_UI.html`. API và Streamlit dùng M1–M3, chưa phục vụ M4/M5/Custom ROI.
+Không cần thêm wrapper M5 ở gốc vì CLI và `scripts/` đã bao phủ tác vụ đó.
+[Danh mục script](../scripts/README.md) mô tả các chương trình phân tích bổ sung.
 
-M5 dùng Python port PCA → Gabor của tác giả PalmNet, không học bằng
-backpropagation. Sau binary hashing và histogram theo block, 1-NN đối sánh
-descriptor sparse đầy đủ. Các nhánh SVM và CRC_RLS dùng chung phép chọn 1.024
-cột từ Session 1; 1-NN cùng biểu diễn là đối chứng classifier. Xem
-[báo cáo M5](PALMNET_M5.md) để đọc giao thức, kết quả, chi phí và lệnh chạy.
+## 3. Dữ liệu, model và bằng chứng
 
-Để tái lập, tải Official ROI theo [hướng dẫn dữ liệu](../data/README.md), cài
-dependency và mã nguồn PalmNet như trong báo cáo M5. Không thay đổi cấu hình
-dựa trên kết quả Session 2; các lựa chọn mới cần được đánh giá trên Session 1.
+| Vị trí | Vai trò và quy tắc |
+|---|---|
+| `data/raw/session{1,2}/` | Official ROI gốc, chỉ lưu cục bộ |
+| `data/Original Images/session{1,2}/` | Ảnh bàn tay gốc, chỉ lưu cục bộ |
+| `data/metadata/`, `data/splits/` | Manifest, audit và fold đã lưu |
+| `artifacts/` | Model/freeze M1–M4; checkpoint bộ trích xuất M5 trong `pretrained/` |
+| `outputs/runs/`, `outputs/cv/` | Bằng chứng nhận dạng và chọn cấu hình |
+| `outputs/palmnet_m5/`, `outputs/roi_comparison/` | Hai thực nghiệm bổ sung có giao thức riêng |
+| `outputs/*/source_snapshot/` | Mã lịch sử khi benchmark, không phải module đang import |
+| `reports/tables/`, `reports/figures/` | Bảng và hình dẫn xuất |
+| `.local/` | File tạm, output mới, bản khôi phục và thí nghiệm chưa công bố |
+
+Tên file giống nhau trong `source_snapshot/` và `src/` phục vụ truy vết phiên bản;
+không xem chúng là code thừa để xóa hàng loạt. Model, score matrix, manifest,
+prediction và protocol đã báo cáo được giữ nguyên. Script trong
+`outputs/cnn_experiments/` còn được tham chiếu trong báo cáo CNN; chúng là
+hồ sơ lịch sử, không phải entry point đang duy trì.
+
+## 4. Tài liệu và kiểm chứng
+
+[Phương pháp](../docs/METHODOLOGY.md) nêu giả thiết và định nghĩa chỉ số;
+[tái lập](../docs/REPRODUCIBILITY.md) nêu lệnh chạy và giới hạn môi trường;
+[bảo trì](../docs/MAINTENANCE.md) quy định vị trí file và kiểm tra trước khi commit.
+Không đổi các module khoa học đã khóa chỉ để sắp xếp thư mục; thay đổi hành vi
+thuật toán cần giao thức và kết quả thực nghiệm mới.
