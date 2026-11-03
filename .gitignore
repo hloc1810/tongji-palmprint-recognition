@@ -52,3 +52,6 @@ outputs/palmnet_m5/*.pid
 outputs/palmnet_m5/*.log
 outputs/palmnet_m5/*/scores.npz
 
+# Local-only exploration notebooks
+notebooks/03_model_interpretability_and_pipeline.ipynb
+
