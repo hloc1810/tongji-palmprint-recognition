@@ -110,7 +110,7 @@ giới hạn của các file có trên GitHub.
 | `artifacts/`, `data/` | Model, metadata; dữ liệu và cache lớn được giữ cục bộ |
 | `.local/` | Kiểm thử tạm, lần chạy mới và kho khôi phục cục bộ; không đưa lên Git |
 
-- [Mục lục tài liệu](docs/README.md) · [Phương pháp và tiêu chí đánh giá](docs/METHODOLOGY.md).
+- [Mục lục tài liệu](docs/README.md) · [Mô tả dữ liệu bài nộp](DATASET.md) · [Phương pháp và tiêu chí đánh giá](docs/METHODOLOGY.md).
 - [Kiến trúc repository](reports/REPOSITORY_GUIDE.md) · [Danh mục báo cáo](reports/README.md).
 - [Hồ sơ thực nghiệm](experiments/README.md) · [Môi trường đã chạy](experiments/environments/README.md).
 - [Quy tắc bảo trì](docs/MAINTENANCE.md) · [Lịch sử dọn repository](docs/REPOSITORY_CLEANUP.md).
